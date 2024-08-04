@@ -49,7 +49,6 @@ class Top extends Model
      */
     protected $attributes = [
         'height' => 0,
-        'width' => 0,
         'stock' => 0,
         'available' => TRUE,
         'description' => '',
@@ -63,7 +62,6 @@ class Top extends Model
     protected function casts(): array
     {
         return [
-            'height' => 'integer',
             'width' => 'integer',
             'available' => 'bool',
             'stock' => 'integer'
