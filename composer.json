@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "codeat3/blade-solar-icons": "^1.1",
         "diglactic/laravel-breadcrumbs": "^9.0",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
@@ -20,6 +19,7 @@
         "wireui/wireui": "^2.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
