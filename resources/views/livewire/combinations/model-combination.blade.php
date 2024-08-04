@@ -14,7 +14,6 @@
                         />
                     </div>
                 </x-form.group-left>
-                @json($form)
 
                 <x-form.group-left :label="__('Mattress')">
                     <div class="sm:max-w-md">
