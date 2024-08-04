@@ -1,0 +1,1 @@
+<x-solar-iphone-line-duotone {{ $attributes }}/>

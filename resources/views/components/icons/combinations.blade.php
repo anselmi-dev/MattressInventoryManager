@@ -1,0 +1,1 @@
+<x-solar-bed-line-duotone {{ $attributes }}/>

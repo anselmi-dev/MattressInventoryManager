@@ -51,9 +51,9 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-button class="ms-4">
+                <x-wireui:button type="submit" primary class="ms-4">
                     {{ __('Register') }}
-                </x-button>
+                </x-wireui:button>
             </div>
         </form>
     </x-authentication-card>

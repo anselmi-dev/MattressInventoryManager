@@ -11,14 +11,34 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <style>
+            [x-cloak] {
+                display: none;
+            }
+        </style>
+
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.scss', 'resources/js/app.js'])
 
         <!-- Styles -->
         @livewireStyles
+        <wireui:scripts />
+
+        <script>
+            document.addEventListener('livewire:navigate', (event) => {
+                document.body.classList.remove('in');
+                document.body.classList.add('out');
+            })
+            
+            document.addEventListener('livewire:navigated', () => {
+                document.body.classList.remove('out');
+                document.body.classList.add('in');
+            })
+        </script>
     </head>
     <body class="font-sans antialiased">
         <x-banner />
+        <x-wireui:notifications />
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @livewire('navigation-menu')

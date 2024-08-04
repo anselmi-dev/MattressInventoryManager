@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Cover;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class CoverSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Cover::firstOrCreate([
+            'code' => 'FD01'
+        ], [
+            'stock' => 120,
+            'description' => 'Funda blanca',
+        ]);
+
+        Cover::firstOrCreate([
+            'code' => 'FD02'
+        ], [
+            'stock' => 220,
+            'description' => 'Funda gris',
+        ]);
+    }
+}

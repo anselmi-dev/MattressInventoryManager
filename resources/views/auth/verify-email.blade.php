@@ -19,9 +19,9 @@
                 @csrf
 
                 <div>
-                    <x-button type="submit">
+                    <x-wireui:button primary type="submit">
                         {{ __('Resend Verification Email') }}
-                    </x-button>
+                    </x-wireui:button>
                 </div>
             </form>
 

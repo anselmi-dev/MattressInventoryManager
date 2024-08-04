@@ -5,15 +5,47 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-mark class="block h-9 w-auto" />
+                    <a href="{{ route('dashboard') }}" wire:navigate>
+                        <x-application-mark class="block h-9 w-auto text-app-primary" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('dimensions.index') }}" :active="request()->routeIs('dimensions.*')" wire:navigate>
+                        <span class="relative">
+                            <x-icons.dimension class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_dimensions() }}</span>
+                        </span>
+                        {{ __('Dimensions') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('covers.index') }}" :active="request()->routeIs('covers.*')" wire:navigate>
+                        <span class="relative">
+                            <x-icons.cover class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_covers() }}</span>
+                        </span>
+                        {{ __('Covers') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('tops.index') }}" :active="request()->routeIs('tops.*')" wire:navigate>
+                        <span class="relative">
+                            <x-icons.top class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_tops() }}</span>
+                        </span>
+                        {{ __('Tops') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('mattresses.index') }}" :active="request()->routeIs('mattresses.*')" wire:navigate>
+                        <span class="relative">
+                            <x-icons.mattresss class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_covers() }}</span>
+                        </span>
+                        {{ __('Mattresses') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>
+                        <span class="relative">
+                            <x-icons.combinations class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_combinations() }}</span>
+                        </span>
+                        {{ __('Combinations') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -43,12 +75,12 @@
                                     </div>
 
                                     <!-- Team Settings -->
-                                    <x-dropdown-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}">
+                                    <x-dropdown-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" wire:navigate>
                                         {{ __('Team Settings') }}
                                     </x-dropdown-link>
 
                                     @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                                        <x-dropdown-link href="{{ route('teams.create') }}">
+                                        <x-dropdown-link href="{{ route('teams.create') }}" wire:navigate>
                                             {{ __('Create New Team') }}
                                         </x-dropdown-link>
                                     @endcan
@@ -98,12 +130,12 @@
                                 {{ __('Manage Account') }}
                             </div>
 
-                            <x-dropdown-link href="{{ route('profile.show') }}">
+                            <x-dropdown-link href="{{ route('profile.show') }}" wire:navigate>
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                                <x-dropdown-link href="{{ route('api-tokens.index') }}">
+                                <x-dropdown-link href="{{ route('api-tokens.index') }}" wire:navigate>
                                     {{ __('API Tokens') }}
                                 </x-dropdown-link>
                             @endif
@@ -141,6 +173,41 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('dimensions.index') }}" :active="request()->routeIs('dimensions.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.dimension class="h-4 mr-1"/>
+                </span>
+                {{ __('Dimensions') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('covers.index') }}" :active="request()->routeIs('covers.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.cover class="h-4 mr-1"/>
+                </span>
+                {{ __('Covers') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('tops.index') }}" :active="request()->routeIs('tops.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.top class="h-4 mr-1"/>
+                </span>
+                {{ __('Tops') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('mattresses.index') }}" :active="request()->routeIs('mattresses.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.mattresss class="h-4 mr-1"/>
+                </span>
+                {{ __('Mattresses') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.combinations class="h-4 mr-1"/>
+                </span>
+                {{ __('Combinations') }}
             </x-responsive-nav-link>
         </div>
 

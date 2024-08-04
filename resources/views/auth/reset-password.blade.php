@@ -27,9 +27,9 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <x-button>
+                <x-wireui:button type="submit" primary>
                     {{ __('Reset Password') }}
-                </x-button>
+                </x-wireui:button>
             </div>
         </form>
     </x-authentication-card>

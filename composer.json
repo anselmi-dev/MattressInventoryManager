@@ -10,17 +10,18 @@
         "diglactic/laravel-breadcrumbs": "^9.0",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
-        "laravel/pulse": "^1.2",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
+        "maatwebsite/excel": "*",
+        "predis/predis": "^2.2",
+        "rappasoft/laravel-livewire-tables": "^3.3",
         "spatie/laravel-permission": "^6.9",
         "wireui/wireui": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
         "phpunit/phpunit": "^11.0.1"
@@ -30,7 +31,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/Global.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

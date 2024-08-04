@@ -48,9 +48,9 @@
                         {{ __('Use an authentication code') }}
                     </button>
 
-                    <x-button class="ms-4">
+                    <x-wireui:button type="submit" primary class="ms-4">
                         {{ __('Log in') }}
-                    </x-button>
+                    </x-wireui:button>
                 </div>
             </form>
         </div>

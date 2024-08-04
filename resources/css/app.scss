@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'nprogress';
+
+.dot-pattern {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAACqADAAQAAAABAAAACgAAAAAYsJrPAAAAHUlEQVQYGWNgYGBQhWIghRswQaX+41YyKkPNEAAA4OoBTP5jT7kAAAAASUVORK5CYII=);
+}
+
+.x-text-base-color {
+    @apply text-secondary-950 dark:text-white;
+}
+
+.x-text-base-primary {
+    @apply text-app-default;
+}
+
+.x-text-primary-link {
+    @apply text-app-default relative;
+}
+
+.x-text-black {
+    @apply text-black dark:text-white;
+}
+
+.highlight {
+    @apply relative;
+}
+
+.highlight::before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: url(//s2.svgbox.net/pen-brushes.svg?ic=brush-1&color=ffff43);
+    margin-left: -11px;
+    margin-right: -11px;
+    width: calc(100% + 22px);
+}
+
+#nprogress .bar.bar {
+    @apply bg-app-default
+}
+
+
+.cout-nav-item {
+    @apply bg-app-primary absolute min-w-3 h-3 flex items-center justify-center -bottom-0.5 text-white rounded;
+    font-size: .5rem;
+}

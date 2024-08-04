@@ -1,0 +1,1 @@
+<x-solar-clapperboard-line-duotone {{ $attributes }}/>
