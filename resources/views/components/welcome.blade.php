@@ -30,7 +30,7 @@
             <a href="{{ route('mattresses.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{ __('Ver inventario') }}
 
-                <x-solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
+                <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
             </a>
         </p>
     </div>
@@ -51,7 +51,7 @@
             <a href="{{ route('dimensions.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{ __('Ver inventario') }}
 
-                <x-solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
+                <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
             </a>
         </p>
     </div>
@@ -72,7 +72,7 @@
             <a href="{{ route('covers.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{ __('Ver inventario') }}
 
-                <x-solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
+                <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
             </a>
         </p>
     </div>
@@ -93,7 +93,7 @@
             <a href="{{ route('tops.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{ __('Ver inventario') }}
 
-                <x-solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
+                <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
             </a>
         </p>
     </div>
