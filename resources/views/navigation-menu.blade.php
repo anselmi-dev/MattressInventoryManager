@@ -47,6 +47,12 @@
                         </span>
                         {{ __('Combinations') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('sales.index') }}" :active="request()->routeIs('sales.*')" wire:navigate>
+                        <span class="relative inline-block">
+                            <x-icons.sale class="h-4 mr-1"/>
+                        </span>
+                        {{ __('Ventas') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -208,6 +214,13 @@
                     <x-icons.combinations class="h-4 mr-1"/>
                 </span>
                 {{ __('Combinations') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('sales.index') }}" :active="request()->routeIs('sales.*')" wire:navigate>
+                <span class="relative inline-block">
+                    <x-icons.sale class="h-4 mr-1"/>
+                </span>
+                {{ __('Sales') }}
             </x-responsive-nav-link>
         </div>
 
