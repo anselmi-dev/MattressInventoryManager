@@ -17,27 +17,27 @@ class DimensionSeeder extends Seeder
             'height' => 100,
             'width' => 120,
         ], [
-            'code' => 'MD120',
+            'code' => 'DIM0001',
             'stock' => 120,
-            'available' => true,
+            'visible' => true,
         ]);
 
         Dimension::firstOrCreate([
             'height' => 120,
             'width' => 140,
         ], [
-            'code' => 'MD140',
+            'code' => 'DIM0002',
             'stock' => 140,
-            'available' => true,
+            'visible' => true,
         ]);
 
         Dimension::firstOrCreate([
             'height' => 220,
             'width' => 240,
         ], [
-            'code' => 'MD240',
+            'code' => 'DIM0003',
             'stock' => 240,
-            'available' => true,
+            'visible' => true,
         ]);
     }
 }

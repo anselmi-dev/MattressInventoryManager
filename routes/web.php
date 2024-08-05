@@ -28,14 +28,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/m/{model?}', \App\Livewire\Tops\ModelTop::class)->name('model');
         });
 
-        Route::middleware([])->prefix('colchones')->name('mattresses.')->group(function () {
-            Route::get('/', \App\Livewire\Mattresses\IndexMattresses::class)->name('index');
-            Route::get('/m/{model?}', \App\Livewire\Mattresses\ModelMattress::class)->name('model');
+        Route::middleware([])->prefix('bases')->name('bases.')->group(function () {
+            Route::get('/', \App\Livewire\Bases\IndexBases::class)->name('index');
+            Route::get('/m/{model?}', \App\Livewire\Bases\ModelBase::class)->name('model');
         });
 
         Route::middleware([])->prefix('combinaciones')->name('combinations.')->group(function () {
             Route::get('/', \App\Livewire\Combinations\IndexCombinations::class)->name('index');
             Route::get('/m/{model?}', \App\Livewire\Combinations\ModelCombination::class)->name('model');
+        });
+
+        Route::middleware([])->prefix('ventas')->name('sales.')->group(function () {
+            Route::get('/', \App\Livewire\Sales\IndexSales::class)->name('index');
         });
     });
 });

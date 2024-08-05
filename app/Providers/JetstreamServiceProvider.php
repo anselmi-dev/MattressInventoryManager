@@ -27,7 +27,7 @@ class JetstreamServiceProvider extends ServiceProvider
     }
 
     /**
-     * Configure the permissions that are available within the application.
+     * Configure the permissions that are visible within the application.
      */
     protected function configurePermissions(): void
     {

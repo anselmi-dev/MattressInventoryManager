@@ -32,9 +32,9 @@ class CombinationRequest extends FormRequest
             'code' => 'required',
             'cover_id' => 'required',
             'top_id' => 'required',
-            'mattress_id' => 'required',
+            'base_id' => 'required',
             'stock' => 'required',
-            'available' => 'required',
+            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -47,9 +47,9 @@ class CombinationRequest extends FormRequest
             'code' => __('Code'),
             'cover_id' => __('Cover'),
             'top_id' => __('Top'),
-            'mattress_id' => __('Mattress'),
+            'base_id' => __('Base'),
             'stock' => __('Stock'),
-            'available' => __('Available'),
+            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -62,9 +62,9 @@ class CombinationRequest extends FormRequest
             'code',
             'cover_id',
             'top_id',
-            'mattress_id',
+            'base_id',
             'stock',
-            'available',
+            'visible',
             'description',
         ];
     }

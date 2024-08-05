@@ -1,8 +1,8 @@
 <x-page.container>
-    <x-page.heading title="{{ __('Mattresses') }}" breadcrumbs="mattresses">
+    <x-page.heading title="{{ __('Bases') }}" breadcrumbs="bases">
         <x-slot name="actions">
             <div class="flex flex-wrap gap-1">
-                <x-wireui:button primary right-icon="plus" href="{{ route('mattresses.model', ['model' => null]) }}" wire:navigate>
+                <x-wireui:button primary right-icon="plus" href="{{ route('bases.model', ['model' => null]) }}" wire:navigate>
                     {{ __('Crear') }}
                 </x-wireui:button>
             </div>

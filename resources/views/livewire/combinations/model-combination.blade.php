@@ -15,15 +15,14 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Mattress')">
+                <x-form.group-left :label="__('Base')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
-                            label="Select Mattress"
-                            placeholder="Select one Mattress"
-                            :options="$this->mattresses"
+                            :placeholder="__('Select one Base')"
+                            :options="$this->bases"
                             option-label="code"
                             option-value="id"
-                            wire:model.defer="form.mattress_id"
+                            wire:model.defer="form.base_id"
                         />
                     </div>
                 </x-form.group-left>
@@ -31,8 +30,7 @@
                 <x-form.group-left :label="__('Cover')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
-                            label="Select Cover"
-                            placeholder="Select one Cover"
+                            :placeholder="__('Select one Cover')"
                             :options="$this->covers"
                             option-label="code"
                             option-value="id"
@@ -44,8 +42,7 @@
                 <x-form.group-left :label="__('Top')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
-                            label="Select Top"
-                            placeholder="Select one Top"
+                            :placeholder="__('Select one Top')"
                             :options="$this->tops"
                             option-label="code"
                             option-value="id"
@@ -63,9 +60,9 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Available')">
+                <x-form.group-left :label="__('Visible')">
                     <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.available" name="available" rounded="full" xl />
+                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
                     </div>
                 </x-form.group-left>
 

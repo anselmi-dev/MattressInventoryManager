@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\Base;
+use App\Observers\CombinationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+ 
+#[ObservedBy([CombinationObserver::class])]
 class Combination extends Model
 {
     use HasFactory, SoftDeletes, ScopeTrait;
@@ -29,7 +33,7 @@ class Combination extends Model
         'stock',
         'cover_id',
         'top_id',
-        'mattress_id',
+        'base_id',
     ];
 
     /**
@@ -75,7 +79,7 @@ class Combination extends Model
      */
     public function top(): BelongsTo
     {
-        return $this->belongsTo(Top::class);
+        return $this->belongsTo(Top::class)->withTrashed();
     }
 
     /**
@@ -83,15 +87,15 @@ class Combination extends Model
      */
     public function cover(): BelongsTo
     {
-        return $this->belongsTo(Cover::class);
+        return $this->belongsTo(Cover::class)->withTrashed();
     }
 
     /**
-     * Get the Mattress that owns the COmbination.
+     * Get the Base that owns the COmbination.
      */
-    public function mattress(): BelongsTo
+    public function base(): BelongsTo
     {
-        return $this->belongsTo(Mattress::class);
+        return $this->belongsTo(Base::class)->withTrashed();
     }
     
 }

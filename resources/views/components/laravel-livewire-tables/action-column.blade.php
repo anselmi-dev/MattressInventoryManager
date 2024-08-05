@@ -11,7 +11,7 @@
     @endif
 
     @if($deleteEmit)
-        <x-wireui:button secondary x-on:click="preventDelete()" type="button" xs icon="trash">
+        <x-wireui:button secondary wire:click="$dispatch('openModal', { component: 'modal-prevent-delete', arguments: {model_id: {{ $id }}, emit: '{{ $deleteEmit }}'} })" type="button" xs icon="trash">
         </x-wireui:button>
     @endif
 </div>

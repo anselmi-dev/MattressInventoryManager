@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MattressRequest extends FormRequest
+class BaseRequest extends FormRequest
 {
     protected $prefix;
 
@@ -32,7 +32,7 @@ class MattressRequest extends FormRequest
             'code' => 'required',
             'dimension_id' => 'required',
             'stock' => 'required',
-            'available' => 'required',
+            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -45,7 +45,7 @@ class MattressRequest extends FormRequest
             'code' => __('Code'),
             'dimension_id' => __('Dimension'),
             'stock' => __('Stock'),
-            'available' => __('Available'),
+            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -58,7 +58,7 @@ class MattressRequest extends FormRequest
             'code',
             'dimension_id',
             'stock',
-            'available',
+            'visible',
             'description',
         ];
     }

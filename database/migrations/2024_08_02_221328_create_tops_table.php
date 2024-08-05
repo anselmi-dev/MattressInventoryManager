@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Dimension;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +15,9 @@ return new class extends Migration
         Schema::create('tops', function (Blueprint $table) {
             $table->id();
             $table->string('code')->nullable();
-            $table->decimal('height', total: 8, places: 2);
+            $table->foreignIdFor(Dimension::class);
             $table->integer('stock')->default(0);
-            $table->boolean('available')->default(true);
+            $table->boolean('visible')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

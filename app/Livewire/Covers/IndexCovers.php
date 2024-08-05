@@ -11,10 +11,15 @@ use Rappasoft\LaravelLivewireTables\{
     Views\Columns\ViewComponentColumn,
 };
 use WireUi\Traits\WireUiActions;
+use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 
 class IndexCovers extends DataTableComponent
 {
     use WireUiActions;
+
+    protected $listeners = [
+        'covers:delete' => 'delete'
+    ];
 
     protected $model = Model::class;
 
@@ -39,9 +44,18 @@ class IndexCovers extends DataTableComponent
         return [
             Column::make(__('Code'), 'code')
                 ->sortable(),
-            Column::make(__('Stock'), 'stock')
+            Column::make(__('Dimension'), 'dimension.code')
+                ->searchable()
                 ->sortable(),
-            BooleanColumn::make(__('Visible'), 'available')->sortable(),
+            Column::make(__('Width'), 'dimension.width')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
+            Column::make(__('Height'), 'dimension.height')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
+            BooleanColumn::make(__('Visible'), 'visible')->sortable(),
             ViewComponentColumn::make(__('Actions'), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
@@ -50,6 +64,25 @@ class IndexCovers extends DataTableComponent
                     'editLink' => route('covers.model', $row),
                     'deleteEmit' => 'covers:delete',
                 ]),
+        ];
+    }
+
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make(__('Stock'))
+                ->options([
+                    '' => __('All'),
+                    'available' => __('Available'),
+                    'unavailable' => __('Unavailable'),
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->when($value == 'available', function ($query) {
+                        $query->available();
+                    })->when($value == 'unavailable', function ($query) {
+                        $query->unavailable();
+                    });
+                }),
         ];
     }
 

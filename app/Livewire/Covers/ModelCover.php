@@ -31,4 +31,8 @@ class ModelCover extends Component
         return view('livewire.covers.model-cover');
     }
 
+    public function getDimensionsProperty ()
+    {
+        return \App\Models\Dimension::orderBy('id')->get();
+    }
 }

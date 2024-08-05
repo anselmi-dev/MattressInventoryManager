@@ -3,22 +3,18 @@
 namespace App\Models;
 
 use App\Models\Traits\ScopeTrait;
+use App\Observers\DimensionObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+ 
+#[ObservedBy([DimensionObserver::class])]
 class Dimension extends Model
 {
     use HasFactory, SoftDeletes, ScopeTrait;
 
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
-    }
-    
     /**
      * The attributes that are mass assignable.
      *
@@ -28,7 +24,7 @@ class Dimension extends Model
         'code',
         'height',
         'width',
-        'available',
+        'visible',
         'description',
     ];
 
@@ -46,7 +42,7 @@ class Dimension extends Model
      * @var array<int, string>
      */
     protected $appends = [
-        'label'
+        'label',
     ];
 
     /**
@@ -58,7 +54,7 @@ class Dimension extends Model
         'code' => '',
         'height' => 0,
         'width' => 0,
-        'available' => TRUE,
+        'visible' => TRUE,
         'description' => '',
     ];
 
@@ -72,20 +68,21 @@ class Dimension extends Model
         return [
             'height' => 'integer',
             'width' => 'integer',
-            'available' => 'bool',
+            'visible' => 'bool',
         ];
     }
 
     /**
      * Get the comments for the blog post.
      */
-    public function mattress (): HasMany
+    public function base (): HasMany
     {
-        return $this->hasMany(Mattress::class);
+        return $this->hasMany(Base::class)->withTrashed();
     }
     
     public function getLabelAttribute ()
     {
         return "{$this->height}x{$this->width}";   
     }
+    
 }

@@ -4,11 +4,15 @@ namespace App\Models;
 
 
 use App\Models\Traits\ScopeTrait;
+use App\Observers\CoverObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+ 
+#[ObservedBy([CoverObserver::class])]
 class Cover extends Model
 {
     use HasFactory, SoftDeletes, ScopeTrait;
@@ -27,8 +31,9 @@ class Cover extends Model
      */
     protected $fillable = [
         'code',
+        'dimension_id',
         'stock',
-        'available',
+        'visible',
         'description',
     ];
 
@@ -56,7 +61,7 @@ class Cover extends Model
     protected $attributes = [
         'code' => '',
         'stock' => 0,
-        'available' => TRUE,
+        'visible' => TRUE,
         'description' => '',
     ];
 
@@ -68,16 +73,17 @@ class Cover extends Model
     protected function casts(): array
     {
         return [
-            'available' => 'bool',
+            'visible' => 'bool',
             'stock' => 'integer'
         ];
     }
 
     /**
-     * Get the mattress for the Cover.
+     * Get the Dimension that owns the Base.
      */
-    public function mattress (): HasMany
+    public function dimension(): BelongsTo
     {
-        return $this->hasMany(Mattress::class);
+        return $this->belongsTo(Dimension::class)->withTrashed();
     }
+    
 }

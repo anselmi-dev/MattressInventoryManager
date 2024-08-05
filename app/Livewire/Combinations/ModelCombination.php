@@ -33,16 +33,28 @@ class ModelCombination extends Component
 
     public function getTopsProperty ()
     {
-        return \App\Models\Top::orderBy('id')->select('id', 'code', 'description')->get();
+        return \App\Models\Top::orderBy('id')->when($this->model->getKey(), function ($query) {
+            $query->withTrashed()
+                ->whereNull('deleted_at')
+                ->orWhere('id', $this->model->top_id);
+        })->get();
     }
 
     public function getCoversProperty ()
     {
-        return \App\Models\Cover::orderBy('id')->select('id', 'code', 'description')->get();
+        return \App\Models\Cover::orderBy('id')->when($this->model->getKey(), function ($query) {
+            $query->withTrashed()
+                ->whereNull('deleted_at')
+                ->orWhere('id', $this->model->cover_id);
+        })->select('id', 'code', 'description')->get();
     }
 
-    public function getMattressesProperty ()
+    public function getBasesProperty ()
     {
-        return \App\Models\Mattress::orderBy('id')->get();
+        return \App\Models\Base::orderBy('id')->when($this->model->getKey(), function ($query) {
+            $query->withTrashed()
+                ->whereNull('deleted_at')
+                ->orWhere('id', $this->model->base_id);
+        })->get();
     }
 }

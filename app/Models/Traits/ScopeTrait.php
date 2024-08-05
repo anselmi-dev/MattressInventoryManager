@@ -12,9 +12,9 @@ trait ScopeTrait
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeAvailable(Builder $query)
+    public function scopeVisible(Builder $query)
     {
-        return $query->where('available', true);
+        return $query->where('visible', true);
     }
 
     /**
@@ -23,7 +23,18 @@ trait ScopeTrait
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeStock(Builder $query)
+    public function scopeAvailable(Builder $query)
+    {
+        return $query->where('stock', '>', 0);
+    }
+
+    /**
+     * Scope a query to only include stock.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUnavailable(Builder $query)
     {
         return $query->where('stock', '>', 0);
     }

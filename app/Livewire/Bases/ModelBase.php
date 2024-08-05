@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Livewire\Mattresses;
+namespace App\Livewire\Bases;
 
 use Livewire\Component;
-
-use App\Models\Mattress as Model;
-use App\Http\Requests\MattressRequest as RequestModel;
+use App\Models\Base as Model;
+use App\Http\Requests\BaseRequest as RequestModel;
 use App\Traits\HandlesModelForm;
 
-class ModelMattress extends Component
+class ModelBase extends Component
 {
     use HandlesModelForm;
 
@@ -24,12 +23,12 @@ class ModelMattress extends Component
 
     protected function getRedirectRoute()
     {
-        return 'mattresses.index';
+        return 'bases.index';
     }
 
     public function render()
     {
-        return view('livewire.mattresses.model-mattress');
+        return view('livewire.bases.model-bases');
     }
 
     public function getDimensionsProperty ()

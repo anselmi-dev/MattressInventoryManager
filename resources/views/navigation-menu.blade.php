@@ -33,12 +33,12 @@
                         </span>
                         {{ __('Tops') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('mattresses.index') }}" :active="request()->routeIs('mattresses.*')" wire:navigate>
+                    <x-nav-link href="{{ route('bases.index') }}" :active="request()->routeIs('bases.*')" wire:navigate>
                         <span class="relative">
-                            <x-icons.mattresss class="h-4 mr-1"/>
-                            <span class="cout-nav-item">{{ count_covers() }}</span>
+                            <x-icons.base class="h-4 mr-1"/>
+                            <span class="cout-nav-item">{{ count_bases() }}</span>
                         </span>
-                        {{ __('Mattresses') }}
+                        {{ __('Bases') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>
                         <span class="relative">
@@ -196,11 +196,11 @@
                 {{ __('Tops') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link href="{{ route('mattresses.index') }}" :active="request()->routeIs('mattresses.*')" wire:navigate>
+            <x-responsive-nav-link href="{{ route('bases.index') }}" :active="request()->routeIs('bases.*')" wire:navigate>
                 <span class="relative inline-block">
-                    <x-icons.mattresss class="h-4 mr-1"/>
+                    <x-icons.base class="h-4 mr-1"/>
                 </span>
-                {{ __('Mattresses') }}
+                {{ __('Bases') }}
             </x-responsive-nav-link>
             
             <x-responsive-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>

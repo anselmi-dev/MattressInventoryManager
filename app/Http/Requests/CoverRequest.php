@@ -30,9 +30,9 @@ class CoverRequest extends FormRequest
     {
         $rules = [
             'code' => 'required',
-            'name' => 'max:500',
-            'stock' => 'required',
-            'available' => 'required',
+            'dimension_id' => 'required',
+            'stock' => 'required|integer|min:0',
+            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -43,9 +43,9 @@ class CoverRequest extends FormRequest
     {
         $attributes = [
             'code' => __('Code'),
-            'name' => __('Name'),
+            'dimension_id' => __('Dimension'),
             'stock' => __('Stock'),
-            'available' => __('Available'),
+            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -56,9 +56,9 @@ class CoverRequest extends FormRequest
     {
         return [
             'code',
-            'name',
+            'dimension_id',
             'stock',
-            'available',
+            'visible',
             'description',
         ];
     }

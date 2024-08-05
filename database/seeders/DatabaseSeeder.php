@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +17,7 @@ class DatabaseSeeder extends Seeder
             DimensionSeeder::class,
             TopSeeder::class,
             SaleSeeder::class,
-            MattressSeeder::class,
+            BaseSeeder::class,
             CoverSeeder::class,
         ]);
     }

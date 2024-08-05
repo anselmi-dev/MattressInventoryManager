@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mattresses', function (Blueprint $table) {
+        Schema::create('bases', function (Blueprint $table) {
             $table->id();
             
             $table->string('code')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->integer('stock')->default(0);
 
-            $table->boolean('available')->default(true);
+            $table->boolean('visible')->default(true);
 
             $table->timestamps();
 
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mattresses');
+        Schema::dropIfExists('bases');
     }
 };

@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\Traits\ScopeTrait;
+use App\Observers\TopObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-// Model de Tapas
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+ 
+#[ObservedBy([TopObserver::class])]
 class Top extends Model
 {
     use HasFactory, SoftDeletes, ScopeTrait;
@@ -20,8 +23,8 @@ class Top extends Model
      */
     protected $fillable = [
         'code',
-        'height',
-        'available',
+        'dimension_id',
+        'visible',
         'stock',
         'description',
     ];
@@ -48,9 +51,8 @@ class Top extends Model
      * @var array
      */
     protected $attributes = [
-        'height' => 0,
         'stock' => 0,
-        'available' => TRUE,
+        'visible' => TRUE,
         'description' => '',
     ];
 
@@ -62,18 +64,24 @@ class Top extends Model
     protected function casts(): array
     {
         return [
-            'width' => 'integer',
-            'available' => 'bool',
+            'visible' => 'bool',
             'stock' => 'integer'
         ];
     }
 
     /**
-     * Get the mattress for the Top.
+     * Get the Base for the Top.
      */
-    public function mattress (): HasMany
+    public function base (): HasMany
     {
-        return $this->hasMany(Mattress::class);
+        return $this->hasMany(Base::class)->withTrashed();
     }
 
+    /**
+     * Get the Dimension that owns the Base.
+     */
+    public function dimension(): BelongsTo
+    {
+        return $this->belongsTo(Dimension::class)->withTrashed();
+    }
 }

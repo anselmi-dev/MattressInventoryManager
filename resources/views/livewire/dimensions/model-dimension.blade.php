@@ -1,5 +1,5 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit dimension') . ' #' . $model->id : __('New dimension') }}" breadcrumbs="dimensions" />
+    <x-page.heading title="{{ $model->exists ? __('Edit Dimension') . ' #' . $model->id : __('New Dimension') }}" breadcrumbs="dimensions" />
     <x-page.content>
 
         <x-loading-livewire/>
@@ -33,9 +33,9 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Available')">
+                <x-form.group-left :label="__('Visible')">
                     <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.available" name="available" rounded="full" xl />
+                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
                     </div>
                 </x-form.group-left>
 

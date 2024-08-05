@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Mattresses;
+namespace App\Livewire\Bases;
 
-use App\Models\Mattress as Model;
+use App\Models\Base as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\{
     DataTableComponent,
@@ -12,15 +12,19 @@ use Rappasoft\LaravelLivewireTables\{
 };
 use WireUi\Traits\WireUiActions;
 
-class IndexMattresses extends DataTableComponent
+class IndexBases extends DataTableComponent
 {
     use WireUiActions;
+    
+    protected $listeners = [
+        'bases:delete' => 'delete'
+    ];
 
     protected $model = Model::class;
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
-        return view('livewire.mattresses.index-mattresses')
+        return view('livewire.bases.index-bases')
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
@@ -40,7 +44,16 @@ class IndexMattresses extends DataTableComponent
             Column::make(__('Code'), 'code')
                 ->sortable(),
             Column::make(__('Dimension'), 'dimension.code')
+                ->searchable()
                 ->sortable(),
+            Column::make(__('Width'), 'dimension.width')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
+            Column::make(__('Height'), 'dimension.height')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
             Column::make(__('Stock'), 'stock')
                 ->sortable(),
             ViewComponentColumn::make(__('Actions'), 'id')
@@ -48,8 +61,8 @@ class IndexMattresses extends DataTableComponent
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,
-                    'editLink' => route('mattresses.model', $row),
-                    'deleteEmit' => 'mattresses:delete',
+                    'editLink' => route('bases.model', $row),
+                    'deleteEmit' => 'bases:delete',
                 ]),
         ];
     }

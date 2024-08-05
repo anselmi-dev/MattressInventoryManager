@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 use App\Models\{
     Cover,
-    Mattress,
+    Base,
     Top
 };
 
@@ -24,7 +24,7 @@ return new class extends Migration
             
             $table->string('name')->nullable();
 
-            $table->foreignIdFor(Mattress::class);
+            $table->foreignIdFor(Base::class);
 
             $table->foreignIdFor(Cover::class);
             

@@ -40,14 +40,17 @@ class IndexDimensions extends DataTableComponent
     {
         return [
             Column::make(__('Code'), 'code')
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
             Column::make(__('Width'), 'width')
-                ->sortable(),
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
             Column::make(__('Height'), 'height')
-                ->sortable(),
-            Column::make(__('Stock'), 'stock')
-                ->sortable(),
-            BooleanColumn::make(__('Visible'), 'available')->sortable(),
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
+            BooleanColumn::make(__('Visible'), 'visible')->sortable(),
             ViewComponentColumn::make(__('Actions'), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()

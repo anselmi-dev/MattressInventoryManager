@@ -16,9 +16,9 @@
     <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-25 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 p-6 lg:p-8">
         <div>
             <div class="flex items-center">
-                <x-icons.mattresss class="w-6 h-6 stroke-gray-400"/>
+                <x-icons.combinations class="w-6 h-6 stroke-gray-400"/>
                 <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                    <a href="{{ route('mattresses.index') }}" wire:navigate>{{ __('Mattresses') }}</a>
+                    <a href="{{ route('combinations.index') }}" wire:navigate>{{ __('Combinantions') }}</a>
                 </h2>
             </div>
     
@@ -27,7 +27,7 @@
             </p>
     
             <p class="mt-4 text-sm">
-                <a href="{{ route('mattresses.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
+                <a href="{{ route('combinations.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
                     {{ __('Ver inventario') }}
     
                     <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>

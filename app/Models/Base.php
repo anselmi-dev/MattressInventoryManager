@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\Traits\ScopeTrait;
+use App\Observers\BaseObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Mattress extends Model
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+ 
+#[ObservedBy([BaseObserver::class])]
+class Base extends Model
 {
     use HasFactory, SoftDeletes, ScopeTrait;
 
@@ -27,7 +30,7 @@ class Mattress extends Model
     protected $fillable = [
         'code',
         'stock',
-        'available',
+        'visible',
         'dimension_id',
     ];
 
@@ -55,7 +58,7 @@ class Mattress extends Model
     protected $attributes = [
         'code' => '',
         'stock' => 0,
-        'available' => TRUE
+        'visible' => TRUE
     ];
 
     /**
@@ -67,16 +70,16 @@ class Mattress extends Model
     {
         return [
             'stock' => 'integer',
-            'available' => 'bool'
+            'visible' => 'bool'
         ];
     }
 
     /**
-     * Get the Dimension that owns the Mattress.
+     * Get the Dimension that owns the Base.
      */
     public function dimension(): BelongsTo
     {
-        return $this->belongsTo(Dimension::class);
+        return $this->belongsTo(Dimension::class)->withTrashed();
     }
     
 }

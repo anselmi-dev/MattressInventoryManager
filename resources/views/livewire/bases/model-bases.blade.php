@@ -1,5 +1,5 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit Mattress') . ' #' . $model->id : __('New Mattress') }}" breadcrumbs="mattresses" />
+    <x-page.heading title="{{ $model->exists ? __('Edit Base') . ' #' . $model->id : __('New Base') }}" breadcrumbs="bases" />
     <x-page.content>
 
         <x-loading-livewire/>
@@ -18,8 +18,7 @@
                 <x-form.group-left :label="__('Dimension')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
-                            label="Select Dimension"
-                            placeholder="Select one Dimension"
+                            :placeholder="__('Select one Dimension')"
                             :options="$this->dimensions"
                             option-label="label"
                             option-value="id"
@@ -37,9 +36,9 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Available')">
+                <x-form.group-left :label="__('Visible')">
                     <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.available" name="available" rounded="full" xl />
+                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
                     </div>
                 </x-form.group-left>
 
@@ -53,7 +52,7 @@
 
             </x-form.section-left>
             <x-slot name="actions">
-                <x-wireui:button negative href="{{ route('mattresses.index') }}">
+                <x-wireui:button negative href="{{ route('bases.index') }}">
                     {{ __('Cancelar') }}
                 </x-wireui:button>
 

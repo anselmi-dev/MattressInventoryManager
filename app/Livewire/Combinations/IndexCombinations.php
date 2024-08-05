@@ -16,6 +16,10 @@ class IndexCombinations extends DataTableComponent
 {
     use WireUiActions;
 
+    protected $listeners = [
+        'combinations:delete' => 'delete'
+    ];
+
     protected $model = Model::class;
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -41,7 +45,7 @@ class IndexCombinations extends DataTableComponent
                 ->sortable(),
             Column::make(__('Cover'), 'cover.code')
                 ->sortable(),
-            Column::make(__('Mattress'), 'mattress.code')
+            Column::make(__('Base'), 'base.code')
                 ->sortable(),
             Column::make(__('Top'), 'top.code')
                 ->sortable(),

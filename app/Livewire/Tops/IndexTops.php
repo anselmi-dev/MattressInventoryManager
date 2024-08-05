@@ -18,6 +18,10 @@ class IndexTops extends DataTableComponent
 
     protected $model = Model::class;
 
+    protected $listeners = [
+        'tops:delete' => 'delete'
+    ];
+
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('livewire.tops.index-tops')
@@ -39,11 +43,20 @@ class IndexTops extends DataTableComponent
         return [
             Column::make(__('Code'), 'code')
                 ->sortable(),
-            Column::make(__('Height'), 'height')
+            Column::make(__('Dimension'), 'dimension.code')
+                ->searchable()
                 ->sortable(),
+            Column::make(__('Width'), 'dimension.width')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
+            Column::make(__('Height'), 'dimension.height')
+                ->searchable()
+                ->sortable()
+                ->format(fn ($value) => appendCentimeters($value)),
             Column::make(__('Stock'), 'stock')
                 ->sortable(),
-            BooleanColumn::make(__('Visible'), 'available')->sortable(),
+            BooleanColumn::make(__('Visible'), 'visible')->sortable(),
             ViewComponentColumn::make(__('Actions'), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()

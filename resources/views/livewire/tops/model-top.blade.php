@@ -15,6 +15,18 @@
                     </div>
                 </x-form.group-left>
 
+                <x-form.group-left :label="__('Dimension')">
+                    <div class="sm:max-w-md">
+                        <x-wireui:select
+                            :placeholder="__('Select one Dimension')"
+                            :options="$this->dimensions"
+                            option-label="label"
+                            option-value="id"
+                            wire:model.defer="form.dimension_id"
+                        />
+                    </div>
+                </x-form.group-left>
+                
                 <x-form.group-left :label="__('Stock')">
                     <div class="sm:max-w-md">
                         <x-wireui:number
@@ -24,18 +36,9 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Height')">
+                <x-form.group-left :label="__('Visible')">
                     <div class="sm:max-w-md">
-                        <x-wireui:number
-                            :placeholder="__('Height')"
-                            wire:model="form.height"
-                        />
-                    </div>
-                </x-form.group-left>
-
-                <x-form.group-left :label="__('Available')">
-                    <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.available" name="available" rounded="full" xl />
+                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
                     </div>
                 </x-form.group-left>
 

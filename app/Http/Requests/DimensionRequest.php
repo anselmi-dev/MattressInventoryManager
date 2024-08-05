@@ -32,7 +32,7 @@ class DimensionRequest extends FormRequest
             'code' => 'required',
             'height' => 'required|integer|min:1',
             'width' => 'required|integer|min:1',
-            'available' => 'required',
+            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -45,7 +45,7 @@ class DimensionRequest extends FormRequest
             'code' => __('Code'),
             'height' => __('Height'),
             'width' => __('Width'),
-            'available' => __('Available'),
+            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -58,7 +58,7 @@ class DimensionRequest extends FormRequest
             'code',
             'height',
             'width',
-            'available',
+            'visible',
             'description',
         ];
     }

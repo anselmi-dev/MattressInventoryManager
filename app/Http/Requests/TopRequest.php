@@ -30,9 +30,9 @@ class TopRequest extends FormRequest
     {
         $rules = [
             'code' => 'required',
-            'height' => 'required',
+            'dimension_id' => 'required',
             'stock' => 'required|integer|min:0',
-            'available' => 'required',
+            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -43,9 +43,9 @@ class TopRequest extends FormRequest
     {
         $attributes = [
             'code' => __('Code'),
-            'height' => __('Height'),
+            'dimension_id' => __('Dimension'),
             'stock' => __('Stock'),
-            'available' => __('Available'),
+            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -56,9 +56,9 @@ class TopRequest extends FormRequest
     {
         return [
             'code',
-            'height',
+            'dimension_id',
             'stock',
-            'available',
+            'visible',
             'description',
         ];
     }

@@ -4,7 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
+        <link rel="icon" href="https://lemur.baby/wp-content/uploads/2021/05/cropped-favicon-32x32.png" sizes="32x32">
+        <link rel="icon" href="https://lemur.baby/wp-content/uploads/2021/05/cropped-favicon-192x192.png" sizes="192x192">
+        <link rel="apple-touch-icon" href="https://lemur.baby/wp-content/uploads/2021/05/cropped-favicon-180x180.png">
+        <meta name="msapplication-TileImage" content="https://lemur.baby/wp-content/uploads/2021/05/cropped-favicon-270x270.png">
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -65,6 +68,10 @@
 
         @stack('modals')
 
+        @stack('scripts')
+
         @livewireScripts
+
+        @livewire('wire-elements-modal')
     </body>
 </html>

@@ -32,4 +32,8 @@ class ModelTop extends Component
         return view('livewire.tops.model-top');
     }
 
+    public function getDimensionsProperty ()
+    {
+        return \App\Models\Dimension::orderBy('id')->get();
+    }
 }

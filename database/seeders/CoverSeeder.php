@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Cover;
+use App\Models\Dimension;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,17 +15,17 @@ class CoverSeeder extends Seeder
     public function run(): void
     {
         Cover::firstOrCreate([
-            'code' => 'FD01'
+            'code' => 'FUN0001',
+            'dimension_id' => Dimension::inRandomOrder()->first()->id
         ], [
-            'stock' => 120,
-            'description' => 'Funda blanca',
+            'stock' => 120
         ]);
 
         Cover::firstOrCreate([
-            'code' => 'FD02'
+            'code' => 'FUN0002',
+            'dimension_id' => Dimension::inRandomOrder()->first()->id
         ], [
-            'stock' => 220,
-            'description' => 'Funda gris',
+            'stock' => 220
         ]);
     }
 }
