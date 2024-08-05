@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Base;
+use Illuminate\Support\Facades\Cache;
 
 class BaseObserver
 {
@@ -11,7 +12,7 @@ class BaseObserver
      */
     public function created(Base $base): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -19,7 +20,7 @@ class BaseObserver
      */
     public function updated(Base $base): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -27,7 +28,7 @@ class BaseObserver
      */
     public function deleted(Base $base): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -35,7 +36,7 @@ class BaseObserver
      */
     public function restored(Base $base): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -43,6 +44,11 @@ class BaseObserver
      */
     public function forceDeleted(Base $base): void
     {
-        //
+        $this->refreshCache();
+    }
+
+    protected function refreshCache ()
+    {
+        Cache::flush('bases:covers');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Combination;
+use Illuminate\Support\Facades\Cache;
 
 class CombinationObserver
 {
@@ -11,7 +12,7 @@ class CombinationObserver
      */
     public function created(Combination $combination): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -19,7 +20,7 @@ class CombinationObserver
      */
     public function updated(Combination $combination): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -27,7 +28,7 @@ class CombinationObserver
      */
     public function deleted(Combination $combination): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -35,7 +36,7 @@ class CombinationObserver
      */
     public function restored(Combination $combination): void
     {
-        //
+        $this->refreshCache();
     }
 
     /**
@@ -43,6 +44,11 @@ class CombinationObserver
      */
     public function forceDeleted(Combination $combination): void
     {
-        //
+        $this->refreshCache();
+    }
+
+    protected function refreshCache ()
+    {
+        Cache::flush('combinations:covers');
     }
 }
