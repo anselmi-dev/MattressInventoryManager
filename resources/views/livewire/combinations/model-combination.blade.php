@@ -60,12 +60,6 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Visible')">
-                    <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
-                    </div>
-                </x-form.group-left>
-
                 <x-form.group-left :label="__('Description')">
                     <div class="sm:max-w-md">
                         <x-wireui:textarea wire:model="form.description" :rows="2" placeholder="{{ __('write your notes') }}" />

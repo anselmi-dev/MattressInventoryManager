@@ -34,7 +34,6 @@ class CombinationRequest extends FormRequest
             'top_id' => 'required',
             'base_id' => 'required',
             'stock' => 'required',
-            'visible' => 'required',
             'description' => 'max:500',
         ];
 
@@ -49,7 +48,6 @@ class CombinationRequest extends FormRequest
             'top_id' => __('Top'),
             'base_id' => __('Base'),
             'stock' => __('Stock'),
-            'visible' => __('Visible'),
             'description' => __('Description'),
         ];
 
@@ -64,7 +62,6 @@ class CombinationRequest extends FormRequest
             'top_id',
             'base_id',
             'stock',
-            'visible',
             'description',
         ];
     }
