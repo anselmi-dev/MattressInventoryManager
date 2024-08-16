@@ -22,6 +22,11 @@ class ModelDimension extends Component
         return new RequestModel($prefix = 'form');
     }
 
+    protected function getType()
+    {
+        return null;
+    }
+
     protected function getRedirectRoute()
     {
         return 'dimensions.index';

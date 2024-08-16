@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
- 
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 #[ObservedBy([DimensionObserver::class])]
 class Dimension extends Model
 {
-    use HasFactory, SoftDeletes, ScopeTrait;
+    use HasFactory, SoftDeletes, ScopeTrait, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +23,6 @@ class Dimension extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
         'height',
         'width',
         'visible',
@@ -51,7 +52,6 @@ class Dimension extends Model
      * @var array
      */
     protected $attributes = [
-        'code' => '',
         'height' => 0,
         'width' => 0,
         'visible' => TRUE,
@@ -72,14 +72,18 @@ class Dimension extends Model
         ];
     }
 
-    /**
-     * Get the comments for the blog post.
-     */
-    public function base (): HasMany
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->hasMany(Base::class)->withTrashed();
+        return LogOptions::defaults()
+            ->logOnly($this->fillable)
+            ->logOnlyDirty();
     }
-    
+        
+    public function code()
+    {
+        return $this->morphOne(Code::class, 'model');
+    }
+
     public function getLabelAttribute ()
     {
         return "{$this->height}x{$this->width}";   

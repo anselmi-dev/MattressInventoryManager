@@ -7,6 +7,7 @@ export default {
     presets: [
         require("./vendor/wireui/wireui/tailwind.config.js")
     ],
+    plugins: [forms, typography],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
@@ -55,8 +56,8 @@ export default {
                     '200': '#caeac8',
                     '300': '#86cd82',
                     '400': '#6fbd6b',
-                    '500': '#4ba146',
-                    '600': '#57B797',
+                    '500': '#57B797',
+                    '600': '#287961',
                     '700': '#2f682d',
                     '800': '#295427',
                     '900': '#234522',
@@ -103,6 +104,4 @@ export default {
             }
         },
     },
-
-    plugins: [forms, typography],
 };

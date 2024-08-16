@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Code;
 use App\Models\Dimension;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,31 +14,28 @@ class DimensionSeeder extends Seeder
      */
     public function run(): void
     {
-        Dimension::firstOrCreate([
-            'height' => 100,
-            'width' => 120,
-        ], [
-            'code' => 'DIM0001',
-            'stock' => 120,
-            'visible' => true,
-        ]);
+        foreach ([
+            100,
+            150,
+            200,
+            250,
+            300,
+            350,
+            400,
+        ] as $key => $value) {
+            $dimension = Dimension::firstOrCreate([
+                'height' => $value,
+                'width' => $value,
+            ], [
+                'visible' => true,
+            ]);
 
-        Dimension::firstOrCreate([
-            'height' => 120,
-            'width' => 140,
-        ], [
-            'code' => 'DIM0002',
-            'stock' => 140,
-            'visible' => true,
-        ]);
+            if ($dimension->wasRecentlyCreated) {
 
-        Dimension::firstOrCreate([
-            'height' => 220,
-            'width' => 240,
-        ], [
-            'code' => 'DIM0003',
-            'stock' => 240,
-            'visible' => true,
-        ]);
+                $code = new Code(["value" => 'DIMEN00' . $key]);
+                
+                $dimension->code()->save($code);
+            }
+        }
     }
 }

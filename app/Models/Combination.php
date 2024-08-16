@@ -11,10 +11,13 @@ use App\Models\Base;
 use App\Observers\CombinationObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
  
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 #[ObservedBy([CombinationObserver::class])]
 class Combination extends Model
 {
-    use HasFactory, SoftDeletes, ScopeTrait;
+    use HasFactory, SoftDeletes, ScopeTrait, LogsActivity;
     
     /**
      * The "booted" method of the model.
@@ -29,11 +32,9 @@ class Combination extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
         'stock',
-        'cover_id',
-        'top_id',
-        'base_id',
+        'name',
+        'dimension_id',
     ];
 
     /**
@@ -42,6 +43,7 @@ class Combination extends Model
      * @var array<int, string>
      */
     protected $hidden = [
+        'dimension_id',
     ];
 
     /**
@@ -58,7 +60,6 @@ class Combination extends Model
      * @var array
      */
     protected $attributes = [
-        'code' => '',
         'stock' => 0,
     ];
 
@@ -74,28 +75,73 @@ class Combination extends Model
         ];
     }
 
-    /**
-     * Get the Top that owns the COmbination.
-     */
-    public function top(): BelongsTo
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(Top::class)->withTrashed();
-    }
-
-    /**
-     * Get the Cover that owns the COmbination.
-     */
-    public function cover(): BelongsTo
-    {
-        return $this->belongsTo(Cover::class)->withTrashed();
-    }
-
-    /**
-     * Get the Base that owns the COmbination.
-     */
-    public function base(): BelongsTo
-    {
-        return $this->belongsTo(Base::class)->withTrashed();
+        return LogOptions::defaults()
+            ->logOnly($this->fillable)
+            ->logOnlyDirty();
     }
     
+    public function code()
+    {
+        return $this->morphOne(Code::class, 'model');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
+
+    /**
+     * Get the Dimension that owns the Base.
+     */
+    public function dimension(): BelongsTo
+    {
+        return $this->belongsTo(Dimension::class)->withTrashed();
+    }
+
+    public function cover()
+    {
+        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
+            ->with('code')
+            ->where('type', 'cover');
+    }
+
+    public function top()
+    {
+        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
+            ->with('code')
+            ->where('type', 'top');
+    }
+
+    public function base()
+    {
+        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
+            ->with('code')
+            ->where('type', 'base');
+    }
+
+    /**
+     * Descrement parts
+     *
+     * @param integer $quantity
+     * @return void
+     */
+    public function decrementParts (int $quantity):void
+    {
+        $this->products()->decrement('stock', $quantity);
+    }
+
+    /**
+     * Descrement parts
+     *
+     * @param integer $quantity
+     * @return void
+     */
+    public function manufacture (int $quantity):void
+    {
+        $this->decrementParts($quantity);
+
+        $this->increment('stock', $quantity);
+    }
 }

@@ -53,3 +53,93 @@
     @apply bg-app-primary absolute min-w-3 h-3 flex items-center justify-center -bottom-0.5 text-white rounded;
     font-size: .5rem;
 }
+
+.combination-products {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 100%;
+    gap: 2px;
+
+    &__item {
+        border-radius: 2px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        justify-items: center;
+        text-align: center;
+    }
+    
+    &__stock {
+        font-size: 2.5rem;
+        line-height: 1;
+    }
+    
+    &__name {
+        @apply text-app-default;
+        font-size: 1.5rem;
+        @media screen and (max-width: 500px) {
+            font-size: .8rem;
+        }
+    }
+
+    &__icon {
+        svg {
+            width: 100%;
+        }
+    }
+}
+
+.selector-type-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 100%;
+    gap: 2px;
+    &__input {
+        display: none;
+    }
+
+    &__label {
+        cursor: pointer;
+        opacity: .2;
+        // padding: 1rem;
+        // border: 1px solid #333;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        justify-items: center;
+        text-align: center;
+        &:hover {
+            opacity: 1;
+            @apply text-app-default
+        }
+    }
+
+    &__name {
+        font-size: 1.5rem;
+    }
+
+    &__icon {
+        svg {
+            width: 100%;
+        }
+    }
+    
+    &__input:checked ~ &__label {
+        opacity: 1;
+        @apply text-app-default
+    }
+
+    &:hover &__label {
+        opacity: .2;
+        &:hover {
+            opacity: 1;
+            @apply text-app-default
+        }
+    }
+
+    &--disble &__label {
+        cursor: initial;
+        pointer-events: none;
+    }
+}

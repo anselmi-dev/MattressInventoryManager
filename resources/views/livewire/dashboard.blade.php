@@ -2,7 +2,7 @@
     <x-page.heading breadcrumbs="dashboard">
     </x-page.heading>
     
-    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
+    <div class="rounded p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
     
         <h1 class="text-2xl font-medium text-gray-900 dark:text-white">
             {{ __('Welcome to the Mattress Stock Management System') }}
@@ -13,6 +13,8 @@
         </p>
     </div>
     
+    <x-cards.card-stok-items/>
+
     <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-25 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 p-6 lg:p-8">
         <div>
             <div class="flex items-center">
@@ -39,7 +41,7 @@
             <div class="flex items-center">
                 <x-icons.dimension class="w-6 h-6 stroke-gray-400"/>
                 <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                    <a href="{{ route('dimensions.index') }}" wire:navigate>{{ __('Dimensions') }}</a>
+                    <a href="{{ route('products.index') }}" wire:navigate>{{ __('Dimensions') }}</a>
                 </h2>
             </div>
     
@@ -48,7 +50,7 @@
             </p>
     
             <p class="mt-4 text-sm">
-                <a href="{{ route('dimensions.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
+                <a href="{{ route('products.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
                     {{ __('Ver inventario') }}
     
                     <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
@@ -60,7 +62,7 @@
             <div class="flex items-center">
                 <x-icons.cover class="w-6 h-6 stroke-gray-400"/>
                 <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                    <a href="{{ route('covers.index') }}" wire:navigate>{{ __('Cover') }}</a>
+                    <a href="{{ route('products.index') }}" wire:navigate>{{ __('Cover') }}</a>
                 </h2>
             </div>
     
@@ -69,7 +71,7 @@
             </p>
     
             <p class="mt-4 text-sm">
-                <a href="{{ route('covers.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
+                <a href="{{ route('products.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
                     {{ __('Ver inventario') }}
     
                     <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
@@ -81,7 +83,7 @@
             <div class="flex items-center">
                 <x-icons.top class="w-6 h-6 stroke-gray-400"/>
                 <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                    <a href="{{ route('tops.index') }}" wire:navigate>{{ __('Tops') }}</a>
+                    <a href="{{ route('products.index') }}" wire:navigate>{{ __('Tops') }}</a>
                 </h2>
             </div>
     
@@ -90,9 +92,9 @@
             </p>
     
             <p class="mt-4 text-sm">
-                <a href="{{ route('tops.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
+                <a href="{{ route('products.index') }}" wire:navigate class="inline-flex items-center font-semibold text-app-primary dark:text-app-hover">
                     {{ __('Ver inventario') }}
-    
+
                     <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>
                 </a>
             </p>

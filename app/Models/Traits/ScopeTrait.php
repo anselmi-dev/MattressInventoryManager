@@ -23,9 +23,13 @@ trait ScopeTrait
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeAvailable(Builder $query)
+    public function scopeAvailable(Builder $query, bool $self = false)
     {
-        return $query->where('stock', '>', 0);
+        return $query->when($self, function ($query) {
+            $query->where($this->getTable() . '.stock', '>', 0);
+        })->when(!$self, function ($query){
+            $query->where('stock', '>', 0);
+        });
     }
 
     /**
@@ -34,8 +38,12 @@ trait ScopeTrait
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeUnavailable(Builder $query)
+    public function scopeUnavailable(Builder $query, bool $self = false)
     {
-        return $query->where('stock', '>', 0);
+        return $query->when($self, function ($query) {
+            $query->where($this->getTable() . '.stock', '<=', 0);
+        })->when(!$self, function ($query){
+            $query->where('stock', '<=', 0);
+        });
     }
 }

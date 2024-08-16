@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'actions' => '', 'breadcrumbs' => null])
+@props(['title', 'description' => null, 'actions' => null, 'breadcrumbs' => null])
 
 <div class="mx-auto w-full">
     @if ($breadcrumbs)
@@ -11,10 +11,11 @@
                 <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                     {{ $title }}
                 </h1>
+                
                 @if ($description)
-                <p class="mt-2 leading-8 text-gray-700">
-                    {{ $description }}
-                </p>
+                    <p class="mt-2 leading-none text-gray-700">
+                        {{ $description }}
+                    </p>
                 @endif
             </div>
             

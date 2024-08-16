@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Code;
 use WireUi\Traits\WireUiActions;
 
 trait HandlesModelForm
@@ -29,11 +30,12 @@ trait HandlesModelForm
      * Debe devolver una instancia del modelo específico.
      */
     abstract protected function getRedirectRoute();
-
-
+    
     protected function rules()
     {
-        return ($this->getRequestInstance())->rules();
+        $code = ($this->model)->code;
+
+        return ($this->getRequestInstance())->rules(optional($code)->id);
     }
 
     protected function validationAttributes()
@@ -51,6 +53,10 @@ trait HandlesModelForm
         $fill = ($this->getRequestInstance())->fill();
 
         $this->form = $this->model->only($fill);
+
+        if ($this->model->code) {
+            $this->form['code'] = $this->model->code->value;
+        }
     }
 
     public function submit()
@@ -59,9 +65,21 @@ trait HandlesModelForm
 
         if ($this->model->exists) {
             $this->model->update($this->form);
-            $this->notification(__("Se actualizó correctamente."));
+            
+            if ($this->form['code']) {
+                $this->model->code->value = $this->form['code'];
+                $this->model->code->save();
+            }
+
+            $this->notification(__("Successfully updated."));
         } else {
-            $this->model->create($this->form);
+            
+            $model = $this->model->create($this->form);
+            
+            if ($this->form['code']) {
+                $model->code()->create(['value' => $this->form['code']]);
+            }
+
             $this->notification(__("Se creó correctamente."));
         }
 

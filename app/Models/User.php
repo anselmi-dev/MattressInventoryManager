@@ -64,4 +64,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role()
+    {
+        $relation = $this->hasOneThrough(
+            config('permission.models.role'),
+            ModelHasRole::class,
+           'model_id',
+            'id',
+            'id',
+            'role_id'
+        );
+    
+        return $relation;
+    }
 }

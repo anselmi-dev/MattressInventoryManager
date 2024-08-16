@@ -19,26 +19,12 @@
                         </span>
                         {{ __('Dimensions') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('covers.index') }}" :active="request()->routeIs('covers.*')" wire:navigate>
+                    <x-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.*')" wire:navigate>
                         <span class="relative">
                             <x-icons.cover class="h-4 mr-1"/>
-                            <span class="cout-nav-item">{{ count_covers() }}</span>
+                            <span class="cout-nav-item">{{ count_products() }}</span>
                         </span>
-                        {{ __('Covers') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('tops.index') }}" :active="request()->routeIs('tops.*')" wire:navigate>
-                        <span class="relative">
-                            <x-icons.top class="h-4 mr-1"/>
-                            <span class="cout-nav-item">{{ count_tops() }}</span>
-                        </span>
-                        {{ __('Tops') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('bases.index') }}" :active="request()->routeIs('bases.*')" wire:navigate>
-                        <span class="relative">
-                            <x-icons.base class="h-4 mr-1"/>
-                            <span class="cout-nav-item">{{ count_bases() }}</span>
-                        </span>
-                        {{ __('Bases') }}
+                        {{ __('Parts') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>
                         <span class="relative">
@@ -51,7 +37,7 @@
                         <span class="relative inline-block">
                             <x-icons.sale class="h-4 mr-1"/>
                         </span>
-                        {{ __('Ventas') }}
+                        {{ __('Sales') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -136,9 +122,18 @@
                                 {{ __('Manage Account') }}
                             </div>
 
-                            <x-dropdown-link href="{{ route('profile.show') }}" wire:navigate>
+                            <x-dropdown-link href="{{ route('profile.show') }}" wire:navigate title="{{ __('Profile') }}">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
+
+                            @if (!auth()->user()->hasRole('operator'))
+                                <x-dropdown-link href="{{ route('settings') }}" wire:navigate title="{{ __('Settings') }}">
+                                    {{ __('Settings') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link href="{{ route('users.index') }}" wire:navigate title="{{ __('Users') }}">
+                                    {{ __('Users') }}
+                                </x-dropdown-link>
+                            @endif
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-dropdown-link href="{{ route('api-tokens.index') }}" wire:navigate>
@@ -181,6 +176,16 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            @if (!auth()->user()->hasRole('operator'))
+                <x-responsive-nav-link href="{{ route('settings') }}" wire:navigate title="{{ __('Settings') }}">
+                    {{ __('Settings') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link href="{{ route('users.index') }}" wire:navigate title="{{ __('Users') }}">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endif
+
             <x-responsive-nav-link href="{{ route('dimensions.index') }}" :active="request()->routeIs('dimensions.*')" wire:navigate>
                 <span class="relative inline-block">
                     <x-icons.dimension class="h-4 mr-1"/>
@@ -188,25 +193,11 @@
                 {{ __('Dimensions') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link href="{{ route('covers.index') }}" :active="request()->routeIs('covers.*')" wire:navigate>
+            <x-responsive-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.*')" wire:navigate>
                 <span class="relative inline-block">
                     <x-icons.cover class="h-4 mr-1"/>
                 </span>
-                {{ __('Covers') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link href="{{ route('tops.index') }}" :active="request()->routeIs('tops.*')" wire:navigate>
-                <span class="relative inline-block">
-                    <x-icons.top class="h-4 mr-1"/>
-                </span>
-                {{ __('Tops') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link href="{{ route('bases.index') }}" :active="request()->routeIs('bases.*')" wire:navigate>
-                <span class="relative inline-block">
-                    <x-icons.base class="h-4 mr-1"/>
-                </span>
-                {{ __('Bases') }}
+                {{ __('Parts') }}
             </x-responsive-nav-link>
             
             <x-responsive-nav-link href="{{ route('combinations.index') }}" :active="request()->routeIs('combinations.*')" wire:navigate>

@@ -20,6 +20,9 @@ class ModalPreventDelete extends ModalComponent
 
     public function render()
     {
+        if (auth()->user()->hasRole('operator'))
+            return view('responses.401');
+        
         return view('livewire.modal-prevent-delete');
     }
 

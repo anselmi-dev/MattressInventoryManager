@@ -26,10 +26,10 @@ class DimensionRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules($id = null): array
     {
         $rules = [
-            'code' => 'required',
+            'code' => 'required|unique:codes,value,'.$id,
             'height' => 'required|integer|min:1',
             'width' => 'required|integer|min:1',
             'visible' => 'required',
@@ -55,7 +55,6 @@ class DimensionRequest extends FormRequest
     public function fill () : array 
     {
         return [
-            'code',
             'height',
             'width',
             'visible',

@@ -17,11 +17,11 @@
         </div>
     </div>
     <div class="mt-5 sm:ml-10 sm:mt-4 sm:flex sm:pl-4 | flex gap-2">
-        <x-wireui:button type="button" negative wire:click="submit()">
-            {{ __('Yes, proceed') }}
-        </x-wireui:button>
-        <x-wireui:button type="button" primary wire:click="$dispatch('closeModal')">
+        <x-wireui:button black primary type="button" primary wire:click="$dispatch('closeModal')">
             {{ __('Cancel') }}
+        </x-wireui:button>
+        <x-wireui:button  right-icon="check" type="button" negative wire:click="submit()">
+            {{ __('Yes, proceed') }}
         </x-wireui:button>
     </div>
 </div>

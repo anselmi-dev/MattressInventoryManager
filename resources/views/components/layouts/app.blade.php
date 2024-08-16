@@ -42,6 +42,7 @@
     </head>
     <body class="font-sans antialiased">
         <x-banner />
+        <x-wireui:dialog />
         <x-wireui:notifications />
 
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">

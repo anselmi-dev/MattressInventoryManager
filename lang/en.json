@@ -1,0 +1,5 @@
+{
+    "combination:stock:description": "When adding stock, the specified quantity will be automatically deducted from the available pieces in this combination.",
+    "model:code:description": "The product code must be unique and cannot be duplicated in the system.",
+    "The quantity must be equal to or less than :quantity": "The quantity must be equal to or less than :quantity"
+}

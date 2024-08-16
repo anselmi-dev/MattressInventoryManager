@@ -31,7 +31,7 @@ class BaseRequest extends FormRequest
         $rules = [
             'code' => 'required',
             'dimension_id' => 'required',
-            'stock' => 'required',
+            'stock' => 'required|integer|min:0',
             'visible' => 'required',
             'description' => 'max:500',
         ];

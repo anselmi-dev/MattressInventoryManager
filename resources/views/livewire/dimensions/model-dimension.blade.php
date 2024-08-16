@@ -1,5 +1,5 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit Dimension') . ' #' . $model->id : __('New Dimension') }}" breadcrumbs="dimensions" />
+    <x-page.heading title="{{ $model->exists ? __('Edit Dimension') . ' #' . $model->code->code : __('New Dimension') }}" breadcrumbs="dimensions" />
     <x-page.content>
 
         <x-loading-livewire/>
@@ -41,7 +41,7 @@
 
                 <x-form.group-left :label="__('Description')">
                     <div class="sm:max-w-md">
-                        <x-wireui:textarea wire:model="form.description" :rows="2" placeholder="{{ __('write your notes') }}" />
+                        <x-wireui:textarea wire:model="form.description" :rows="2" placeholder="{{ __('Write your notes') }}" />
                     </div>
                 </x-form.group-left>
                 
@@ -49,8 +49,8 @@
 
             </x-form.section-left>
             <x-slot name="actions">
-                <x-wireui:button negative href="{{ route('dimensions.index') }}">
-                    {{ __('Cancelar') }}
+                <x-wireui:button black href="{{ route('dimensions.index') }}">
+                    {{ __('Cancel') }}
                 </x-wireui:button>
 
                 <x-wireui:button primary type="button" spinner="submit" wire:target="submit" primary right-icon="check" wire:click="submit">

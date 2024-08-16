@@ -15,10 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserAndRoleSeeder::class,
             DimensionSeeder::class,
-            TopSeeder::class,
+            ProductsSeeder::class,
             SaleSeeder::class,
-            BaseSeeder::class,
-            CoverSeeder::class,
+            CombinationSeeder::class,
         ]);
     }
 }

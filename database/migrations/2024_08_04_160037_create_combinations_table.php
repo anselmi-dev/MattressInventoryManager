@@ -5,9 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 use App\Models\{
-    Cover,
-    Base,
-    Top
+    Dimension,
+    Product,
+    Combination,
+    Code
 };
 
 return new class extends Migration
@@ -20,21 +21,24 @@ return new class extends Migration
         Schema::create('combinations', function (Blueprint $table) {
             $table->id();
             
-            $table->string('code')->nullable();
-            
+            $table->foreignIdFor(Dimension::class)->onDelete('cascade');
+
             $table->string('name')->nullable();
 
-            $table->foreignIdFor(Base::class);
-
-            $table->foreignIdFor(Cover::class);
-            
-            $table->foreignIdFor(Top::class);
+            $table->text('note')->nullable();
 
             $table->integer('stock')->default(0);
 
             $table->timestamps();
 
             $table->softDeletes();
+        });
+
+        Schema::create('combination_product', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Product::class)->onDelete('cascade');
+            $table->foreignIdFor(Combination::class)->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -43,6 +47,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('combination_product');
+
         Schema::dropIfExists('combinations');
     }
 };

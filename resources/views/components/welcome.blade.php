@@ -81,7 +81,7 @@
         <div class="flex items-center">
             <x-icons.top class="w-6 h-6 stroke-gray-400"/>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('tops.index') }}">{{ __('Tops') }}</a>
+                <a href="{{ route('products.index') }}">{{ __('Tops') }}</a>
             </h2>
         </div>
 
@@ -90,7 +90,7 @@
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="{{ route('tops.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+            <a href="{{ route('products.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{ __('Ver inventario') }}
 
                 <x-icons.solar-round-arrow-right-line-duotone class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200"/>

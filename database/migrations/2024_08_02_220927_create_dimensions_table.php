@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('dimensions', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->nullable();
             $table->decimal('height', total: 8, places: 2);
             $table->decimal('width', total: 8, places: 2);
             $table->boolean('visible')->default(true);
-            $table->integer('stock')->default(0);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

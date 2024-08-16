@@ -210,5 +210,7 @@ return [
         'form.top_id'              => 'tapa',
         'form.cover_id'            => 'funda',
         'form.visible'             => 'visible',
+        'form.type'                => 'tipo',
+        'form.password'            => 'contraseña'
     ],
 ];

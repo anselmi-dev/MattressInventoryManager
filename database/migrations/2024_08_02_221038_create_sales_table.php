@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('description');
             $table->integer('quantity');
+            $table->enum('status', ['pending', 'processed', 'error'])->default('pending');
             $table->timestamps();
         });
     }

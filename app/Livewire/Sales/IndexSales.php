@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\{
     Views\Columns\ViewComponentColumn,
 };
 use WireUi\Traits\WireUiActions;
+use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 
 class IndexSales extends DataTableComponent
 {
@@ -36,7 +37,8 @@ class IndexSales extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('id')
+            ->setFilterLayoutSlideDown();
     }
 
     public function columns(): array
@@ -51,10 +53,62 @@ class IndexSales extends DataTableComponent
             Column::make(__('Quantity'), 'quantity')
                 ->sortable()
                 ->format(fn ($value) => $value),
+            ViewComponentColumn::make(__('Status'), 'status')
+                ->component('laravel-livewire-tables.sale-status')
+                ->sortable()
+                ->attributes(fn ($value, $row, Column $column) => [
+                    'value' => $value,
+                ]),
+            BooleanColumn::make(__('Issue'), 'id')
+                ->setCallback(function(string $value, $row) {
+                    return !(bool)$row->issues->count();
+                })
+                ->sortable(),
             Column::make(__('Created_at'), 'created_at')
                 ->sortable(),
+            auth()->user()->hasRole('operator') ? NULL : ViewComponentColumn::make(__('Actions'), 'id')
+                ->component('laravel-livewire-tables.sales.actions')
+                ->excludeFromColumnSelect()
+                ->attributes(fn ($value, $row, Column $column) => [
+                    'id' => $row->id,
+                ]),
         ];
     }
+
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make(__('Issues'))
+                ->options([
+                    '' => __('All'),
+                    'issues' => __('With issues'),
+                    'without:issues' => __('Without issues'),
+                    'issues:other' => __('Other'),
+                    'issues:broken' => __('Broken'),
+                    'issues:stained' => __('Stained'),
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->when($value == 'issues', function ($query) use ($value) {
+                        $query->whereHas('issues');
+                    })->when($value == 'issues:other', function ($query) use ($value) {
+                        $query->whereHas('issues', function ($query) use ($value) {
+                            $query->where('type', 'other');
+                        });
+                    })->when($value == 'issues:broken', function ($query) use ($value) {
+                        $query->whereHas('issues', function ($query) use ($value) {
+                            $query->where('type', 'broken');
+                        });
+                    })->when($value == 'issues:stained', function ($query) use ($value) {
+                        $query->whereHas('issues', function ($query) use ($value) {
+                            $query->where('type', 'stained');
+                        });
+                    })->when($value == 'without:issues', function ($query) use ($value) {
+                        $query->doesntHave('issues');
+                    });
+                }),
+        ];
+    }
+
 
     public function delete($id)
     {

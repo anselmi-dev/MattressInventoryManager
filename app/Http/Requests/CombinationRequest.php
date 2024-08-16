@@ -26,15 +26,16 @@ class CombinationRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules($id = null): array
     {
         $rules = [
-            'code' => 'required',
+            'code' => 'required|unique:codes,value,'.$id,
+            'dimension_id' => 'required',
+            'stock' => 'required|integer|min:0',
+            'description' => 'max:500',
+            'base_id' => 'required',
             'cover_id' => 'required',
             'top_id' => 'required',
-            'base_id' => 'required',
-            'stock' => 'required',
-            'description' => 'max:500',
         ];
 
         return array_combine(array_map(fn($k) => $this->prefix . $k, array_keys($rules)), $rules);
@@ -44,6 +45,7 @@ class CombinationRequest extends FormRequest
     {
         $attributes = [
             'code' => __('Code'),
+            'dimension_id' => __('Cover'),
             'cover_id' => __('Cover'),
             'top_id' => __('Top'),
             'base_id' => __('Base'),
@@ -57,12 +59,12 @@ class CombinationRequest extends FormRequest
     public function fill () : array 
     {
         return [
-            'code',
-            'cover_id',
-            'top_id',
-            'base_id',
+            'dimension_id',
             'stock',
             'description',
+            'base_id',
+            'cover_id',
+            'top_id',
         ];
     }
 }

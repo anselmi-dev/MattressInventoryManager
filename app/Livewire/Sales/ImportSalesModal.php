@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 use Maatwebsite\Excel\Facades\Excel;
 use WireUi\Traits\WireUiActions;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class ImportSalesModal extends ModalComponent
 {
@@ -61,10 +62,30 @@ class ImportSalesModal extends ModalComponent
     {
         $this->validate();
 
-        Excel::import(new SalesImport, $this->file->storeAs('public', sha1(time()) . '.csv'), null, \Maatwebsite\Excel\Excel::XLSX);
+        try {
+            
+            Excel::import(new SalesImport, $this->file->storeAs('public', sha1(time()) . '.csv'), null, \Maatwebsite\Excel\Excel::XLSX);
+        
+        } catch (ValidationException $e) {
+
+            $failures = $e->failures();
+
+            $rows = [];
+
+            foreach ($failures as $failure) {
+                $rows[] = $failure->errors()[0];
+            }
+
+            $this->dialog()->warning(
+                'El proceso de importación se ha completado, pero se han detectado algunos errores en el archivo CSV que requieren corrección.',
+                view('responses.dialog-errors', ['warning' => $rows])->render()
+            );
+        }
 
         $this->closeModal();
 
+        \App\Jobs\ProcessPendingSales::dispatch();
+        
         $this->dispatch('sales:refresh-datatable');
     }
 }

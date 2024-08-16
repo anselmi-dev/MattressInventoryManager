@@ -6,11 +6,14 @@ use App\Observers\SaleObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
- 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 #[ObservedBy([SaleObserver::class])]
 class Sale extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +54,13 @@ class Sale extends Model
         'quantity' => 0,
     ];
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly($this->fillable)
+            ->logOnlyDirty();
+    }
+    
     /**
      * Get the attributes that should be cast.
      *
@@ -61,5 +71,18 @@ class Sale extends Model
         return [
             'quantity' => 'integer',
         ];
+    }
+
+    /**
+     * Get the issues for the Sale.
+     */
+    public function issues(): HasMany
+    {
+        return $this->hasMany(Issue::class);
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return '';
     }
 }

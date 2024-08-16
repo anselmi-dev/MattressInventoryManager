@@ -1,0 +1,74 @@
+{
+    "cover": [
+        {
+            "code": "FUNDA0001",
+            "description": "Funda blanca",
+            "stock": 100,
+            "visible": true
+        },
+        {
+            "code": "FUNDA0002",
+            "description": "Funda azul",
+            "stock": 102,
+            "visible": true
+        },
+        {
+            "code": "FUNDA0003",
+            "description": "Funda verde",
+            "stock": 103,
+            "visible": true
+        }
+    ],
+    "top": [
+        {
+            "code": "TAPA0001",
+            "description": "Tapa liza",
+            "stock": 200,
+            "visible": true
+        },
+        {
+            "code": "TAPA0002",
+            "description": "Tapa para empresas",
+            "stock": 202,
+            "visible": true
+        },
+        {
+            "code": "TAPA0003",
+            "description": "Tapa gris",
+            "stock": 203,
+            "visible": true
+        },
+        {
+            "code": "TAPA0004",
+            "description": "TAPA NO DISPONIBLE",
+            "stock": 25,
+            "visible": false
+        }
+    ],
+    "base": [
+        {
+            "code": "BASE0001",
+            "description": "BASE PRINCIPAL",
+            "stock": 300,
+            "visible": true
+        },
+        {
+            "code": "BASE0002",
+            "description": "BASE DE ENVIOS",
+            "stock": 302,
+            "visible": true
+        },
+        {
+            "code": "BASE0003",
+            "description": "BASE BLANCA",
+            "stock": 303,
+            "visible": true
+        },
+        {
+            "code": "BASE0004",
+            "description": "BASE NO DISPONIBLE",
+            "stock": 50,
+            "visible": false
+        }
+    ]
+}

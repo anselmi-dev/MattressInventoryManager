@@ -31,6 +31,11 @@ class IndexDimensions extends DataTableComponent
             ]);
     }
 
+    public function builder(): Builder
+    {
+        return Model::query();
+    }
+
     public function configure(): void
     {
         $this->setPrimaryKey('id');
@@ -39,9 +44,16 @@ class IndexDimensions extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make(__('Code'), 'code')
+            Column::make(__('Code'))
+                ->label(function ($row) {
+                    return optional($row->code)->value;
+                })
                 ->sortable()
-                ->searchable(),
+                ->searchable(function (Builder $query, $searchTerm) {
+                    $query->whereHas('code', function ($query) use ($searchTerm) {
+                        $query->where('value', 'like', "%$searchTerm%");
+                    });
+                }),
             Column::make(__('Width'), 'width')
                 ->searchable()
                 ->sortable()
@@ -51,7 +63,14 @@ class IndexDimensions extends DataTableComponent
                 ->sortable()
                 ->format(fn ($value) => appendCentimeters($value)),
             BooleanColumn::make(__('Visible'), 'visible')->sortable(),
-            ViewComponentColumn::make(__('Actions'), 'id')
+            Column::make(__('Created at'), 'created_at')
+                ->searchable()
+                ->sortable(),
+            Column::make(__('Updated at'), 'updated_at')
+                ->searchable()
+                ->sortable()
+                ->deselected(),
+            auth()->user()->hasRole('operator') ? NULL : ViewComponentColumn::make(__('Actions'), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [

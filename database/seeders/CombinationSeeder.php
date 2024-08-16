@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Base;
+use App\Models\Code;
 use App\Models\Combination;
 use App\Models\Cover;
+use App\Models\Dimension;
+use App\Models\Product;
 use App\Models\Top;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,34 +19,58 @@ class CombinationSeeder extends Seeder
      */
     public function run(): void
     {
-        Combination::firstOrCreate([
-            'code' => 'COMB0001',
-            'cover_id' => Cover::inRandomOrder()->first()->id,
-            'base_id' => Base::inRandomOrder()->first()->id,
-            'top_id' => Top::inRandomOrder()->first()->id,
+        $combination = Combination::firstOrCreate([
+            'name' => 'COMB0001'
         ], [
-            'stock' => 240,
-            'visible' => true,
+            'dimension_id' => Dimension::inRandomOrder()->first()->id,
+            'stock' => 240
         ]);
 
-        Combination::firstOrCreate([
-            'code' => 'COMB0002',
-            'cover_id' => Cover::inRandomOrder()->first()->id,
-            'base_id' => Base::inRandomOrder()->first()->id,
-            'top_id' => Top::inRandomOrder()->first()->id,
-        ], [
-            'stock' => 240,
-            'visible' => true,
+        $combination->products()->attach([
+            Product::where('type', 'cover')->inRandomOrder()->first()->id,
+            Product::where('type', 'top')->inRandomOrder()->first()->id,
+            Product::where('type', 'base')->inRandomOrder()->first()->id,
         ]);
 
-        Combination::firstOrCreate([
-            'code' => 'COMB0003',
-            'cover_id' => Cover::inRandomOrder()->first()->id,
-            'base_id' => Base::inRandomOrder()->first()->id,
-            'top_id' => Top::inRandomOrder()->first()->id,
+        if ($combination->wasRecentlyCreated) {
+            $code = new Code(["value" => 'COMB0001']);
+            $combination->code()->save($code);
+        }
+
+        $combination = Combination::firstOrCreate([
+            'name' => 'COMB0002'
         ], [
-            'stock' => 240,
-            'visible' => true,
+            'dimension_id' => Dimension::inRandomOrder()->first()->id,
+            'stock' => 240
         ]);
+
+        $combination->products()->attach([
+            Product::where('type', 'cover')->inRandomOrder()->first()->id,
+            Product::where('type', 'top')->inRandomOrder()->first()->id,
+            Product::where('type', 'base')->inRandomOrder()->first()->id,
+        ]);
+
+        if ($combination->wasRecentlyCreated) {
+            $code = new Code(["value" => 'COMB0002']);
+            $combination->code()->save($code);
+        }
+
+        $combination = Combination::firstOrCreate([
+            'name' => 'COMB0003'
+        ], [
+            'dimension_id' => Dimension::inRandomOrder()->first()->id,
+            'stock' => 240
+        ]);
+
+        $combination->products()->attach([
+            Product::where('type', 'cover')->inRandomOrder()->first()->id,
+            Product::where('type', 'top')->inRandomOrder()->first()->id,
+            Product::where('type', 'base')->inRandomOrder()->first()->id,
+        ]);
+
+        if ($combination->wasRecentlyCreated) {
+            $code = new Code(["value" => 'COMB0003']);
+            $combination->code()->save($code);
+        }
     }
 }
