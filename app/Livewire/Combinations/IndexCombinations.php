@@ -40,7 +40,6 @@ class IndexCombinations extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
-            ->setReorderEnabled()
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 

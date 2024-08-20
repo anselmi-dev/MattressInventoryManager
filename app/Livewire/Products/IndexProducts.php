@@ -44,7 +44,6 @@ class IndexProducts extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
-            ->setReorderEnabled()
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 

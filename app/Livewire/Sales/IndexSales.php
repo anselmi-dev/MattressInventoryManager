@@ -40,7 +40,6 @@ class IndexSales extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
-            ->setReorderEnabled()
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 
