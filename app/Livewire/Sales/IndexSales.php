@@ -35,6 +35,12 @@ class IndexSales extends DataTableComponent
             ]);
     }
 
+    
+    public function builder(): Builder
+    {
+        return Model::query()->with('issues');
+    }
+
     public function configure(): void
     {
         $this->setPrimaryKey('id')

@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
         "maatwebsite/excel": "*",
+        "opcodesio/log-viewer": "^3.10",
         "predis/predis": "^2.2",
         "rappasoft/laravel-livewire-tables": "^3.3",
         "rawilk/laravel-settings": "^3.3",

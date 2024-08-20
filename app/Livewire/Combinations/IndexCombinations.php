@@ -24,6 +24,11 @@ class IndexCombinations extends DataTableComponent
 
     protected $model = Model::class;
 
+    public function builder(): Builder
+    {
+        return Model::query();
+    }
+
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('livewire.combinations.index-combinations')
@@ -40,6 +45,7 @@ class IndexCombinations extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
+            ->setPerPage(25)
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 

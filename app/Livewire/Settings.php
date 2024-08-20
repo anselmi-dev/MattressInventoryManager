@@ -17,6 +17,24 @@ class Settings extends Component
 
     public bool $notification = true;
     
+    public function rules ()
+    {
+        return [
+            'alert_danger' => 'required|integer|min:0|lt:alert_warning',
+            'alert_warning' => 'required|integer|min:1|gt:alert_danger',
+            'notification' => 'required|bool',
+        ];
+    }
+
+    protected function validationAttributes()
+    {
+        return [
+            'alert_danger' => __('Critical stock (red)'),
+            'alert_warning' => __('Low stock (yellow)'),
+            'notification' => __('Notification'),
+        ];
+    }
+
     public function mount ()
     {
         $this->alert_danger = settings()->get('alert:danger', 50);
@@ -33,6 +51,8 @@ class Settings extends Component
 
     public function submit()
     {
+        $this->validate();
+
         settings()->set('notification', $this->notification);
 
         settings()->set('alert:danger', (int) $this->alert_danger);

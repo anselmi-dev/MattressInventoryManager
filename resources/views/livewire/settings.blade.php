@@ -31,6 +31,12 @@
                     </div>
                 </x-form.group-left>
 
+                {{-- <x-form.group-left :label="__('High Stock')">
+                    <x-slot name="description">
+                        {{ __("The indicator will turn green when the stock level is higher than the threshold defined as 'Low Stock (Yellow)'.") }}
+                    </x-slot>
+                </x-form.group-left> --}}
+
                 <x-form.group-left :label="__('Notification')">
                     <x-slot name="description">
                         {{ __('') }}

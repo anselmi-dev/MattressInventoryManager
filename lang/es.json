@@ -342,5 +342,7 @@
     "admin": "Administrador",
     "User": "User",
     "Users": "Usuarios",
-    "You cannot edit a user with a role equal to or higher than yours.": "No puedes editar a un usuario que tenga un rol igual o superior al tuyo."
+    "You cannot edit a user with a role equal to or higher than yours.": "No puedes editar a un usuario que tenga un rol igual o superior al tuyo.",
+    "High Stock": "Stock Alto",
+    "The indicator will turn green when the stock level is higher than the threshold defined as 'Low Stock (Yellow)'." : "El indicador se mostrará en verde cuando el stock sea mayor que el límite definido como 'Stock Bajo (Amarillo)'."
 }

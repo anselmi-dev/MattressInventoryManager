@@ -85,8 +85,8 @@ if (!function_exists('color_stock')) {
             return 'red';
         
         if ($stock <= $warning)
-            return 'emerald';
-    
-        return 'yellow';
+            return 'yellow';
+        
+        return 'emerald';
     }
 }

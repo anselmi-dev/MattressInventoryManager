@@ -33,7 +33,7 @@ class IndexDimensions extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query();
+        return Model::query()->with('code');
     }
 
     public function configure(): void
@@ -41,6 +41,7 @@ class IndexDimensions extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
+            ->setPerPage(25)
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 
