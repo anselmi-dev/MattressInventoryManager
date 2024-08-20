@@ -43,12 +43,17 @@ class IndexProducts extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
+            ->setDefaultSort('id', 'desc')
+            ->setReorderEnabled()
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 
     public function columns(): array
     {
         return [
+            Column::make('ID', 'id')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Code'))
                 ->label(function ($row) {
                     return optional($row->code)->value;

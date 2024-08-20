@@ -41,7 +41,8 @@ class ProcessPendingSales implements ShouldQueue
             elseif (!$code->model)
                 continue;
             else {
-                $code->model->decrement('stock', $sale->quantity);
+                $code->model->decrementStock($sale->quantity);
+
                 $sale->status = 'processed';
             }
 

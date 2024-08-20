@@ -38,12 +38,18 @@ class IndexSales extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id')
-            ->setFilterLayoutSlideDown();
+            ->setFilterLayoutSlideDown()
+            ->setDefaultSort('id', 'desc')
+            ->setReorderEnabled()
+            ->setFilterSlideDownDefaultStatusEnabled();
     }
 
     public function columns(): array
     {
         return [
+            Column::make('ID', 'id')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Code'), 'code')
                 ->searchable()
                 ->sortable(),

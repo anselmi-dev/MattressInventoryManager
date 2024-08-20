@@ -127,7 +127,7 @@ class Combination extends Model
      * @param integer $quantity
      * @return void
      */
-    public function decrementParts (int $quantity):void
+    public function decrementStockProducts (int $quantity):void
     {
         $this->products()->decrement('stock', $quantity);
     }
@@ -138,9 +138,20 @@ class Combination extends Model
      * @param integer $quantity
      * @return void
      */
+    public function decrementStock (int $quantity):void
+    {
+        $this->decrement('stock', $quantity);
+    }
+
+    /**
+     * Descrement parts
+     *
+     * @param integer $quantity
+     * @return void
+     */
     public function manufacture (int $quantity):void
     {
-        $this->decrementParts($quantity);
+        $this->decrementStockProducts($quantity);
 
         $this->increment('stock', $quantity);
     }

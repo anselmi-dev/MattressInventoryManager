@@ -100,4 +100,15 @@ class Product extends Model
     {
         return $this->belongsToMany(Combination::class);
     }
+
+    /**
+     * Descrement parts
+     *
+     * @param integer $quantity
+     * @return void
+     */
+    public function decrementStock (int $quantity):void
+    {
+        $this->decrement('stock', $quantity);
+    }
 }

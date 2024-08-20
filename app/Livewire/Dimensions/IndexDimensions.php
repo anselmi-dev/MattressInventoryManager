@@ -38,12 +38,19 @@ class IndexDimensions extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('id')
+            ->setFilterLayoutSlideDown()
+            ->setDefaultSort('id', 'desc')
+            ->setReorderEnabled()
+            ->setFilterSlideDownDefaultStatusEnabled();
     }
 
     public function columns(): array
     {
         return [
+            Column::make('ID', 'id')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Code'))
                 ->label(function ($row) {
                     return optional($row->code)->value;

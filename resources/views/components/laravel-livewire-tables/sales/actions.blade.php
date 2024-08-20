@@ -7,7 +7,7 @@
     class="flex space-x-1">
     <x-wireui:button dark icon="exclamation-circle" xs type="button" wire:click="$dispatch('openModal', { component: 'issues.create-issues-modal', arguments: {model: {{  $id }}}})" title="{{ __('Issues') }}">
         <span class="hidden md:inline-block">
-            {{ __('Issues') }}
+            {{ __('Issue') }}
         </span>
     </x-wireui:button>
 
