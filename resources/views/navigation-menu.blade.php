@@ -39,6 +39,12 @@
                         </span>
                         {{ __('Sales') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')" wire:navigate>
+                        <span class="relative inline-block">
+                            <x-icons.orders class="h-4 mr-1"/>
+                        </span>
+                        {{ __('Orders') }}
+                    </x-nav-link>
                 </div>
             </div>
 

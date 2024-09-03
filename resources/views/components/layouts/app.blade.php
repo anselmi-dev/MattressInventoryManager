@@ -13,7 +13,11 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+        <script
+            src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@1.x.x/dist/cdn.min.js"
+            defer
+        ></script>
         <style>
             [x-cloak] {
                 display: none;
@@ -31,6 +35,12 @@
         
         <!-- Adds any relevant Third-Party Styles (Used for DateRangeFilter (Flatpickr) and NumberRangeFilter) -->
         @rappasoftTableThirdPartyStyles
+        
+        <style>
+            #modal-container {
+                overflow: initial !important;
+            }
+        </style>
         
         @stack('styles')
 
@@ -50,7 +60,6 @@
         <x-banner />
         <x-wireui:dialog />
         <x-wireui:notifications />
-
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
             <div id="app-header" class="relative z-1">
                 @livewire('navigation-menu')
@@ -80,5 +89,7 @@
         @livewireScripts
 
         @livewire('wire-elements-modal')
+        
+        @stack('scripts-end')
     </body>
 </html>

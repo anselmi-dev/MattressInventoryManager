@@ -25,7 +25,7 @@
             </div>
     
             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                Las "Combinaciones" representan la unión de todos los elementos anteriores (Tapas, Fundas, Bases y Medidas) para formar un producto completo y personalizado. Estas combinaciones permiten a los clientes seleccionar configuraciones específicas que mejor se adapten a sus necesidades y preferencias.
+                Las "Combinaciones" representan la unión de todos los elementos anteriores (Parte superiores, Fundas, Bases y Medidas) para formar un producto completo y personalizado. Estas combinaciones permiten a los clientes seleccionar configuraciones específicas que mejor se adapten a sus necesidades y preferencias.
             </p>
     
             <p class="mt-4 text-sm">
@@ -88,7 +88,7 @@
             </div>
     
             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                Las "Tapas" son los componentes superiores de un colchón que proporcionan una superficie cómoda para dormir. Estas pueden estar hechas de diversos materiales como espuma de memoria, látex, algodón o una mezcla de textiles, y pueden incluir características adicionales como acolchado extra o tecnología de enfriamiento para mejorar la comodidad del usuario.
+                Las "Parte superiores" son los componentes superiores de un colchón que proporcionan una superficie cómoda para dormir. Estas pueden estar hechas de diversos materiales como espuma de memoria, látex, algodón o una mezcla de textiles, y pueden incluir características adicionales como acolchado extra o tecnología de enfriamiento para mejorar la comodidad del usuario.
             </p>
     
             <p class="mt-4 text-sm">

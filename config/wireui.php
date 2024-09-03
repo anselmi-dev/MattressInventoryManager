@@ -46,11 +46,11 @@ return [
 
     'alert' => Config::alert(),
 
-    'avatar' => Config::avatar(),
+    // 'avatar' => Config::avatar(),
 
-    'badge' => Config::badge(),
+    // 'badge' => Config::badge(),
 
-    'mini-badge' => Config::miniBadge(),
+    // 'mini-badge' => Config::miniBadge(),
 
     'button' => Config::button(),
 
@@ -60,7 +60,7 @@ return [
 
     'checkbox' => Config::checkbox(),
 
-    'color-picker' => Config::wrapper(),
+    // 'color-picker' => Config::wrapper(),
 
     'datetime-picker' => Config::dateTimePicker(),
 
@@ -68,25 +68,25 @@ return [
 
     'dropdown' => Config::dropdown(),
 
-    'icon' => Config::icon(),
+    // 'icon' => Config::icon(),
 
     'input' => Config::wrapper(),
 
-    'currency' => Config::wrapper(),
+    // 'currency' => Config::wrapper(),
 
-    'maskable' => Config::wrapper(),
+    // 'maskable' => Config::wrapper(),
 
     'number' => Config::wrapper(),
 
     'password' => Config::wrapper(),
 
-    'phone' => Config::wrapper(),
+    // 'phone' => Config::wrapper(),
 
     'link' => Config::link(),
 
     'modal' => Config::modal(),
 
-    'modal-card' => Config::modal(),
+    // 'modal-card' => Config::modal(),
 
     'native-select' => Config::wrapper(),
 

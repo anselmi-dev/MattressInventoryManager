@@ -29,7 +29,7 @@ class DimensionRequest extends FormRequest
     public function rules($id = null): array
     {
         $rules = [
-            'code' => 'required|unique:codes,value,'.$id,
+            'code' => 'required|unique:dimensions,code,'.$id,
             'height' => 'required|integer|min:1',
             'width' => 'required|integer|min:1',
             'visible' => 'required',
@@ -55,6 +55,7 @@ class DimensionRequest extends FormRequest
     public function fill () : array 
     {
         return [
+            'code',
             'height',
             'width',
             'visible',

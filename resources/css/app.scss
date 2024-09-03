@@ -77,9 +77,22 @@
     &__name {
         @apply text-app-default;
         font-size: 1.5rem;
+        line-height: 1;
         @media screen and (max-width: 500px) {
             font-size: .8rem;
         }
+    }
+
+    &__code {
+        @apply text-app-default;
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    &__type {
+        @apply text-app-default;
+        font-size: 1rem;
+        line-height: 1;
     }
 
     &__icon {

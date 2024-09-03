@@ -6,7 +6,6 @@ use LivewireUI\Modal\ModalComponent;
 
 class ModalPreventDelete extends ModalComponent
 {
-
     public $model_id;
 
     public $emit;

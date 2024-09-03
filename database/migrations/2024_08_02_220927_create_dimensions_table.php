@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('dimensions', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->decimal('height', total: 8, places: 2);
             $table->decimal('width', total: 8, places: 2);
             $table->boolean('visible')->default(true);

@@ -20,20 +20,16 @@ class ProductsSeeder extends Seeder
 
         foreach ($collection as $key => $products) {
             foreach ($products as $product) {
-                $model = Product::firstOrCreate([
-                    'type' => $key,
-                    'description' => $product->description,
+                Product::firstOrCreate([
+                    'code' => $product->code,
+                    'name' => $product->code,
                 ], [
-                    'dimension_id' => Dimension::inRandomOrder()->first()->id,
+                    'type' => $key,
+                    'minimum_order' => rand(0, 10),
+                    'dimension_id' => Dimension::first()->id,
                     'stock' => $product->stock,
                     'visible' => $product->visible,
                 ]);
-
-                if ($model->wasRecentlyCreated) {
-                    $code = new Code(["value" => $product->code]);
-                    
-                    $model->code()->save($code);
-                }
             }
         }
     }

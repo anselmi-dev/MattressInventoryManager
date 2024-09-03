@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Combinations;
 
-use App\Models\Combination as Model;
+use App\Models\Product as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\{
     DataTableComponent,
@@ -26,7 +26,12 @@ class IndexCombinations extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query();
+        return Model::query()->whereCombinations()->with([
+            'dimension',
+            'cover',
+            'top',
+            'base',
+        ]);
     }
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -35,8 +40,8 @@ class IndexCombinations extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'rows' => $this->getRows(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
@@ -55,16 +60,12 @@ class IndexCombinations extends DataTableComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Code'))
-                ->label(function ($row) {
-                    return optional($row->code)->value;
-                })
-                ->sortable()
-                ->searchable(function (Builder $query, $searchTerm) {
-                    $query->whereHas('code', function ($query) use ($searchTerm) {
-                        $query->where('value', 'like', "%$searchTerm%");
-                    });
-                }),
+            Column::make(__('Code'), 'code')
+                ->searchable()
+                ->sortable(),
+            Column::make(__('Name'), 'name')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Width'), 'dimension.width')
                 ->searchable()
                 ->sortable()
@@ -76,22 +77,22 @@ class IndexCombinations extends DataTableComponent
             ViewComponentColumn::make(__('Cover'), 'id')
                 ->component('laravel-livewire-tables.link-product')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional(optional($row->cover)->code)->value,
-                    'link' => route('products.model', ['model' => optional($row->cover)->id]),
+                    'value' => optional($row->cover)->code,
+                    'link' => optional($row->cover)->route_show,
                     'type' => 'cover'
                 ]),
             ViewComponentColumn::make(__('Top'), 'id')
                 ->component('laravel-livewire-tables.link-product')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional(optional($row->top)->code)->value,
-                    'link' => route('products.model', ['model' => optional($row->top)->id]),
+                    'value' => optional($row->top)->code,
+                    'link' => optional($row->top)->route_show,
                     'type' => 'top'
                 ]),
             ViewComponentColumn::make(__('Base'), 'id')
                 ->component('laravel-livewire-tables.link-product')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional(optional($row->base)->code)->value,
-                    'link' => route('products.model', ['model' => optional($row->base)->id]),
+                    'value' => optional($row->base)->code,
+                    'link' => optional($row->base)->route_show,
                     'type' => 'base'
                 ]),
             ViewComponentColumn::make(__('Stock'), 'stock')
@@ -107,13 +108,14 @@ class IndexCombinations extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->deselected(),
-            ViewComponentColumn::make(__('Actions'), 'id')
-                ->component('laravel-livewire-tables.action-column-combinations')
+            ViewComponentColumn::make(__(''), 'id')
+                ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,
-                    'editLink' => route('combinations.model', $row),
+                    'editLink' => route('combinations.model', ['model' => $row->id]),
                     'deleteEmit' => 'combinations:delete',
+                    'manufacture' => 'combinations:create',
                 ]),
         ];
     }

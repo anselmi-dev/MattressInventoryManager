@@ -7,26 +7,39 @@
         <x-form.container-left>
             <x-form.section-left>
 
-                <x-form.group-left :label="__('Critical stock (red)')">
+                <x-form.group-left :label="__('Email')">
                     <x-slot name="description">
-                        {{ __("The number where the stock will be displayed in red, indicating danger.") }}
+                        {{ __("Email that will be sent with the orders.") }}
                     </x-slot>
                     <div class="sm:max-w-md">
-                        <x-wireui:number
-                            :placeholder="__('Stock')"
-                            wire:model="alert_danger"
+                        <x-wireui:input
+                            :placeholder="__('Email')"
+                            type="email"
+                            wire:model="email"
                         />
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Low stock (yellow)')">
+                <x-form.group-left :label="__('Number of days of stock')">
                     <x-slot name="description">
-                        {{ __("The number where the stock will be displayed in yellow, indicating caution.") }}
+                        {{ __("Days used to calculate the basis for the average of previous sales.") }}
                     </x-slot>
                     <div class="sm:max-w-md">
                         <x-wireui:number
-                            :placeholder="__('Stock')"
-                            wire:model="alert_warning"
+                            :placeholder="__('Number of days of stock')"
+                            wire:model="stock_days"
+                        />
+                    </div>
+                </x-form.group-left>
+
+                <x-form.group-left :label="__('Number of days')">
+                    <x-slot name="description">
+                        {{ __("Days used for the average of previous sales.") }}
+                    </x-slot>
+                    <div class="sm:max-w-md">
+                        <x-wireui:number
+                            :placeholder="__('Number of days')"
+                            wire:model="stock_media_days"
                         />
                     </div>
                 </x-form.group-left>

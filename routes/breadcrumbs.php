@@ -18,6 +18,12 @@ Breadcrumbs::for('parts', function (BreadcrumbTrail $trail) {
     $trail->push(__('Parts'), route('products.index'));
 });
 
+Breadcrumbs::for('parts.show', function (BreadcrumbTrail $trail, $model) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Parts'), route('products.index'));
+    $trail->push("#{$model->code}");
+});
+
 Breadcrumbs::for('tops', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
     $trail->push(__('Tops'), route('tops.index'));
@@ -51,6 +57,17 @@ Breadcrumbs::for('bases', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('users', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
     $trail->push(__('Users'), route('users.index'));
+});
+
+Breadcrumbs::for('orders', function (BreadcrumbTrail $trail) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Orders'), route('orders.index'));
+});
+
+Breadcrumbs::for('order.show', function (BreadcrumbTrail $trail, $order) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Orders'), route('orders.index'));
+    $trail->push("#{$order->id}");
 });
 
 Breadcrumbs::for('activity', function (BreadcrumbTrail $trail) {

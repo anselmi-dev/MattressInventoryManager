@@ -20,25 +20,9 @@ return new class extends Migration
     {
         Schema::create('combinations', function (Blueprint $table) {
             $table->id();
-            
-            $table->foreignIdFor(Dimension::class)->onDelete('cascade');
-
-            $table->string('name')->nullable();
-
-            $table->text('note')->nullable();
-
-            $table->integer('stock')->default(0);
-
-            $table->timestamps();
-
-            $table->softDeletes();
-        });
-
-        Schema::create('combination_product', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(Product::class)->onDelete('cascade');
-            $table->foreignIdFor(Combination::class)->onDelete('cascade');
-            $table->timestamps();
+            $table->foreignIdFor(Product::class, 'combined_product_id')->onDelete('cascade');
+            $table->foreignIdFor(Product::class, 'product_id')->onDelete('cascade');
+            $table->unique(['combined_product_id', 'product_id'], 'unique_combination_product');
         });
     }
 
@@ -47,8 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('combination_product');
-
         Schema::dropIfExists('combinations');
     }
 };

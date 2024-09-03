@@ -1,13 +1,13 @@
-<div class="sm:gap-4 sm:py-6">
+<div class="sm:gap-4 sm:py-3">
     <div>
         <label class="block font-medium leading-6 text-gray-900">
             {{ $label }}
         </label>
 
         @isset($description)
-            <span>
+            <div class="leading-2 text-sm text-gray-400">
                 {!! $description !!}
-            </span>
+            </div>
         @endisset
     </div>
 

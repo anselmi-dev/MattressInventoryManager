@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Code extends Model
+class ProductSale extends Model
 {
     use HasFactory;
+
+    protected $table = "product_sale";
 
     /**
      * The attributes that are mass assignable.
@@ -15,13 +17,6 @@ class Code extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'value',
-        'model_type',
-        'model_id',
+        'quantity',
     ];
-
-    public function model()
-    {
-        return $this->morphTo();
-    }
 }

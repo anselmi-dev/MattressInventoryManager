@@ -1,5 +1,5 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit Dimension') . ' #' . $model->code->code : __('New Dimension') }}" breadcrumbs="dimensions" />
+    <x-page.heading title="{{ $model->exists ? __('Edit Dimension') . ' #' . $model->code: __('New Dimension') }}" breadcrumbs="dimensions" />
     <x-page.content>
 
         <x-loading-livewire/>

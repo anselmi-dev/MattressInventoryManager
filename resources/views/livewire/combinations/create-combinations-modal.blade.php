@@ -5,7 +5,7 @@
         <x-page.heading>
             <x-slot name="title">
                 <span class="block">{{ __('Manufacture') }}</span>
-                <span class="text-md">{{ optional($combination->code)->value }}</span>
+                <span class="text-md">{{ $combination->code }}</span>
             </x-slot>
             <x-slot name="description">
                 {{ __("To manufacture the combination, ensure that the minimum stock of each part is available, as you cannot create more units than what is recorded in the system.") }}
@@ -16,7 +16,7 @@
 
             <x-form.section-left>
                 <x-form.group-left :label="__('Parts')">
-                    <x-cards.products-combination :products="$combination->products">
+                    <x-cards.products-combination :products="$combination->combinedProducts">
                     </x-cards.products-combination>
                 </x-form.group-left>
 
@@ -70,7 +70,7 @@
                                 <tr>
                                     <td class="border border-slate-300 p-1">
                                         <a href="{{ route('dimensions.model', ['model' => $dimension->id]) }}" class="text-app-default">
-                                            {{ optional($dimension->code)->value  ?? 'N/D' }}
+                                            {{ $dimension->code }}
                                         </a>
                                     </td>
                                     <td class="border border-slate-300 p-1 whitespace-nowrap">

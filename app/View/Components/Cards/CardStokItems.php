@@ -5,8 +5,6 @@ namespace App\View\Components\Cards;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Illuminate\Support\Facades\DB;
-use App\Models\Code;
 use App\Models\Product;
 
 class CardStokItems extends Component
@@ -25,7 +23,7 @@ class CardStokItems extends Component
     public function render(): View|Closure|string
     {
         return view('components.cards.card-stok-items', [
-            'collection' => Product::with('code')->paginate(5)
+            'collection' => Product::whereNotCombinations()->orderBy('average_sales_quantity', 'desc')->orderBy('average_sales_difference')->paginate(5)
         ]);
     }
 }

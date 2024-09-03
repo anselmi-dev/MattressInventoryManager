@@ -33,9 +33,7 @@ trait HandlesModelForm
     
     protected function rules()
     {
-        $code = ($this->model)->code;
-
-        return ($this->getRequestInstance())->rules(optional($code)->id);
+        return ($this->getRequestInstance())->rules(optional($this->model)->id);
     }
 
     protected function validationAttributes()
@@ -53,10 +51,6 @@ trait HandlesModelForm
         $fill = ($this->getRequestInstance())->fill();
 
         $this->form = $this->model->only($fill);
-
-        if ($this->model->code) {
-            $this->form['code'] = $this->model->code->value;
-        }
     }
 
     public function submit()
@@ -64,21 +58,13 @@ trait HandlesModelForm
         $this->validate();
 
         if ($this->model->exists) {
+
             $this->model->update($this->form);
-            
-            if ($this->form['code']) {
-                $this->model->code->value = $this->form['code'];
-                $this->model->code->save();
-            }
 
             $this->notification(__("Successfully updated."));
         } else {
             
             $model = $this->model->create($this->form);
-            
-            if ($this->form['code']) {
-                $model->code()->create(['value' => $this->form['code']]);
-            }
 
             $this->notification(__("Se creó correctamente."));
         }

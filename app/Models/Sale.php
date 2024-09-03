@@ -21,9 +21,10 @@ class Sale extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
+        // 'type',
         'description',
         'quantity',
+        'status',
     ];
 
     /**
@@ -49,7 +50,7 @@ class Sale extends Model
      * @var array
      */
     protected $attributes = [
-        'code' => '',
+        // 'type' => '',
         'description' => '',
         'quantity' => 0,
     ];
@@ -73,12 +74,16 @@ class Sale extends Model
         ];
     }
 
-    /**
-     * Get the issues for the Sale.
-     */
-    public function issues(): HasMany
+    public function decrementStock()
     {
-        return $this->hasMany(Issue::class);
+        foreach ($this->products as $key => $product) {
+            $product->decrementStock($this->quantity);
+        }
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class)->withTimestamps();
     }
 
     public function getLabelAttribute(): string

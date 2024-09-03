@@ -11,7 +11,7 @@ Route::middleware('auth')->group(function () {
     ])->group(function () {
 
         Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
-    
+        
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
             Route::get('/', \App\Livewire\Dimensions\IndexDimensions::class)->name('index');
             Route::get('/m/{model?}', \App\Livewire\Dimensions\ModelDimension::class)->middleware(['role:develop|admin'])->name('model');
@@ -19,11 +19,13 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware([])->prefix('partes')->name('products.')->group(function () {
             Route::get('/', \App\Livewire\Products\IndexProducts::class)->name('index');
+            Route::get('/s/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
             Route::get('/p/{model?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
         });
 
         Route::middleware([])->prefix('combinaciones')->name('combinations.')->group(function () {
             Route::get('/', \App\Livewire\Combinations\IndexCombinations::class)->name('index');
+            Route::get('/s/{model}', \App\Livewire\Combinations\IndexCombinations::class)->name('show');
             Route::get('/m/{model?}', \App\Livewire\Combinations\ModelCombination::class)->middleware(['role:develop|admin'])->name('model');
         });
 
@@ -35,6 +37,11 @@ Route::middleware('auth')->group(function () {
         Route::middleware([])->prefix('users')->name('users.')->middleware(['role:develop|admin'])->group(function () {
             Route::get('/', \App\Livewire\Users\IndexUsers::class)->name('index');
             Route::get('/u/{model?}', \App\Livewire\Users\ModelUser::class)->name('model');
+        });
+        
+        Route::middleware([])->prefix('ordenes')->name('orders.')->group(function () {
+            Route::get('/', \App\Livewire\Orders\IndexOrders::class)->name('index');
+            Route::get('/o/{model}', \App\Livewire\Orders\ShowOrder::class)->name('show');
         });
 
         Route::middleware([])->prefix('ventas')->name('sales.')->group(function () {

@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Dimensions;
 
-use Livewire\Component;
-
 use App\Models\Dimension as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\{
@@ -26,14 +24,14 @@ class IndexDimensions extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'rows' => $this->getRows(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
     public function builder(): Builder
     {
-        return Model::query()->with('code');
+        return Model::query();
     }
 
     public function configure(): void
@@ -51,16 +49,9 @@ class IndexDimensions extends DataTableComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Code'))
-                ->label(function ($row) {
-                    return optional($row->code)->value;
-                })
-                ->sortable()
-                ->searchable(function (Builder $query, $searchTerm) {
-                    $query->whereHas('code', function ($query) use ($searchTerm) {
-                        $query->where('value', 'like', "%$searchTerm%");
-                    });
-                }),
+            Column::make(__('Code'), 'code')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Width'), 'width')
                 ->searchable()
                 ->sortable()
@@ -77,14 +68,14 @@ class IndexDimensions extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->deselected(),
-            auth()->user()->hasRole('operator') ? NULL : ViewComponentColumn::make(__('Actions'), 'id')
+            ViewComponentColumn::make(__(''), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,
-                    'editLink' => route('dimensions.model', $row),
+                    'editLink' => $row->route_edit,
                     'deleteEmit' => 'dimension:delete',
-                ]),
+                ])->hideIf(auth()->user()->hasRole('operator')),
         ];
     }
 

@@ -1,11 +1,11 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit Part') . ' #' . $model->id : __('New Part') }}" breadcrumbs="parts" />
+    <x-page.heading title="{{ $model->exists ? __('Edit Part') . ' #' . $model->code : __('New Part') }}" breadcrumbs="parts" />
     <x-page.content>
 
         <x-loading-livewire/>
 
         @php
-            $has_combinations = (bool)$model->combinations()->count();
+            $has_combinations = (bool)$model->partOfCombinations()->count();
         @endphp
         
         <x-form.container-left>

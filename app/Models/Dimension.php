@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Facades\Route;
 
 #[ObservedBy([DimensionObserver::class])]
 class Dimension extends Model
@@ -23,6 +24,7 @@ class Dimension extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'code',
         'height',
         'width',
         'visible',
@@ -52,6 +54,7 @@ class Dimension extends Model
      * @var array
      */
     protected $attributes = [
+        'code' => '',
         'height' => 0,
         'width' => 0,
         'visible' => TRUE,
@@ -71,22 +74,26 @@ class Dimension extends Model
             'visible' => 'bool',
         ];
     }
-
+    
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly($this->fillable)
             ->logOnlyDirty();
     }
-        
-    public function code()
-    {
-        return $this->morphOne(Code::class, 'model');
-    }
-
+    
     public function getLabelAttribute ()
     {
         return "{$this->height}x{$this->width}";   
     }
     
+    /**
+     * Return route edit model
+     *
+     * @return string
+     */
+    public function getRouteEditAttribute (): string
+    {
+        return route('dimensions.model', ['model' => $this->id]);
+    }
 }

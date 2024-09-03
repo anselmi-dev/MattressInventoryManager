@@ -30,15 +30,17 @@ class IndexSales extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'rows' => $this->getRows(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
     
     public function builder(): Builder
     {
-        return Model::query()->with('issues');
+        return Model::query()->with([
+            
+        ]);
     }
 
     public function configure(): void
@@ -55,9 +57,6 @@ class IndexSales extends DataTableComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Code'), 'code')
-                ->searchable()
-                ->sortable(),
             Column::make(__('Description'), 'description')
                 ->searchable()
                 ->sortable(),
@@ -70,19 +69,13 @@ class IndexSales extends DataTableComponent
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                 ]),
-            BooleanColumn::make(__('Issue'), 'id')
-                ->setCallback(function(string $value, $row) {
-                    return !(bool)$row->issues->count();
-                })
-                ->sortable(),
+            // BooleanColumn::make(__('Issue'), 'id')
+            //     ->setCallback(function(string $value, $row) {
+            //         return !(bool)$row->issues->count();
+            //     })
+            //     ->sortable(),
             Column::make(__('Created_at'), 'created_at')
                 ->sortable(),
-            auth()->user()->hasRole('operator') ? NULL : ViewComponentColumn::make(__('Actions'), 'id')
-                ->component('laravel-livewire-tables.sales.actions')
-                ->excludeFromColumnSelect()
-                ->attributes(fn ($value, $row, Column $column) => [
-                    'id' => $row->id,
-                ]),
         ];
     }
 

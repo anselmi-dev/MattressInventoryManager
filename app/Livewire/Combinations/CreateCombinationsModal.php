@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Combinations;
 
-use App\Models\Combination;
+use App\Models\Product as Model;
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Support\Facades\DB;
 
 class CreateCombinationsModal extends ModalComponent
 {
-    public Combination $combination;
+    public Model $combination;
 
     public int $quantity;
 
@@ -52,7 +52,7 @@ class CreateCombinationsModal extends ModalComponent
         return false;
     }
 
-    public function mount(Combination $combination)
+    public function mount(Model $combination)
     {
         $this->combination = $combination;
     }
@@ -66,7 +66,7 @@ class CreateCombinationsModal extends ModalComponent
     {
         $this->validate();
         
-        $minStock = $this->combination->products()->min('stock');
+        $minStock = $this->combination->combinedProducts()->min('stock');
 
         if ($this->quantity > $minStock) {
             $this->addError('quantity', __('The quantity must be equal to or less than :quantity', ['quantity' => $minStock]));

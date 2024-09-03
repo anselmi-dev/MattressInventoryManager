@@ -37,8 +37,8 @@ class IndexUsers extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'rows' => $this->getRows(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
@@ -77,7 +77,7 @@ class IndexUsers extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->deselected(),
-            ViewComponentColumn::make(__('Actions'), 'id')
+            ViewComponentColumn::make(__(''), 'id')
                 ->component('laravel-livewire-tables.users.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [

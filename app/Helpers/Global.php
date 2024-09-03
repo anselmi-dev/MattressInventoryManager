@@ -55,8 +55,8 @@ if (!function_exists('count_tops')) {
 if (!function_exists('count_combinations')) {
     function count_combinations ()
     {
-        return Cache::remember('count:combinations', 100, function () {
-            return Combination::count();
+        return Cache::remember('count:combinations', 1000, function () {
+            return Product::whereCombinations()->visible()->count();
         });
     }
 }
@@ -67,6 +67,18 @@ if (!function_exists('appendCentimeters')) {
         $number = str_replace('.00', '', $number);
 
         return "{$number}cm";
+    }
+}
+
+if (!function_exists('color_average_stock')) {
+    function color_average_stock (int $stock, int|float $average_sales) {
+        if ($stock < $average_sales)
+            return 'red';
+        
+        if ($stock <= ($average_sales + 5))
+            return 'yellow';
+        
+        return 'emerald';
     }
 }
 

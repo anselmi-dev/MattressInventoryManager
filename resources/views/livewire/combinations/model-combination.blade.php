@@ -1,5 +1,5 @@
 <x-page.container>
-    <x-page.heading title="{{ $model->exists ? __('Edit Combination') . ' #' . $model->id : __('New Combination') }}" breadcrumbs="combinations">
+    <x-page.heading title="{{ $model->exists ? __('Edit Combination') . ' #' . $model->code : __('New Combination') }}" breadcrumbs="combinations">
         <x-slot name="actions">
             @if ($model->exists)    
                 <div class="flex flex-wrap gap-1">
@@ -28,6 +28,17 @@
                     </div>
                 </x-form.group-left>
 
+                <x-form.group-left :label="__('Name')">
+                    <x-slot name="description">
+                    </x-slot>
+                    <div class="sm:max-w-md">
+                        <x-wireui:input
+                            :placeholder="__('Name')"
+                            wire:model="form.name"
+                        />
+                    </div>
+                </x-form.group-left>
+
                 <x-form.group-left :label="__('Dimension')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
@@ -40,31 +51,6 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Base')">
-                    <div
-                        @class([
-                            "sm:max-w-md",
-                            "hidden" => !$form['dimension_id']
-                        ])
-                    >
-                        <x-wireui:select
-                            :placeholder="__('Select one Base')"
-                            :options="$this->bases"
-                            option-label="code.value"
-                            option-value="id"
-                            wire:model.defer="form.base_id"
-                        />
-                    </div>
-                    @if (!$form['dimension_id'])
-                        <div class="flex">
-                            <div class="py-1 px-2 rounded border border-gray-50 | flex items-center gap-1 w-auto bg-gray-100">
-                                <x-icons.pixelarticons-alert class="h-4 text-app-default"/>
-                                <span>{{ __('Select one Dimension') }}</span>
-                            </div>
-                        </div>
-                    @endif
-                </x-form.group-left>
-
                 <x-form.group-left :label="__('Cover')">
                     <div
                         @class([
@@ -75,7 +61,7 @@
                         <x-wireui:select
                             :placeholder="__('Select one Cover')"
                             :options="$this->covers"
-                            option-label="code.value"
+                            option-label="code"
                             option-value="id"
                             wire:model.defer="form.cover_id"
                         />
@@ -100,9 +86,34 @@
                         <x-wireui:select
                             :placeholder="__('Select one Top')"
                             :options="$this->tops"
-                            option-label="code.value"
+                            option-label="code"
                             option-value="id"
                             wire:model.defer="form.top_id"
+                        />
+                    </div>
+                    @if (!$form['dimension_id'])
+                        <div class="flex">
+                            <div class="py-1 px-2 rounded border border-gray-50 | flex items-center gap-1 w-auto bg-gray-100">
+                                <x-icons.pixelarticons-alert class="h-4 text-app-default"/>
+                                <span>{{ __('Select one Dimension') }}</span>
+                            </div>
+                        </div>
+                    @endif
+                </x-form.group-left>
+                
+                <x-form.group-left :label="__('Base')">
+                    <div
+                        @class([
+                            "sm:max-w-md",
+                            "hidden" => !$form['dimension_id']
+                        ])
+                    >
+                        <x-wireui:select
+                            :placeholder="__('Select one Base')"
+                            :options="$this->bases"
+                            option-label="code"
+                            option-value="id"
+                            wire:model.defer="form.base_id"
                         />
                     </div>
                     @if (!$form['dimension_id'])

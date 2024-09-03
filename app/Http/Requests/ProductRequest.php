@@ -30,7 +30,7 @@ class ProductRequest extends FormRequest
     public function rules($id = null): array
     {
         $rules = [
-            'code' => 'required|unique:codes,value,'.$id,
+            'code' => 'required|unique:products,code,'.$id,
             'type' => 'required',
             'dimension_id' => 'required',
             'stock' => 'required|integer|min:0',
@@ -58,6 +58,7 @@ class ProductRequest extends FormRequest
     public function fill () : array 
     {
         return [
+            'code',
             'type',
             'dimension_id',
             'stock',

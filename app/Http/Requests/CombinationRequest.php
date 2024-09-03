@@ -29,7 +29,8 @@ class CombinationRequest extends FormRequest
     public function rules($id = null): array
     {
         $rules = [
-            'code' => 'required|unique:codes,value,'.$id,
+            'code' => 'required|unique:products,code,'.$id,
+            'name' => 'required|string|max:100',
             'dimension_id' => 'required',
             'stock' => 'required|integer|min:0',
             'description' => 'max:500',
@@ -45,6 +46,7 @@ class CombinationRequest extends FormRequest
     {
         $attributes = [
             'code' => __('Code'),
+            'name' => __('Name'),
             'dimension_id' => __('Cover'),
             'cover_id' => __('Cover'),
             'top_id' => __('Top'),
@@ -59,6 +61,8 @@ class CombinationRequest extends FormRequest
     public function fill () : array 
     {
         return [
+            'code',
+            'name',
             'dimension_id',
             'stock',
             'description',

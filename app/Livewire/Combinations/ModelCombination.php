@@ -3,10 +3,10 @@
 namespace App\Livewire\Combinations;
 
 use Livewire\Component;
-use App\Models\Combination as Model;
+use App\Models\Product as Model;
+use App\Models\Product;
 use App\Http\Requests\CombinationRequest as RequestModel;
 use App\Traits\HandlesModelForm;
-use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 
 class ModelCombination extends Component
@@ -50,7 +50,6 @@ class ModelCombination extends Component
         $this->form = $this->model->only($fill);
 
         if ($this->model->exists) {
-            $this->form['code'] = optional($this->model->code)->value;
             
             $this->form['base_id'] = optional($this->model->base)->id;
             
@@ -58,7 +57,6 @@ class ModelCombination extends Component
             
             $this->form['top_id'] = optional($this->model->top)->id;
         }
-
     }
 
     public function submit()
@@ -67,13 +65,8 @@ class ModelCombination extends Component
 
         if ($this->model->exists) {
             $this->model->update($this->form);
-            
-            if ($this->form['code']) {
-                $this->model->code->value = $this->form['code'];
-                $this->model->code->save();
-            }
 
-            $this->model->products()->sync([
+            $this->model->combinedProducts()->sync([
                 $this->form['base_id'],
                 $this->form['cover_id'],
                 $this->form['top_id'],
@@ -83,13 +76,11 @@ class ModelCombination extends Component
 
         } else {
             
-            $model = $this->model->create($this->form);
+            $this->form['type'] = 'combination';
             
-            if ($this->form['code']) {
-                $model->code()->create(['value' => $this->form['code']]);
-            }
+            $model = $this->model->create($this->form);
 
-            $model->products()->sync([
+            $model->combinedProducts()->sync([
                 $this->form['base_id'],
                 $this->form['cover_id'],
                 $this->form['top_id'],
@@ -105,7 +96,6 @@ class ModelCombination extends Component
     {
         return Product::orderBy('id')
             ->where('type', 'top')
-            ->with('code')
             ->when(optional($this->form)['dimension_id'], function ($query) {
                 $query->where('dimension_id', $this->form['dimension_id']);
             })
@@ -120,7 +110,6 @@ class ModelCombination extends Component
     {
         return Product::orderBy('id')
             ->where('type', 'cover')
-            ->with('code')
             ->when(optional($this->form)['dimension_id'], function ($query) {
                 $query->where('dimension_id', $this->form['dimension_id']);
             })
@@ -135,7 +124,6 @@ class ModelCombination extends Component
     {
         return Product::orderBy('id')
             ->where('type', 'base')
-            ->with('code')
             ->when(optional($this->form)['dimension_id'], function ($query) {
                 $query->where('dimension_id', $this->form['dimension_id']);
             })
@@ -149,10 +137,10 @@ class ModelCombination extends Component
     public function getDimensionsProperty ()
     {
         return Cache::rememberForever('selector:dimension', function () {
-            return \App\Models\Dimension::with(['code'])->orderBy('id')->orderBy('width')->get()->map(function ($dimension) {
+            return \App\Models\Dimension::orderBy('id')->orderBy('width')->get()->map(function ($dimension) {
                 return [
                     'id' => $dimension->id,
-                    'code' => "{$dimension->code->value}",
+                    'code' => "{$dimension->code}",
                     'description' => "{$dimension->width}x{$dimension->height}cm"
                 ];
             });

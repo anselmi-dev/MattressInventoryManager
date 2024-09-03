@@ -2,29 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Traits\ScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Base;
-use App\Observers\CombinationObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
- 
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
 
-#[ObservedBy([CombinationObserver::class])]
 class Combination extends Model
 {
-    use HasFactory, SoftDeletes, ScopeTrait, LogsActivity;
-    
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
-    }
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -32,127 +16,27 @@ class Combination extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'stock',
-        'name',
-        'dimension_id',
+        'product_id',
+        'combined_product_id'
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Relación con el producto combinado
      *
-     * @var array<int, string>
+     * @return BelongsTo
      */
-    protected $hidden = [
-        'dimension_id',
-    ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-    ];
-
-    /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'stock' => 0,
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function combinedProduct() : BelongsTo
     {
-        return [
-            'stock' => 'integer'
-        ];
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logOnly($this->fillable)
-            ->logOnlyDirty();
-    }
-    
-    public function code()
-    {
-        return $this->morphOne(Code::class, 'model');
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsTo(Product::class, 'combined_product_id');
     }
 
     /**
-     * Get the Dimension that owns the Base.
-     */
-    public function dimension(): BelongsTo
-    {
-        return $this->belongsTo(Dimension::class)->withTrashed();
-    }
-
-    public function cover()
-    {
-        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
-            ->with('code')
-            ->where('type', 'cover');
-    }
-
-    public function top()
-    {
-        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
-            ->with('code')
-            ->where('type', 'top');
-    }
-
-    public function base()
-    {
-        return $this->hasOneThrough(Product::class, CombinationProduct::class, 'combination_id', 'id', 'id', 'product_id')
-            ->with('code')
-            ->where('type', 'base');
-    }
-
-    /**
-     * Descrement parts
+     * Relación con el producto que forma parte de la combinación
      *
-     * @param integer $quantity
-     * @return void
+     * @return BelongsTo
      */
-    public function decrementStockProducts (int $quantity):void
+    public function product() : BelongsTo
     {
-        $this->products()->decrement('stock', $quantity);
-    }
-
-    /**
-     * Descrement parts
-     *
-     * @param integer $quantity
-     * @return void
-     */
-    public function decrementStock (int $quantity):void
-    {
-        $this->decrement('stock', $quantity);
-    }
-
-    /**
-     * Descrement parts
-     *
-     * @param integer $quantity
-     * @return void
-     */
-    public function manufacture (int $quantity):void
-    {
-        $this->decrementStockProducts($quantity);
-
-        $this->increment('stock', $quantity);
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }

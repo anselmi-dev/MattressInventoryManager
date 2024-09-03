@@ -32,20 +32,17 @@ class ProcessPendingSales implements ShouldQueue
 
         foreach ($pendingSales as $sale) {
             
-            $code = Code::with('model')->where('value', $sale->code)->first();
+            $products = $sale->products;
 
             $sale->status = 'error';
 
-            if (!$code)
-                continue;
-            elseif (!$code->model)
-                continue;
-            else {
-                $code->model->decrementStock($sale->quantity);
+            if (count($products)) {
+            
+                $sale->decrementStock($sale->quantity);
 
                 $sale->status = 'processed';
             }
-
+        
             $sale->save();
         }
     }

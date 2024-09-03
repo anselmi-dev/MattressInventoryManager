@@ -15,10 +15,14 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['top', 'base', 'cover']);
+            $table->string('code')->unique();
+            $table->string('name')->nullable();
+            $table->enum('type', ['top', 'base', 'cover', 'combination']);
             $table->foreignIdFor(Dimension::class)->onDelete('cascade');
             $table->boolean('visible')->default(true);
             $table->integer('stock')->default(0);
+            $table->integer('minimum_order')->default(0);
+            $table->boolean('minimum_order_notification_enabled')->default(false);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -3,7 +3,10 @@
 namespace App\Imports;
 
 use App\Models\Code;
+use App\Models\Product;
 use App\Models\Sale;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -13,33 +16,39 @@ use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Validators\Failure;
 use Illuminate\Support\Facades\DB;
 
-class SalesImport implements ToModel, WithHeadingRow, WithEvents, WithChunkReading, WithBatchInserts
+class SalesImport implements ToCollection, WithHeadingRow, WithEvents, WithChunkReading, WithBatchInserts
 {
 
     protected $errors = [];
 
-    /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
-    public function model(array $row)
+    public function collection (Collection $rows)
     {
-        $product = str_replace('ArtÍculo: ', '', $row['producto']);
+        foreach ($rows as $key => $row) {
+            $product = str_replace('ArtÍculo: ', '', $row['producto']);
+        
+            list($code, $description) = explode(" - ", $product);
     
-        list($code, $description) = explode(" - ", $product);
+            $product = Product::where('code', $code)->first();
+            
+            $sale = new Sale([
+                'description' => $description,
+                'quantity' => $row['unidades'],
+            ]);
 
-        $model_code = Code::where('value', $code)->first();
+            if (!$product) {
+                $this->errors[] = new Failure(count($this->errors) + 1, $code, ["No se encontró registro para el código '{$code}'"], array([]));
+            }
 
-        if (!$model_code) {
-            $this->errors[] = new Failure(count($this->errors) + 1, $code, ["No se encontró registro para el código '{$code}'"], array([]));
+            $sale->save();
+
+            if ($product) {
+                $sale->products()->attach($product, ['quantity' => $row['unidades']]);
+                foreach ($product->combinedProducts as $key => $combinedProduct) {
+                    $sale->products()->attach($combinedProduct, ['quantity' => $row['unidades']]);
+                }
+            }
         }
 
-        return new Sale([
-            'code' => $code,
-            'description' => $description,
-            'quantity' => $row['unidades'],
-        ]);
     }
 
     public function headingRow(): int

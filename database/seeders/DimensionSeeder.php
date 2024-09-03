@@ -16,26 +16,15 @@ class DimensionSeeder extends Seeder
     {
         foreach ([
             100,
-            150,
-            200,
-            250,
-            300,
-            350,
-            400,
+            150
         ] as $key => $value) {
             $dimension = Dimension::firstOrCreate([
+                'code' => 'DIMEN00' . $key,
+            ], [
                 'height' => $value,
                 'width' => $value,
-            ], [
                 'visible' => true,
             ]);
-
-            if ($dimension->wasRecentlyCreated) {
-
-                $code = new Code(["value" => 'DIMEN00' . $key]);
-                
-                $dimension->code()->save($code);
-            }
         }
     }
 }
