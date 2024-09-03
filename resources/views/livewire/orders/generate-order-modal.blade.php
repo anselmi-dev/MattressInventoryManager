@@ -7,7 +7,7 @@
         <x-form.section-left>
             <div class="divide-y divide-gray-300 overflow-hidden w-full">
                 @forelse ($products as $key => $product)
-                    <x-orders.card-product-order :product="$product" :quantity="$order_product->quantity">
+                    <x-orders.card-product-order :product="$product" :quantity="$product->quantity">
                         <div class="flex items-center justify-between gap-1.5">
                             <div class="sm:max-w-[200px]">
                                 <x-wireui:number
