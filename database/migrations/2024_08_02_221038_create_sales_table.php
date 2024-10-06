@@ -13,18 +13,27 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->integer('quantity');
-            // $table->enum('type', ['product', 'combination'])->default('product');
-            $table->enum('status', ['pending', 'processed', 'error'])->default('pending');
+            $table->string('CODFAC');
+            $table->string('ESTFAC');
+            $table->string('CLIFAC')->nullable();
+            $table->string('CNOFAC')->nullable();
+            $table->string('CEMFAC')->nullable();
+            $table->string('TIPFAC')->nullable();
+            $table->float('TOTFAC', precision: 53);
+            $table->float('IREC1FAC', precision: 53);
+            $table->float('NET1FAC', precision: 53);
+            $table->float('IIVA1FAC', precision: 53);
+            $table->timestamp('FECFAC');
             $table->timestamps();
         });
-
+        
         Schema::create('product_sale', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('sale_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity');
+            $table->string('ARTLFA')->description('Código del artículo');
+            $table->integer('CANLFA');
+            $table->float('TOTLFA', precision: 53);
+            $table->string('DESLFA')->nullable();
             $table->timestamps();
         });
     }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProductSale extends Model
 {
@@ -17,6 +19,63 @@ class ProductSale extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'quantity',
+        'sale_id',
+        'CANLFA', // CANTIDAD DEL PRODUCTO
+        'ARTLFA', // CÓDIGO DEL ARTÍCULO
+        'TOTLFA', // TOTAL DE LA LINEA DE LA FACTURA
+        'DESLFA', // DESCRIPCIÓN
     ];
+
+    /**
+     * Belongs to a product, including soft-deleted ones.
+     *
+     * @return BelongsTo
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'ARTLFA', 'code')->withTrashed();
+    }
+
+    /**
+     * Belongs to a sale
+     *
+     * @return BelongsTo
+     */
+    public function sale(): BelongsTo
+    {
+        return $this->belongsTo(Sale::class);
+    }
+
+    /**
+     * Has one special measurement
+     *
+     * @return HasOne
+     */
+    public function special_measurement(): HasOne
+    {
+        return $this->hasOne(SpecialMeasurement::class);
+    }
+
+    /**
+     * Decrement Stock
+     *
+     * @return void
+     */
+    public function decrementStock() : void
+    {
+        if ($this->product) {
+            $this->product->decrementStock($this->CANLFA);
+        }
+    }
+
+    /**
+     * Is Manufactured
+     *
+     * @return bool
+     */
+    public function getIsManufacturedAttribute () : bool
+    {
+        return $this->manufactured_quantity > 0;
+    }
+    
 }

@@ -18,7 +18,7 @@
         <div
             @class([
                 'row col-12' => $component->isBootstrap(),
-                'grid grid-cols-12 gap-6 px-4 md:p-0 mb-6' => $component->isTailwind(),
+                'grid grid-cols-12 gap-2 px-4 md:p-0 mb-6' => $component->isTailwind(),
             ])
             row="{{ $filterRowIndex }}"
         >

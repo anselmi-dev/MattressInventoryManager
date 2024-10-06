@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Observers\CombinationObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([CombinationObserver::class])]
 class Combination extends Model
 {
     use HasFactory;

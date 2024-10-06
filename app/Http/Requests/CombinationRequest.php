@@ -30,13 +30,13 @@ class CombinationRequest extends FormRequest
     {
         $rules = [
             'code' => 'required|unique:products,code,'.$id,
+            'reference' => 'required|unique:products,reference,'.$id,
             'name' => 'required|string|max:100',
             'dimension_id' => 'required',
             'stock' => 'required|integer|min:0',
             'description' => 'max:500',
-            'base_id' => 'required',
-            'cover_id' => 'required',
-            'top_id' => 'required',
+            'products' => ['required', 'array'],
+            // 'products.*' => ['integer', 'exists:products,id'],
         ];
 
         return array_combine(array_map(fn($k) => $this->prefix . $k, array_keys($rules)), $rules);
@@ -47,12 +47,11 @@ class CombinationRequest extends FormRequest
         $attributes = [
             'code' => __('Code'),
             'name' => __('Name'),
-            'dimension_id' => __('Cover'),
-            'cover_id' => __('Cover'),
-            'top_id' => __('Top'),
-            'base_id' => __('Base'),
+            'reference' => __('Reference'),
+            'dimension_id' => __('Dimension'),
             'stock' => __('Stock'),
             'description' => __('Description'),
+            'products' => __('Parts'),
         ];
 
         return array_combine(array_map(fn($k) => $this->prefix . $k, array_keys($attributes)), $attributes);
@@ -63,6 +62,7 @@ class CombinationRequest extends FormRequest
         return [
             'code',
             'name',
+            'reference',
             'dimension_id',
             'stock',
             'description',

@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Code;
 use WireUi\Traits\WireUiActions;
 
 trait HandlesModelForm
@@ -64,9 +63,9 @@ trait HandlesModelForm
             $this->notification(__("Successfully updated."));
         } else {
             
-            $model = $this->model->create($this->form);
+            $this->model->create($this->form);
 
-            $this->notification(__("Se creó correctamente."));
+            $this->notification(__("Record created successfully."));
         }
 
         return $this->redirect(route($this->getRedirectRoute()), navigate: true);

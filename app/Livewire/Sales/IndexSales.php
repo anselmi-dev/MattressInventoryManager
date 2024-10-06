@@ -47,7 +47,8 @@ class IndexSales extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
-            ->setDefaultSort('id', 'desc')
+            ->setDefaultSort('CODFAC', 'desc')
+            ->setPerPage(25)
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 
@@ -57,25 +58,34 @@ class IndexSales extends DataTableComponent
             Column::make('ID', 'id')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Description'), 'description')
-                ->searchable()
+            Column::make('#Factusol', 'CODFAC')->searchable()->sortable(),
+            Column::make(__('Cod. Client'), 'CLIFAC')->searchable()->sortable(),
+            Column::make(__('Client'), 'CNOFAC')->searchable()->sortable(),
+            ViewComponentColumn::make(__('Parts'), 'id')
+                ->component('laravel-livewire-tables.value')
+                ->attributes(fn ($value, $row, Column $column) => [
+                    'value' => $row->quantity ?? 0,
+                    'icon' => 'shopping-cart',
+                ])
                 ->sortable(),
-            Column::make(__('Quantity'), 'quantity')
-                ->sortable()
-                ->format(fn ($value) => $value),
-            ViewComponentColumn::make(__('Status'), 'status')
-                ->component('laravel-livewire-tables.sale-status')
+            Column::make(__('Total'), 'TOTFAC')->searchable()->sortable(),
+            ViewComponentColumn::make(__('Status'), 'ESTFAC')
+                ->component('laravel-livewire-tables.sales.status')
                 ->sortable()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                 ]),
-            // BooleanColumn::make(__('Issue'), 'id')
-            //     ->setCallback(function(string $value, $row) {
-            //         return !(bool)$row->issues->count();
-            //     })
-            //     ->sortable(),
-            Column::make(__('Created_at'), 'created_at')
-                ->sortable(),
+            Column::make('FECFAC', 'FECFAC')->sortable()
+                ->format(function ($value) {
+                    return $value ? $value->format('Y-m-d') : null;
+                }),
+            ViewComponentColumn::make(__(''), 'id')
+                ->component('laravel-livewire-tables.action-column')
+                ->excludeFromColumnSelect()
+                ->attributes(fn ($value, $row, Column $column) => [
+                    'id' => $row->id,
+                    'showLink' => route('sales.show', ['model' => $row->id]),
+                ])
         ];
     }
 
@@ -112,7 +122,6 @@ class IndexSales extends DataTableComponent
                 }),
         ];
     }
-
 
     public function delete($id)
     {

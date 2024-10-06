@@ -46,6 +46,7 @@ class IndexUsers extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
+            ->setPerPage(25)
             ->setFilterSlideDownDefaultStatusEnabled();
     }
 

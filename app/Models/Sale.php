@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\Product\QuantitySalesScope;
 use App\Observers\SaleObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -21,10 +23,17 @@ class Sale extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        // 'type',
-        'description',
-        'quantity',
-        'status',
+        'CODFAC', // CÓDIGO DE LA FACTURA
+        'TOTFAC', // TOTAL DE LA FACTURA
+        'CLIFAC',  // CÓDIGO DEL CLIENTE
+        'CNOFAC',  // NOMBRE DEL CLIENTE
+        'CEMFAC',  // CORREO DEL CLIENTE
+        'ESTFAC',  // ESTATUS DE LA FACTURA
+        'FECFAC',  // FECHA DE CREACIÓN
+        'IIVA1FAC', // IMPORTE DE LA FACTURA
+        'NET1FAC', // IMPORTE NETO
+        'TIPFAC', // TIPO DE FACTURA
+        'IREC1FAC', // TARIFA ADICIONAL
     ];
 
     /**
@@ -41,7 +50,7 @@ class Sale extends Model
      * @var array<int, string>
      */
     protected $appends = [
-        'label',
+        'status',
     ];
 
     /**
@@ -50,9 +59,6 @@ class Sale extends Model
      * @var array
      */
     protected $attributes = [
-        // 'type' => '',
-        'description' => '',
-        'quantity' => 0,
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -70,24 +76,70 @@ class Sale extends Model
     protected function casts(): array
     {
         return [
-            'quantity' => 'integer',
+            'FECFAC' => 'datetime',
         ];
     }
 
-    public function decrementStock()
+    /**
+     * Perform any actions required after the model boots.
+     *
+     * @return void
+     */
+    protected static function booted()
     {
-        foreach ($this->products as $key => $product) {
-            $product->decrementStock($this->quantity);
+        static::addGlobalScope(new QuantitySalesScope);
+    }
+
+    public function product_sales(): HasMany
+    {
+        return $this->hasMany(ProductSale::class);
+    }
+
+    public function product_sales_special_measures(): HasMany
+    {
+        return $this->hasMany(ProductSale::class)->where('DESLFA', 'like', "%MED. ESPECIAL%")->orWhere('DESLFA', 'like', "%MEDIDA ESPECIAL%");
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_sale', 'sale_id', 'ARTLFA', 'id', 'code')->withTimestamps();
+    }
+
+    public function decrementStock(): void
+    {
+        if ($this->getIsProcessedAttribute()) {
+
+            $product_sales = $this->products()->whereHas('product')->with('product')->get();
+
+            foreach ($this->product_sales as $product_sales) {
+                $product_sales->decrementStock();
+            }
         }
     }
 
-    public function products()
+    public function getIsProcessedAttribute(): bool
     {
-        return $this->belongsToMany(Product::class)->withTimestamps();
+        return $this->ESTFAC == 2;
     }
 
-    public function getLabelAttribute(): string
+    public function getStatusAttribute(): string
     {
-        return '';
+        switch ($this->ESTFAC) {
+            case 0:
+                return 'pending';
+                break;
+            case 1:
+                return 'pending';
+                break;
+            case 2:
+                return 'processed';
+                break;
+            case 4:
+                return 'error';
+                break;
+            default:
+                return '-';
+                break;
+        }
     }
 }

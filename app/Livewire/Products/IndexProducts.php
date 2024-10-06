@@ -4,6 +4,7 @@ namespace App\Livewire\Products;
 
 use App\Models\Product as Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Rappasoft\LaravelLivewireTables\{
     DataTableComponent,
     Views\Column,
@@ -12,6 +13,7 @@ use Rappasoft\LaravelLivewireTables\{
 };
 use WireUi\Traits\WireUiActions;
 use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
+use App\Helpers\Selector;
 
 class IndexProducts extends DataTableComponent
 {
@@ -36,7 +38,7 @@ class IndexProducts extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->whereNotCombinations();
+        return Model::query()->with('dimension')->whereNotCombinations();
     }
     
     public function configure(): void
@@ -59,28 +61,46 @@ class IndexProducts extends DataTableComponent
             Column::make(__('Code'), 'code')
                 ->searchable()
                 ->sortable(),
-            ViewComponentColumn::make(__('Media'), 'id')
-                ->component('laravel-livewire-tables.products.average_sales_media')
-                ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row)->average_sales_quantity ?? 0
-                ]),
-            Column::make(__('Width'), 'dimension.width')
+            Column::make(__('Name'), 'name')
+                ->sortable(),
+            Column::make(__('Type'), 'type')
                 ->searchable()
-                ->sortable()
-                ->format(fn ($value) => appendCentimeters($value)),
-            Column::make(__('Height'), 'dimension.height')
-                ->searchable()
-                ->sortable()
-                ->format(fn ($value) => appendCentimeters($value)),
+                ->sortable(),
+            Column::make(__('Med. Día'), 'average_sales_media')
+                ->label(function ($row) {
+                    return view('components.laravel-livewire-tables.value', [
+                        'value' => round($row->average_sales_media, 0),
+                        'tooltip' => 'Media x Día'
+                    ]);
+                })
+                ->html()
+                ->sortable(
+                    fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_media {$direction}")
+                ),
+            Column::make(__('Requerido'), 'average_sales_quantity')
+                ->label(function ($row) {
+                    return view('components.laravel-livewire-tables.value', [
+                        'value' => round($row->average_sales_quantity, 0),
+                        'tooltip' => 'Stock requerido en los próximos '. (int) settings()->get('stock:days', 10) . ' días.'
+                    ]);
+                })
+                ->html()
+                ->sortable(
+                    fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_quantity {$direction}")
+                ),
+            Column::make(__('Dimension'), 'dimension.code')
+                ->eagerLoadRelations()
+                ->sortable(),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                     'stock_order' => doubleval(optional($row)->stock_order ?? 0),
-                    'row' => doubleval(optional($row)->average_sales_quantity ?? 0),
-                ]),
-            BooleanColumn::make(__('Visible'), 'visible')->sortable(),
-            Column::make(__('Minimum Order'), 'minimum_order')
+                    'average_sales_quantity' => doubleval(optional($row)->average_sales_quantity ?? 0),
+                    'average_sales_media' => doubleval(optional($row)->average_sales_media ?? 0),
+                ])
+                ->sortable(),
+            Column::make(__('Min. Order'), 'minimum_order')
                 ->searchable()
                 ->sortable(),
             Column::make(__('Created at'), 'created_at')
@@ -90,7 +110,7 @@ class IndexProducts extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->deselected(),
-            ViewComponentColumn::make(__(''), 'id')
+            ViewComponentColumn::make(__('Actions'), 'id')
                 ->component('laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
@@ -105,13 +125,16 @@ class IndexProducts extends DataTableComponent
 
     public function filters(): array
     {
+        $options_dimensions = \App\Models\Dimension::orderBy('id')
+        ->orderBy('width')
+        ->get()
+        ->pluck('description','id');
+        
+        $options_dimensions = array_merge(['0' => __('All')], $options_dimensions->toArray());
+
         return [
             SelectFilter::make(__('Stock'))
-                ->options([
-                    '' => __('All'),
-                    'available' => __('Available'),
-                    'unavailable' => __('Unavailable'),
-                ])
+                ->options(Selector::stocks())
                 ->filter(function(Builder $builder, string $value) {
                     $builder->when($value == 'available', function ($query) {
                         $query->available(true);
@@ -120,15 +143,19 @@ class IndexProducts extends DataTableComponent
                     });
                 }),
             SelectFilter::make(__('Type'))
-                ->options([
-                    '' => __('All'),
-                    'base' => __('Bases'),
-                    'cover' => __('Covers'),
-                    'top' => __('Tops'),
-                ])
+                ->options(Selector::productTypes())
                 ->filter(function(Builder $builder, string $value) {
                     $builder->when($value, function ($query) use ($value) {
                         $query->where('type', $value);
+                    })->when($value == '', function ($query) use ($value) {
+                        $query->where('type', '!=', 'other');
+                    });
+                }),
+            SelectFilter::make(__('Dimension'))
+                ->options($options_dimensions)
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->when($value, function ($query) use ($value) {
+                        $query->where('dimension_id', $value);
                     });
                 }),
         ];
@@ -141,7 +168,7 @@ class IndexProducts extends DataTableComponent
         ];
     }
 
-    public function generateOrder()
+    public function generateOrder(): void
     {
         $products_id = $this->getSelected();
      
@@ -150,7 +177,7 @@ class IndexProducts extends DataTableComponent
         $this->dispatch('openModal', component: 'orders.generate-order-modal', arguments: ['product_ids' => $products_id]);
     }
 
-    public function delete($id)
+    public function delete($id): void
     {
         Model::whereIn('id', [$id])->delete();
 
@@ -162,7 +189,7 @@ class IndexProducts extends DataTableComponent
         );
     }
 
-    protected function refreshDataTableComponent ()
+    protected function refreshDataTableComponent (): void
     {
         $this->dispatch('refreshDatatable');
     }

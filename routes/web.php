@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+// VOLANA72X30
+// REVISAR EL STOK
 Route::middleware('auth')->group(function () {
     
     Route::middleware([
@@ -14,12 +16,13 @@ Route::middleware('auth')->group(function () {
         
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
             Route::get('/', \App\Livewire\Dimensions\IndexDimensions::class)->name('index');
+            Route::get('/{model}', \App\Livewire\Dimensions\ShowDimension::class)->name('show');
             Route::get('/m/{model?}', \App\Livewire\Dimensions\ModelDimension::class)->middleware(['role:develop|admin'])->name('model');
         });
 
         Route::middleware([])->prefix('partes')->name('products.')->group(function () {
             Route::get('/', \App\Livewire\Products\IndexProducts::class)->name('index');
-            Route::get('/s/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
+            Route::get('/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
             Route::get('/p/{model?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
         });
 
@@ -36,16 +39,21 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware([])->prefix('users')->name('users.')->middleware(['role:develop|admin'])->group(function () {
             Route::get('/', \App\Livewire\Users\IndexUsers::class)->name('index');
-            Route::get('/u/{model?}', \App\Livewire\Users\ModelUser::class)->name('model');
+            Route::get('/{model?}', \App\Livewire\Users\ModelUser::class)->name('model');
         });
         
         Route::middleware([])->prefix('ordenes')->name('orders.')->group(function () {
             Route::get('/', \App\Livewire\Orders\IndexOrders::class)->name('index');
-            Route::get('/o/{model}', \App\Livewire\Orders\ShowOrder::class)->name('show');
+            Route::get('/{model}', \App\Livewire\Orders\ShowOrder::class)->name('show');
         });
 
         Route::middleware([])->prefix('ventas')->name('sales.')->group(function () {
             Route::get('/', \App\Livewire\Sales\IndexSales::class)->name('index');
+            Route::get('/{model}', \App\Livewire\Sales\ShowSale::class)->name('show');
+        });
+        
+        Route::middleware([])->prefix('fabricacion-de-medidas-especiales')->name('manufacture-special-measures.')->group(function () {
+            Route::get('/', \App\Livewire\SpecialMeasures\IndexSpecialMeasures::class)->name('index');
         });
 
         Route::get('settings', \App\Livewire\Settings::class)->name('settings');

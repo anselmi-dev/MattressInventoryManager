@@ -1,8 +1,18 @@
 <x-page.container>
     <x-page.heading title="{{ __('Orders') }}" breadcrumbs="orders">
         <x-slot name="actions">
-            <div class="flex flex-wrap gap-1">
-            </div>
+            @if (!auth()->user()->hasRole(['operator']))
+                <x-wireui:button
+                    x-data="{ tooltip: '{{ __('Request more stock of the product by generating a new order.') }}' }"
+                    x-tooltip="tooltip"
+                    wire:click="$dispatch('openModal', { component: 'orders.generate-order-modal', arguments: {product_ids: []}})"
+                    type="button"
+                    icon="plus">
+                    <span>
+                        {{ __('Generate order') }}
+                    </span>
+                </x-wireui:button>
+            @endif
         </x-slot>
     </x-page.heading>
 

@@ -7,7 +7,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
-Route::get('/parts/index', function (Request $request) {
-    return \App\Models\Product::whereNotCombinations()->where('code', 'like', "%$request->search%")->orWhere('name', 'like', "%$request->search%")->get();
-})->name('api.parts.index');
+Route::get('/parts/index', [\App\Http\Controllers\Api\ProductController::class, 'parts'])->name('api.parts.index');

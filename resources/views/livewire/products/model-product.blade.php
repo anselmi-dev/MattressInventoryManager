@@ -12,35 +12,12 @@
             <x-form.section-left>
                 <x-form.group-left :label="__('Type')">
                     <div class="sm:max-w-md">
-                        <div
-                            @class([
-                                "selector-type-product",
-                                "selector-type-product--disble" => $has_combinations
-                            ])
-                        >
-                            @foreach ($this->types as $type)
-                                <div class="selector-type-product__item">
-                                    <input class="selector-type-product__input" type="radio" wire:model="form.type" value="{{ $type['id'] }}" name="type" id="{{ $type['label'] }}" @disabled($has_combinations)>
-                                    <label for="{{ $type['label'] }}" class="selector-type-product__label">
-                                        <span class="selector-type-product__icon">
-                                            @switch($type['id'])
-                                                @case('cover')
-                                                    <x-icons.cover/>
-                                                    @break
-                                                @case('base')
-                                                    <x-icons.base/>
-                                                    @break
-                                                @case('top')
-                                                    <x-icons.top/>
-                                                    @break
-                                                @default
-                                            @endswitch
-                                        </span>
-                                        <span class="selector-type-product__name">{{ $type['label'] }}</span>
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
+                        <x-wireui:select
+                            :placeholder="__('Select one Type')"
+                            :options="$this->product_types"
+                            wire:model.defer="form.type"
+                            :disabled="$has_combinations"
+                        />
 
                         @if ($has_combinations)    
                             <x-alerts.warning class="mt-2">
@@ -59,13 +36,25 @@
                     </div>
                 </x-form.group-left>
 
+                <x-form.group-left :label="__('Reference')">
+                    <x-slot name="description">
+                        {{ __("Represents the unique code stored in Factusol as 'EANART'.") }}
+                    </x-slot>
+                    <div class="sm:max-w-md">
+                        <x-wireui:input
+                            :placeholder="__('Reference')"
+                            wire:model="form.reference"
+                        />
+                    </div>
+                </x-form.group-left>
+
                 <x-form.group-left :label="__('Dimension')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
                             :placeholder="__('Select one Dimension')"
                             :options="$this->dimensions"
                             option-label="label"
-                            option-value="id"
+                            option-value="value"
                             wire:model.defer="form.dimension_id"
                         />
                     </div>
@@ -80,11 +69,13 @@
                     </div>
                 </x-form.group-left>
 
+                {{--
                 <x-form.group-left :label="__('Visible')">
                     <div class="sm:max-w-md">
                         <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
                     </div>
                 </x-form.group-left>
+                --}}
 
                 <x-form.group-left :label="__('Description')">
                     <div class="sm:max-w-md">
@@ -100,7 +91,7 @@
                     {{ __('Cancel') }}
                 </x-wireui:button>
 
-                <x-wireui:button primary type="button" spinner="submit" wire:target="submit" primary right-icon="check" wire:click="submit">
+                <x-wireui:button primary type="button" spinner="submit" wire:target="submit" primary right-icon="check" wire:click="preventSubmit">
                     {{ $model->exists ? __('Guardar') : __('Crear') }}
                 </x-wireui:button>
             </x-slot>

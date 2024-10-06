@@ -3,21 +3,29 @@
         class="relative flex justify-between items-center gap-x-3">
         <div class="flex min-w-0 gap-x-2">
             <div
-                class="p-1 rounded-full w-10 h-10 bg-gray-300 flex items-center justify-center text-white">
+                title="{{ __($product->type) }}"
+                class="p-1 rounded-full min-w-10 h-10 bg-gray-300 flex items-center justify-center text-gray-800">
                 @switch($product->type)
                     @case('top')
-                        <x-icons.top class="h-5" />
+                        <x-icons.top class="h-6"/>
                         @break
                     @case('combination')
-                        <x-icons.mattresss class="h-5" />
+                        <x-icons.mattresss class="h-6"/>
                         @break
                     @case('cover')
-                        <x-icons.cover class="h-5" />
+                        <x-icons.cover class="h-6"/>
                         @break
                     @case('base')
-                        <x-icons.base class="h-5" />
+                        <x-icons.base class="h-6"/>
+                        @break
+                    @case('pillow')
+                        <x-icons.pillow class="h-6"/>
+                        @break
+                    @case('bed-sheet')
+                        <x-icons.bed-sheet class="h-6"/>
                         @break
                     @default
+                        <x-icons.other class="h-6"/>
                 @endswitch
             </div>
 
@@ -36,9 +44,6 @@
         </div>
 
         <div class="flex flex-col justify-center shrink-0 items-end gap-1.5">
-            <span class="uppercase">
-                {{ __($product->type) }}
-            </span>
             <div class="flex items-center gap-x-1.5">
                 <span class="relative flex h-3 w-3">
                     <span
@@ -46,21 +51,22 @@
                     <span
                         class="relative inline-flex rounded-full h-3 w-3 bg-{{ $product->stock_color }}-600"></span>
                 </span>
-                <div class="flex flex-col">
-                    @if (@isset($quantity))
-                    <span class="flex">
-                        <span>{{ $quantity }}</span>
-                        @if (isset($return) && $return)
-                            <span class="ml-1">- {{ $return }}</span>
-                        @endif
+                <div class="flex flex-col items-end gap-0.5 text-sm">
+                    <span class="flex items-center space-x-1 | bg-gray-300 rounded-full px-1 w-fit">
+                        <span>{{ __('Stock') }}: </span> <span>{{ $product->stock }}</span>
                     </span>
-                    @else
-                        <span>{{ $product->stock }}</span>
+                    @if (@isset($quantity))
+                        <span class="flex items-center space-x-1 | bg-gray-300 rounded-full px-1 w-fit">
+                            <span>Mínimo</span>
+                            <x-wireui:icon name="shopping-cart" class="h-4"/>
+                            <span>{{ $quantity }}</span>
+
+                            @if (isset($return) && $return)
+                                <span>- {{ $return }}</span>
+                            @endif
+                        </span>
                     @endif
                 </div>
-                <span>
-                    {{ __('Quantity') }}
-                </span>
             </div>
         </div>
     </div>

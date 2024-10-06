@@ -20,6 +20,7 @@ use App\Models\Scopes\Product\{
     AverageSalesForLastDaysScope,
     StockOrderScope
 };
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy([ProductObserver::class])]
 class Product extends Model
@@ -34,6 +35,7 @@ class Product extends Model
     protected $fillable = [
         'code',
         'name',
+        'reference',
         'type',
         'dimension_id',
         'minimum_order_notification_enabled',
@@ -49,7 +51,6 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'dimension_id',
     ];
 
     /**
@@ -126,18 +127,28 @@ class Product extends Model
     }
 
     /**
+     * Has Many to a StockChange
+     *
+     * @return HasMany
+     */
+    public function stock_change(): HasMany
+    {
+        return $this->hasMany(StockChange::class);
+    }
+
+    /**
      * Relación muchos a muchos para productos combinados
      *
      * @return BelongsToMany
      */
     public function combinedProducts() : BelongsToMany
     {
-        return $this->belongsToMany(
-            Product::class, 
-            'combinations', 
-            'combined_product_id', 
-            'product_id'
-        );
+        return $this->belongsToMany(Product::class, 'combinations', 'combined_product_id', 'product_id');
+    }
+
+    public function factusolProduct()
+    {
+        return $this->hasOne(FactusolProduct::class, 'CODART', 'code');
     }
 
     /**
@@ -147,58 +158,53 @@ class Product extends Model
      */
     public function partOfCombinations() : BelongsToMany
     {
-        return $this->belongsToMany(
-            Product::class, 
-            'combinations', 
-            'product_id', 
-            'combined_product_id'
-        );
+        return $this->belongsToMany(Product::class, 'combinations', 'product_id', 'combined_product_id');
     }
 
-    public function order_products()
+    public function order_products(): HasMany
     {
         return $this->hasMany(OrderProduct::class);
     }
 
-    public function orders()
+    public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class, OrderProduct::class);
     }
 
-    public function cover()
+    public function sales(): BelongsToMany
     {
-        return $this->hasOneThrough(Product::class, Combination::class, 'combined_product_id', 'id', 'id', 'product_id')->where('type', 'cover');
+        return $this->belongsToMany(Sale::class, 'product_sale', 'ARTLFA', 'sale_id', 'code', 'id');
     }
 
-    public function top()
+    public function product_sales(): HasMany
     {
-        return $this->hasOneThrough(Product::class, Combination::class, 'combined_product_id', 'id', 'id', 'product_id')->where('type', 'top');
+        return $this->hasMany(ProductSale::class, 'ARTLFA', 'code');
     }
 
-    public function base()
+    public function productType()
     {
-        return $this->hasOneThrough(Product::class, Combination::class, 'combined_product_id', 'id', 'id', 'product_id')->where('type', 'base');
+        return $this->hasOne(ProductType::class, 'name', 'type');
     }
 
-    public function sales()
+    public function scopeWhereBase(Builder $query)
     {
-        return $this->belongsToMany(Sale::class)->withTimestamps();
-    }
-
-    public function product_sales()
-    {
-        return $this->hasMany(ProductSale::class);
-    }
-
-    public function scopeWhereCombinations(Builder $query)
-    {
-        $query->where('type', 'combination');
+        $query->where('type', 'base');
     }
 
     public function scopeWhereNotCombinations(Builder $query)
     {
-        $query->where('type', '!=', 'combination');
+        return $query->whereHas('productType', function (Builder $query) {
+            $query->where('part', true);
+        });
     }
+
+    public function scopeWhereCombinations(Builder $query)
+    {
+        return $query->whereHas('productType', function (Builder $query) {
+            $query->where('part', false);
+        });
+    }
+
 
     /**
      * Descrement parts
@@ -208,7 +214,9 @@ class Product extends Model
      */
     public function decrementStock (int $quantity) : void
     {
-        $this->decrement('stock', $quantity);
+        $this->update([
+            'stock' => $this->stock - $quantity
+        ]);
     }
 
     /**
@@ -219,11 +227,13 @@ class Product extends Model
      */
     public function decrementStockProducts (int $quantity):void
     {
-        $this->combinedProducts()->decrement('stock', $quantity);
+        $this->combinedProducts()->get()->map(function($product) use ($quantity) {
+            $product->decrementStock($quantity);
+        });
     }
 
     /**
-     * Descrement parts
+     * Manufacture combination
      *
      * @param integer $quantity
      * @return void
@@ -232,7 +242,9 @@ class Product extends Model
     {
         $this->decrementStockProducts($quantity);
 
-        $this->increment('stock', $quantity);
+        $this->update([
+            'stock' => $this->stock + $quantity
+        ]);
     }
 
     /**
@@ -260,6 +272,16 @@ class Product extends Model
             return route('combinations.show', ['model' => $this->id]);
 
         return route('products.show', ['model' => $this->id]);
+    }
+
+    /**
+     * Return is combination
+     *
+     * @return bool
+     */
+    public function getIsCombinationAttribute () : bool
+    {
+        return $this->type == 'combination';
     }
 
     /**

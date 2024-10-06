@@ -49,7 +49,8 @@ class DimensionObserver
 
     protected function refreshCache ()
     {
-        Cache::flush('selector:dimension');
+        Cache::flush('selector:dimensions');
+        
         Cache::flush('count:dimensions');
     }
 }

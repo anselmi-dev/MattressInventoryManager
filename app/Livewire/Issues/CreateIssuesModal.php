@@ -98,10 +98,10 @@ class CreateIssuesModal extends ModalComponent
 
             if (isset($this->form['id'])) {
                 Issue::where('id', $this->form['id'])->update($this->form);
-                $this->notification(__("It has been successfully created."));
+                $this->notification(__("Record created successfully."));
             } else {
                 $this->model->issues()->create($this->form);
-                $this->notification(__("It has been successfully created."));
+                $this->notification(__("Record created successfully."));
             }
             
             $this->dispatch('sales:refresh-datatable');

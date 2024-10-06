@@ -99,15 +99,6 @@ class Order extends Model
         return $this->status == 'processed';
     }
 
-    public function scopeWithCountQuantity (Builder $query)
-    {
-        return $query->withCount([
-            'products AS quantity' => function ($query) {
-                $query->select(\DB::raw("SUM(quantity) as quantity"));
-            }
-        ]);
-    }
-
     public function scopeRawProducts (Builder $query)
     {
         return $query

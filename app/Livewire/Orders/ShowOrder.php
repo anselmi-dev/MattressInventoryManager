@@ -6,6 +6,7 @@ use App\Models\{
     Order,
     Product
 };
+use App\Mail\OrderShipped;
 use Livewire\Component;
 use Illuminate\Support\Facades\Mail;
 
@@ -39,6 +40,30 @@ class ShowOrder extends Component
         return view('livewire.orders.show-order');
     }
 
+    /**
+     * Confirmar el envio del correo
+     * order:next:processed:message
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function confirm_delivery ()
+    {
+        $this->order->status = 'processed';
+
+        $this->order->order_products->map(function($order_product) {
+            $order_product->product->increment('stock', $order_product->quantity);
+        });
+
+        $this->order->save();
+
+        $this->redirectSelf();
+    }
+
+    /**
+     * Confirmar que llegó el pedido solicitado
+     * order:next:shipped:message
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function confirm_shipment ()
     {
         $this->validate();
@@ -47,30 +72,18 @@ class ShowOrder extends Component
 
         $this->order->save();
 
-        Mail::to($this->order->email)->later(now()->addSeconds(1), new \App\Mail\OrderShipped($this->order));
-
-        // order:next:shipped:message
-
-        $this->redirectSelf();
-    }
-
-    public function confirm_delivery ()
-    {
-        $this->order->status = 'processed';
-
-        $this->order->order_products->map(function($order_product) {
-            $order_product->product->increment('stock', $order_product->quantity);
-            $order_product->status = 'processed';
-            $order_product->save();
-        });
-
-        $this->order->save();
-        
-        // order:next:processed:message
+        if (settings()->get('notification', true)) {
+            Mail::to($this->order->email)->queue(new OrderShipped($this->order));
+        }
 
         $this->redirectSelf();
     }
 
+    /**
+     * Confirmar la cancelación de la orden.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function confirm_canceld ()
     {
         $this->order->status = 'canceled';
@@ -82,19 +95,36 @@ class ShowOrder extends Component
         $this->redirectSelf();
     }
 
-    public function delete($id)
+    /**
+     * Eliminar la orden pendiente
+     * No se puede eliminar después de haber cambiado el estado.
+     *
+     * @param string|int|array $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete(string|int|array $id)
     {
-        Order::whereIn('id', [$id])->delete();
+        Order::whereIn('id', is_array($id) ? $id : [$id])->delete();
 
         return $this->redirect(route('orders.index'), navigate: true);
     }
 
+    /**
+     *
+     * @return \Illuminate\Http\RedirectResponse The redirect response to the order's page.
+     */
     public function redirectSelf ()
     {
         return $this->redirect(route('orders.show', ['model' => $this->order->id]), navigate: true);
     }
 
-    public function addPart ()
+    /**
+     * Agregar más producto a la orden pendiente.
+     * No se puede agregar más cuando la orden se encuentra en enviado, es decir, cuando ya se mandó el correo
+     *
+     * @return void
+     */
+    public function addPart (): void
     {
         $this->validate([
             'new.part' => 'required'

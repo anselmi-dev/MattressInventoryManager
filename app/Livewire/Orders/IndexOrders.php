@@ -56,24 +56,25 @@ class IndexOrders extends DataTableComponent
         return [
             Column::make('ID', 'id')
                 ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->deselected(),
             Column::make(__('Email'), 'email')
                 ->sortable(),
             Column::make(__('Status'), 'status')
                 ->sortable()
                 ->format(fn ($value) => __($value)),
-            ViewComponentColumn::make(__('Products'), 'id')
+            ViewComponentColumn::make(__('Parts'), 'id')
                 ->component('laravel-livewire-tables.value')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $row->products_count ?? 0,
-                    'icon' => 'archive-box',
+                    'icon' => 'shopping-cart',
                 ])
                 ->sortable(),
             ViewComponentColumn::make(__('Quantity'), 'id')
                 ->component('laravel-livewire-tables.value')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => optional($row)->products_quantity ?? 0,
-                    'icon' => 'square-2-stack',
+                    'icon' => 'archive-box',
                 ])
                 ->sortable(),
             Column::make(__('Created at'), 'created_at')
@@ -89,7 +90,7 @@ class IndexOrders extends DataTableComponent
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,
                     'showLink' => route('orders.show', ['model' => $row->id]),
-                    'deleteEmit' => 'combinations:delete',
+                    'deleteEmit' => 'orders:delete',
                 ]),
         ];
     }

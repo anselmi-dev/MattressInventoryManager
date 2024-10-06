@@ -104,7 +104,7 @@
 
 .selector-type-product {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     max-width: 100%;
     gap: 2px;
     &__input {
@@ -129,7 +129,8 @@
     }
 
     &__name {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        line-height: 1;
     }
 
     &__icon {

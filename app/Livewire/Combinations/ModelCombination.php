@@ -2,16 +2,26 @@
 
 namespace App\Livewire\Combinations;
 
+use App\Helpers\Selector;
 use Livewire\Component;
 use App\Models\Product as Model;
 use App\Models\Product;
 use App\Http\Requests\CombinationRequest as RequestModel;
 use App\Traits\HandlesModelForm;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Arr;
+use App\Models\Dimension;
 
 class ModelCombination extends Component
 {
     use HandlesModelForm;
+
+    public $new = [
+        'part' => null,
+        'filters' => [
+            'type' => '',
+            'dimension_id' => ''
+        ]
+    ];
 
     protected function getModelClass()
     {
@@ -44,106 +54,111 @@ class ModelCombination extends Component
         $modelClass = $this->getModelClass();
 
         $this->model = $model ? $modelClass::findOrFail($model) : new $modelClass;
-
-        $fill = ($this->getRequestInstance())->fill();
-
-        $this->form = $this->model->only($fill);
+        
+        $this->form = $this->model->only(($this->getRequestInstance())->fill());
 
         if ($this->model->exists) {
-            
-            $this->form['base_id'] = optional($this->model->base)->id;
-            
-            $this->form['cover_id'] = optional($this->model->cover)->id;
-            
-            $this->form['top_id'] = optional($this->model->top)->id;
+            $this->model->combinedProducts->map(function ($product) {
+                $this->form['products'][] = $product;
+            });
+        } else {
+            $this->form['products'] = [];
         }
+
+        $this->form['type'] = 'COLCHON';
     }
 
     public function submit()
     {
         $this->validate();
 
-        if ($this->model->exists) {
-            $this->model->update($this->form);
+        $model = Model::updateOrCreate(
+            Arr::only($this->form, ['code']),
+            Arr::only($this->form, [
+                'name',
+                'type',
+                'dimension_id',
+                'minimum_order_notification_enabled',
+                'minimum_order',
+                'stock',
+                'visible',
+                'description',
+            ])
+        );
+        
+        $model->combinedProducts()->sync(collect($this->form['products'])->pluck('id')->toArray());
 
-            $this->model->combinedProducts()->sync([
-                $this->form['base_id'],
-                $this->form['cover_id'],
-                $this->form['top_id'],
-            ]);
-
-            $this->notification(__("Successfully updated."));
-
-        } else {
-            
-            $this->form['type'] = 'combination';
-            
-            $model = $this->model->create($this->form);
-
-            $model->combinedProducts()->sync([
-                $this->form['base_id'],
-                $this->form['cover_id'],
-                $this->form['top_id'],
-            ]);
-
-            $this->notification(__("Se creó correctamente."));
+        if ($model->wasRecentlyCreated) {
+            $model->decrementStockProducts($model->stock);
         }
+
+        $this->notification($model->wasRecentlyCreated ? __('Record created successfully.') : __("Successfully updated."));
 
         return $this->redirect(route($this->getRedirectRoute()), navigate: true);
     }
     
-    public function getTopsProperty ()
+    public function addPart (): void
     {
-        return Product::orderBy('id')
-            ->where('type', 'top')
-            ->when(optional($this->form)['dimension_id'], function ($query) {
-                $query->where('dimension_id', $this->form['dimension_id']);
-            })
-            ->when($this->model->getKey(), function ($query) {
-                $query->withTrashed()
-                    ->whereNull('deleted_at')
-                    ->orWhere('id', $this->model->top_id);
-            })->get();
+        $this->validate([
+            'new.part' => ['required', 'exists:products,id'],
+        ], [
+            'new.part.required' => 'Seleccione una parte',
+        ]);
+
+        if ($product = Product::find($this->new['part'])) {
+   
+            $this->form['products'][] = $product;
+            
+            $this->new = [
+                'part' => null,
+                'filters' => [
+                    'type' => ''
+                ]
+            ];
+        } else {
+            $this->notification(__('Not Found'));
+        }
     }
 
-    public function getCoversProperty ()
+    public function remove ($index): void
     {
-        return Product::orderBy('id')
-            ->where('type', 'cover')
-            ->when(optional($this->form)['dimension_id'], function ($query) {
-                $query->where('dimension_id', $this->form['dimension_id']);
-            })
-            ->when($this->model->getKey(), function ($query) {
-                $query->withTrashed()
-                    ->whereNull('deleted_at')
-                    ->orWhere('id', $this->model->top_id);
-            })->get();
-    }
-
-    public function getBasesProperty ()
-    {
-        return Product::orderBy('id')
-            ->where('type', 'base')
-            ->when(optional($this->form)['dimension_id'], function ($query) {
-                $query->where('dimension_id', $this->form['dimension_id']);
-            })
-            ->when($this->model->getKey(), function ($query) {
-                $query->withTrashed()
-                    ->whereNull('deleted_at')
-                    ->orWhere('id', $this->model->top_id);
-            })->get();
+        unset($this->form['products'][$index]);
     }
 
     public function getDimensionsProperty ()
     {
-        return Cache::rememberForever('selector:dimension', function () {
-            return \App\Models\Dimension::orderBy('id')->orderBy('width')->get()->map(function ($dimension) {
+        return Dimension::when($this->model->getKey(), function ($query) {
+                $query->withTrashed()
+                    ->where(function ($query) {
+                        $query->whereNull('deleted_at')
+                            ->orWhere('id', (int) $this->model->dimension_id);
+                    });
+            })
+            ->orderBy('width')
+            ->get()
+            ->map(function ($dimension) {
                 return [
-                    'id' => $dimension->id,
-                    'code' => "{$dimension->code}",
-                    'description' => "{$dimension->width}x{$dimension->height}cm"
+                    'value' => $dimension->id,
+                    'label' => $dimension->code,
+                    'description' => $dimension->description ?? $dimension->label
                 ];
             });
-        });
+    }
+
+    public function getProductTypesProperty ()
+    {
+        return Selector::productTypes();
+    }
+
+    public function getPathAsyncDataProperty (): array
+    {
+        return [
+            'api' => route('api.parts.index'),
+            'method' => 'GET',
+            'params' => [
+                'type' => optional($this->new['filters'])['type'],
+                'dimension_id' => optional($this->new['filters'])['dimension_id'],
+            ]
+        ];
     }
 }

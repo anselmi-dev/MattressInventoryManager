@@ -26,12 +26,7 @@ class IndexCombinations extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->whereCombinations()->with([
-            'dimension',
-            'cover',
-            'top',
-            'base',
-        ]);
+        return Model::query()->whereCombinations();
     }
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -66,40 +61,21 @@ class IndexCombinations extends DataTableComponent
             Column::make(__('Name'), 'name')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Width'), 'dimension.width')
+            Column::make(__('Dimension'), 'dimension.description')
                 ->searchable()
                 ->sortable()
-                ->format(fn ($value) => appendCentimeters($value)),
-            Column::make(__('Height'), 'dimension.height')
-                ->searchable()
-                ->sortable()
-                ->format(fn ($value) => appendCentimeters($value)),
-            ViewComponentColumn::make(__('Cover'), 'id')
-                ->component('laravel-livewire-tables.link-product')
+                ->format(fn ($value) => $value ?? 'N/D'),
+            ViewComponentColumn::make(__('Media'), 'id')
+                ->component('laravel-livewire-tables.products.average_sales_media')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row->cover)->code,
-                    'link' => optional($row->cover)->route_show,
-                    'type' => 'cover'
-                ]),
-            ViewComponentColumn::make(__('Top'), 'id')
-                ->component('laravel-livewire-tables.link-product')
-                ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row->top)->code,
-                    'link' => optional($row->top)->route_show,
-                    'type' => 'top'
-                ]),
-            ViewComponentColumn::make(__('Base'), 'id')
-                ->component('laravel-livewire-tables.link-product')
-                ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row->base)->code,
-                    'link' => optional($row->base)->route_show,
-                    'type' => 'base'
+                    'value' => optional($row)->average_sales_quantity ?? 0
                 ]),
             ViewComponentColumn::make(__('Stock'), 'stock')
-                ->component('laravel-livewire-tables.stock')
-                ->sortable()
+                ->component('laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
+                    'stock_order' => doubleval(optional($row)->stock_order ?? 0),
+                    'row' => doubleval(optional($row)->average_sales_quantity ?? 0),
                 ]),
             Column::make(__('Created at'), 'created_at')
                 ->searchable()

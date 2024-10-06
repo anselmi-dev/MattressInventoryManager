@@ -13,6 +13,12 @@ Breadcrumbs::for('dimensions', function (BreadcrumbTrail $trail) {
     $trail->push(__('Dimensions'), route('dimensions.index'));
 });
 
+Breadcrumbs::for('dimensions.show', function (BreadcrumbTrail $trail, $model) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Dimensions'), route('dimensions.index'));
+    $trail->push("#{$model->code}");
+});
+
 Breadcrumbs::for('parts', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
     $trail->push(__('Parts'), route('products.index'));
@@ -73,4 +79,9 @@ Breadcrumbs::for('order.show', function (BreadcrumbTrail $trail, $order) {
 Breadcrumbs::for('activity', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
     $trail->push(__('Activity'), route('activity.index'));
+});
+
+Breadcrumbs::for('manufacture-special-measures', function (BreadcrumbTrail $trail) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Manufacture Special Measures'), route('manufacture-special-measures.index'));
 });

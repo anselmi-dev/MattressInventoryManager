@@ -7,6 +7,9 @@
         <x-form.container-left>
             <x-form.section-left>
                 <x-form.group-left :label="__('Code')">
+                    <x-slot name="description">
+                        {{ __('The code must be unique. It is recommended to start with :string', ['string' => '"DIM"']) }}
+                    </x-slot>
                     <div class="sm:max-w-md">
                         <x-wireui:input
                             :placeholder="__('Code')"
@@ -16,6 +19,9 @@
                 </x-form.group-left>
 
                 <x-form.group-left :label="__('Width')">
+                    <x-slot name="description">
+                        {{ __('Dimension in centimeters (cm)') }}
+                    </x-slot>
                     <div class="sm:max-w-md">
                         <x-wireui:number
                             :placeholder="__('Width')"
@@ -25,6 +31,9 @@
                 </x-form.group-left>
 
                 <x-form.group-left :label="__('Height')">
+                    <x-slot name="description">
+                        {{ __('Dimension in centimeters (cm)') }}
+                    </x-slot>
                     <div class="sm:max-w-md">
                         <x-wireui:number
                             :placeholder="__('Height')"
@@ -33,12 +42,14 @@
                     </div>
                 </x-form.group-left>
 
-                <x-form.group-left :label="__('Visible')">
-                    <div class="sm:max-w-md">
-                        <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
-                    </div>
-                </x-form.group-left>
-
+                {{-- 
+                    <x-form.group-left :label="__('Visible')">
+                        <div class="sm:max-w-md">
+                            <x-wireui:toggle wire:model="form.visible" name="visible" rounded="full" xl />
+                        </div>
+                    </x-form.group-left>
+                --}}
+                
                 <x-form.group-left :label="__('Description')">
                     <div class="sm:max-w-md">
                         <x-wireui:textarea wire:model="form.description" :rows="2" placeholder="{{ __('Write your notes') }}" />

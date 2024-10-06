@@ -25,7 +25,7 @@ class ModalPreventDelete extends ModalComponent
         return view('livewire.modal-prevent-delete');
     }
 
-    public function submit()
+    public function submit(): void
     {
         $this->dispatch($this->emit, id: $this->model_id);
 

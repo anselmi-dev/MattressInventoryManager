@@ -16,7 +16,7 @@ class StockOrderScope implements Scope
         $builder->withSum([
             'order_products as stock_order' => function($query) {
                 $query->where('status', 'pending')
-                    ->select(\DB::raw("CAST(SUM(quantity) as DOUBLE)"));
+                    ->select(\DB::raw("CAST(COALESCE(SUM(quantity), 0) as DOUBLE)"));
             },
         ], 'quantity');
     }

@@ -21,7 +21,7 @@ class ShowProduct extends Component
     {
         return view('livewire.products.show-product', [
             'sales' => $this->model->sales()->paginate(3, ['*'], 'salesPage'),
-            'orders' => $this->model->orders()->withCountQuantity()->paginate(3, ['*'], 'ordersPage'),
+            'orders' => $this->model->orders()->rawProducts()->paginate(3, ['*'], 'ordersPage'),
         ]);
     }
 }

@@ -84,7 +84,7 @@ class ImportSalesModal extends ModalComponent
 
         $this->closeModal();
 
-        \App\Jobs\ProcessPendingSales::dispatch();
+        // \App\Jobs\ProcessPendingSales::dispatch();
         
         $this->dispatch('sales:refresh-datatable');
     }

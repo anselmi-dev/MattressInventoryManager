@@ -1,11 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use App\Models\{
-    Combination,
     Dimension,
     Product,
 };
-use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('count_dimensions')) {
     function count_dimensions ()
@@ -25,33 +24,6 @@ if (!function_exists('count_products')) {
     }
 }
 
-if (!function_exists('count_bases')) {
-    function count_bases ()
-    {
-        return Cache::remember('count:bases', 1000, function () {
-            return Product::where('type', 'base')->visible()->count();
-        });
-    }
-}
-
-if (!function_exists('count_covers')) {
-    function count_covers ()
-    {
-        return Cache::remember('count:covers', 1000, function () {
-            return Product::where('type', 'cover')->visible()->count();
-        });
-    }
-}
-
-if (!function_exists('count_tops')) {
-    function count_tops ()
-    {
-        return Cache::remember('count:tops', 1000, function () {
-            return Product::where('type', 'top')->visible()->count();
-        });
-    }
-}
-
 if (!function_exists('count_combinations')) {
     function count_combinations ()
     {
@@ -62,23 +34,25 @@ if (!function_exists('count_combinations')) {
 }
 
 if (!function_exists('appendCentimeters')) {
-    function appendCentimeters (int|string $number)
+    function appendCentimeters (int|string|null $number)
     {
         $number = str_replace('.00', '', $number);
 
-        return "{$number}cm";
+        return $number ? "{$number}cm" : '-';
     }
 }
 
 if (!function_exists('color_average_stock')) {
-    function color_average_stock (int $stock, int|float $average_sales) {
-        if ($stock < $average_sales)
-            return 'red';
-        
-        if ($stock <= ($average_sales + 5))
-            return 'yellow';
-        
-        return 'emerald';
+    function color_average_stock (int $stock, $average_sales) {
+        $media = $average_sales == 0 ? 0 : ($stock * 100 ) / $average_sales;
+    
+        if ($media > 110)
+            return 'emerald';
+
+        if ($media >= 100)
+            return 'orange';
+
+        return 'red';
     }
 }
 

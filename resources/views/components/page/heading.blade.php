@@ -10,7 +10,7 @@
     @endif
 
     @isset($title)    
-        <div class="lg:flex lg:items-center lg:justify-between">
+        <div class="flex items-center justify-between">
             <div class="min-w-0 flex-1">
                 <h1 @class([
                     "tracking-tight text-gray-900",

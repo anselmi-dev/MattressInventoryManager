@@ -49,6 +49,6 @@ class CombinationObserver
 
     protected function refreshCache ()
     {
-        Cache::flush('combinations:covers');
+        Cache::flush('count_combinations');
     }
 }

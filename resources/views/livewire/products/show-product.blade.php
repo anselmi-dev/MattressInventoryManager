@@ -22,6 +22,32 @@
         
     <x-page.content>
         <x-products.card-product :product="$model"/>
+        
+        <div class="border-b border-b-gray-900/10 lg:border-t lg:border-t-gray-900/5">
+            <dl class="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
+              <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 ">
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Ventas días anteriores</dt>
+                  {{-- <dd class="text-xs font-medium text-gray-700"</dd> --}}
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->quantity_sales }}</dd>
+                </div>
+              <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Media del periodo</dt>
+                  {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_media }}</dd>
+                </div>
+              <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 lg:border-l">
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Stock requerido del periodo</dt>
+                  {{-- <dd class="text-xs font-medium text-gray-700"</dd> --}}
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_quantity }}</dd>
+                </div>
+              <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Diferencia del stock</dt>
+                  {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_difference }}</dd>
+                </div>
+              
+            </dl>
+        </div>
     </x-page.content>
     
     <x-page.content>

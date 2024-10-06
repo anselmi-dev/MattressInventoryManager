@@ -7,7 +7,11 @@ export default {
     presets: [
         require("./vendor/wireui/wireui/tailwind.config.js")
     ],
-    plugins: [forms, typography],
+    plugins: [
+        forms,
+        typography,
+        require('@tailwindcss/line-clamp'),
+    ],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',

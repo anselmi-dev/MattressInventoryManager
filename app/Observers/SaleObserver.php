@@ -19,7 +19,9 @@ class SaleObserver
      */
     public function updated(Sale $sale): void
     {
-        //
+        if ($sale->isDirty('stock')) {
+            $sale->decrementStock();
+        }
     }
 
     /**

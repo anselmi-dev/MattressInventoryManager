@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Builder;
 
 #[ObservedBy([DimensionObserver::class])]
 class Dimension extends Model
@@ -81,10 +81,40 @@ class Dimension extends Model
             ->logOnly($this->fillable)
             ->logOnlyDirty();
     }
-    
-    public function getLabelAttribute ()
+            
+    /**
+     * Defines the "one-to-many" relationship between Dimension and Product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
     {
-        return "{$this->height}x{$this->width}";   
+        return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Scope to include the count of products associated with each dimension.
+     *
+     * This scope allows querying dimensions along with an additional field that contains 
+     * the number of products linked to each dimension.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder instance.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithProductCount(Builder $query)
+    {
+        return $query->withCount('products');
+    }
+
+    /**
+     * This attribute formats the height and width of the dimension into a 
+     * readable label (e.g., "120x200").
+     *
+     * @return string
+     */
+    public function getLabelAttribute(): string
+    {
+        return "{$this->height}x{$this->width}";
     }
     
     /**
@@ -94,6 +124,20 @@ class Dimension extends Model
      */
     public function getRouteEditAttribute (): string
     {
-        return route('dimensions.model', ['model' => $this->id]);
+        return route('dimensions.model', [
+            'model' => $this->id
+        ]);
+    }
+
+    /**
+     * Return route show model
+     *
+     * @return string
+     */
+    public function getRouteShowAttribute (): string
+    {
+        return route('dimensions.show', [
+            'model' => $this->id
+        ]);
     }
 }
