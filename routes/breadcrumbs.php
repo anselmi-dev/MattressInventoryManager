@@ -52,7 +52,7 @@ Breadcrumbs::for('combinations', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('settings', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
-    $trail->push(__('Settings'), route('settings'));
+    $trail->push(__('Settings'), route('settings.index'));
 });
 
 Breadcrumbs::for('bases', function (BreadcrumbTrail $trail) {
@@ -84,4 +84,10 @@ Breadcrumbs::for('activity', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('manufacture-special-measures', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
     $trail->push(__('Manufacture Special Measures'), route('manufacture-special-measures.index'));
+});
+
+Breadcrumbs::for('product_types', function (BreadcrumbTrail $trail) {
+    $trail->push('Dashboard', route('dashboard'));
+    $trail->push(__('Settings'), route('settings.index'));
+    $trail->push(__('Product Types'), route('product_types.index'));
 });

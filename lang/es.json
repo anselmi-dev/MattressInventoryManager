@@ -416,5 +416,8 @@
     "Dimension in centimeters (cm)": "Dimensión en centímetros (cm)", 
     "The code must be unique. It is recommended to start with :string": "El código debe ser único. Se recomienda que comience con :string",
     "The product's stock has been modified. The stock will be updated in Factusol.": "Se ha modificado el stock del producto. El stock se actualizará en Factusol.",
-    "Represents the unique code stored in Factusol as 'EANART'.": "Representa el código único que se almacena en Factusol como 'EANART'."
+    "Represents the unique code stored in Factusol as 'EANART'.": "Representa el código único que se almacena en Factusol como 'EANART'.",
+    "Product Types": "Tipos de products",
+    "Edit Product Type": "Editar tipo de producto",
+    "New Product Type": "Nuevo tipo de producto"
 }

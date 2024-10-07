@@ -56,7 +56,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/', \App\Livewire\SpecialMeasures\IndexSpecialMeasures::class)->name('index');
         });
 
-        Route::get('settings', \App\Livewire\Settings::class)->name('settings');
+        Route::middleware([])->prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', \App\Livewire\Settings::class)->name('index');
+        });
+
+        Route::middleware([])->prefix('settings/tipo-productos')->name('product_types.')->group(function () {
+            Route::get('/', \App\Livewire\ProductTypes\IndexProductTypes::class)->name('index');
+            Route::get('/m/{model?}', \App\Livewire\ProductTypes\ModelProductTypes::class)->name('model');
+        });
+        
 
         Route::get('activity-log', \App\Livewire\ActivityLog::class)->name('activity.index');
     });

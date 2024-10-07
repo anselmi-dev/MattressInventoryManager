@@ -160,7 +160,7 @@
                             </x-dropdown-link>
 
                             @if (!auth()->user()->hasRole('operator'))
-                                <x-dropdown-link href="{{ route('settings') }}" wire:navigate title="{{ __('Settings') }}">
+                                <x-dropdown-link href="{{ route('settings.index') }}" wire:navigate title="{{ __('Settings') }}">
                                     {{ __('Settings') }}
                                 </x-dropdown-link>
                                 <x-dropdown-link href="{{ route('users.index') }}" wire:navigate title="{{ __('Users') }}">
@@ -210,7 +210,7 @@
             </x-responsive-nav-link>
 
             @if (!auth()->user()->hasRole('operator'))
-                <x-responsive-nav-link href="{{ route('settings') }}" wire:navigate title="{{ __('Settings') }}">
+                <x-responsive-nav-link href="{{ route('settings.index') }}" wire:navigate title="{{ __('Settings') }}">
                     {{ __('Settings') }}
                 </x-responsive-nav-link>
 

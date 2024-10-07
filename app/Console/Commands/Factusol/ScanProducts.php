@@ -141,7 +141,7 @@ class ScanProducts extends Command
         $product_type_name = 'OTRO';
 
         foreach ($product_types as $key => $product_type) {
-            if ($product_type->search_product_type($CODART)) {
+            if ($product_type->getProductTypeByContains($CODART)) {
                 $product_type_name = $product_type->name;
                 break;
             }
