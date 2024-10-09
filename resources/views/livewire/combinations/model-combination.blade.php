@@ -66,7 +66,8 @@
                 <x-form.group-left :label="__('Parts')">
                     <div class="sm:max-w-md">
                         <div class="divide-y divide-gray-300 overflow-hidden w-full">
-                            @forelse ($form['products'] as $key => $product)
+                            @php($products = isset($form['products']) ? $form['products'] : [])
+                            @forelse ($products as $key => $product)
                                 <x-orders.card-product-order :product="$product">
                                     <div class="flex items-center justify-between gap-1.5">
                                         <button type="button" primary wire:click="remove({{ $key }})" class="font-semibol text-app-primary">
