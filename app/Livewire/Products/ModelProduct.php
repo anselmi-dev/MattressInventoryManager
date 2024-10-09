@@ -63,14 +63,15 @@ class ModelProduct extends Component
     {
         $this->validate();
 
-        if ($this->model->stock != (int) $this->form['stock']) {
+        if (
+            $this->model->getKey() && $this->model->stock != (int) $this->form['stock']
+        ) {
             $this->dialog()->confirm([
                 'title'       => __("The product's stock has been modified. The stock will be updated in Factusol."),
                 'acceptLabel' => __("Yes, proceed"),
                 'method'      => 'submit',
                 'params'      => 'Saved',
             ]);
-
         } else {
             $this->submit();
         }

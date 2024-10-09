@@ -172,7 +172,7 @@
                     {{ __('Cancel') }}
                 </x-wireui:button>
 
-                <x-wireui:button primary type="button" spinner="submit" wire:target="submit" primary right-icon="check" wire:click="submit">
+                <x-wireui:button primary type="button" spinner="preventSubmit" wire:target="preventSubmit" primary right-icon="check" wire:click="preventSubmit">
                     {{ $model->exists ? __('Guardar') : __('Crear') }}
                 </x-wireui:button>
             </x-slot>

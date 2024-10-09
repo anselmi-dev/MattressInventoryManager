@@ -161,4 +161,22 @@ class ModelCombination extends Component
             ]
         ];
     }
+
+    public function preventSubmit ()
+    {
+        $this->validate();
+
+        if (
+            $this->model->getKey() && $this->model->stock != (int) $this->form['stock']
+        ) {
+            $this->dialog()->confirm([
+                'title'       => __("El stock de la combinación ha sido modificado. El stock se actualizará en Factusol."),
+                'acceptLabel' => __("Yes, proceed"),
+                'method'      => 'submit',
+                'params'      => 'Saved',
+            ]);
+        } else {
+            $this->submit();
+        }
+    }
 }

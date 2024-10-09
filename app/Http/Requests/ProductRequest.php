@@ -32,6 +32,7 @@ class ProductRequest extends FormRequest
         $rules = [
             'code' => 'required|unique:products,code,'.$id,
             'reference' => 'required|unique:products,reference,'.$id,
+            'name' => 'required',
             'type' => 'required',
             'dimension_id' => 'required',
             'stock' => 'required|integer|min:-1',
@@ -49,6 +50,7 @@ class ProductRequest extends FormRequest
             'code' => __('Code'),
             'reference' => __('Reference'),
             'dimension_id' => __('Dimension'),
+            'name' => __('Name'),
             'stock' => __('Stock'),
             'visible' => __('Visible'),
             'description' => __('Description'),
@@ -61,6 +63,7 @@ class ProductRequest extends FormRequest
     {
         return [
             'code',
+            'name',
             'type',
             'reference',
             'dimension_id',

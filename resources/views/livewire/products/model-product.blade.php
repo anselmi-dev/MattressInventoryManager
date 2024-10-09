@@ -48,6 +48,15 @@
                     </div>
                 </x-form.group-left>
 
+                <x-form.group-left :label="__('Name')">
+                    <div class="sm:max-w-md">
+                        <x-wireui:input
+                            :placeholder="__('Name')"
+                            wire:model="form.name"
+                        />
+                    </div>
+                </x-form.group-left>
+
                 <x-form.group-left :label="__('Dimension')">
                     <div class="sm:max-w-md">
                         <x-wireui:select
@@ -91,7 +100,7 @@
                     {{ __('Cancel') }}
                 </x-wireui:button>
 
-                <x-wireui:button primary type="button" spinner="submit" wire:target="submit" primary right-icon="check" wire:click="preventSubmit">
+                <x-wireui:button primary type="button" spinner="preventSubmit" wire:target="preventSubmit" primary right-icon="check" wire:click="preventSubmit">
                     {{ $model->exists ? __('Guardar') : __('Crear') }}
                 </x-wireui:button>
             </x-slot>
