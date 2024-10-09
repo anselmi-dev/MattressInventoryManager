@@ -144,21 +144,18 @@
                         </div>
                     </div>
                 </x-form.group-left>
-
-                @if ($model->exists)                    
-                    <x-form.group-left :label="__('Stock')">
-                        <x-slot name="description">
-                            {{ __('combination:stock:description') }}
-                        </x-slot>
-                        <div class="sm:max-w-md">
-                            <x-wireui:number
-                                :placeholder="__('Stock')"
-                                wire:model="form.stock"
-                                disabled="{{ $model->exists }}"
-                            />
-                        </div>
-                    </x-form.group-left>
-                @endif
+        
+                <x-form.group-left :label="__('Stock')">
+                    <x-slot name="description">
+                        {{ __('combination:stock:description') }}
+                    </x-slot>
+                    <div class="sm:max-w-md">
+                        <x-wireui:number
+                            :placeholder="__('Stock')"
+                            wire:model="form.stock"
+                        />
+                    </div>
+                </x-form.group-left>
 
                 <x-form.group-left :label="__('Description')">
                     <div class="sm:max-w-md">
