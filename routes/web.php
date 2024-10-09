@@ -16,7 +16,7 @@ Route::middleware('auth')->group(function () {
         
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
             Route::get('/', \App\Livewire\Dimensions\IndexDimensions::class)->name('index');
-            Route::get('/{model}', \App\Livewire\Dimensions\ShowDimension::class)->name('show');
+            Route::get('/s/{model}', \App\Livewire\Dimensions\ShowDimension::class)->name('show');
             Route::get('/m/{model?}', \App\Livewire\Dimensions\ModelDimension::class)->middleware(['role:develop|admin'])->name('model');
         });
 
@@ -69,3 +69,5 @@ Route::middleware('auth')->group(function () {
         Route::get('activity-log', \App\Livewire\ActivityLog::class)->name('activity.index');
     });
 });
+
+
