@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware([])->prefix('partes')->name('products.')->group(function () {
             Route::get('/', \App\Livewire\Products\IndexProducts::class)->name('index');
-            Route::get('/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
+            Route::get('/s/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
             Route::get('/p/{model?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
         });
 
