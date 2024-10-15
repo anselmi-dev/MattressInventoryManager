@@ -65,6 +65,9 @@ class IndexProducts extends DataTableComponent
             Column::make(__('Reference'), 'reference')
                 ->searchable()
                 ->sortable(),
+            Column::make(__('Reference'), 'reference')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Name'), 'name')
                 ->sortable(),
             Column::make(__('Type'), 'type')

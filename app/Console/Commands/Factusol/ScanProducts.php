@@ -76,7 +76,7 @@ class ScanProducts extends Command
 
         // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
         if ($product->wasRecentlyCreated) {
-            AssociateProductTypeJob::dispatchSync($product); // Asig
+            AssociateProductTypeJob::dispatchSync($product); 
             AssociateDimensionProductJob::dispatchSync($product);
         }
     }
