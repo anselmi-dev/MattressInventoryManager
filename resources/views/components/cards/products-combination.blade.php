@@ -7,16 +7,17 @@
                 <span class="combination-products__code">{{ $product->code }}</span>
                 <span class="combination-products__icon">
                     @switch($product->type)
-                        @case('cover')
+                        @case('ALMOHADA')
                             <x-icons.cover/>
                             @break
-                        @case('base')
+                        @case('BASE')
                             <x-icons.base/>
                             @break
-                        @case('top')
+                        @case('FUNDA')
                             <x-icons.top/>
                             @break
                         @default
+                        <x-icons.top/>
                     @endswitch
                 </span>
                 <span class="combination-products__stock">

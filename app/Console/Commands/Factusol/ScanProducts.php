@@ -69,7 +69,7 @@ class ScanProducts extends Command
         ], [
             'reference' => trim($factusol_product['EANART']),
             'name' => $factusol_product['DESART'],
-            'stock' => $factusol_product['ACTSTO'],
+            'stock' => 0,
             'type' => $this->getProductType($factusol_product['DESART'])
         ]);
     }

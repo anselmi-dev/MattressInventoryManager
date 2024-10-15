@@ -31,8 +31,7 @@ class ProductTypeRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|unique:product_types,name,'.$id,
-            'part' => 'required|unique:product_types,part,'.$id,
-            'contains' => 'required',
+            'part' => 'required',
         ];
 
         return array_combine(array_map(fn($k) => $this->prefix . $k, array_keys($rules)), $rules);
