@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 
-class AssignProductTypeJob implements ShouldQueue
+class AssociateProductTypeJob implements ShouldQueue
 {
     use Queueable;
 
@@ -30,11 +30,9 @@ class AssignProductTypeJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $type = $this->getProductType($this->product->name);
-    
-        $this->product->update([
-            'type' => $type
-        ]);
+        $this->product->type = $this->getProductType($this->product->name);
+
+        $this->product->saveQuietly();
     }
 
     /**

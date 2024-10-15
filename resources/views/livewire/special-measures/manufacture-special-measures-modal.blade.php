@@ -230,11 +230,10 @@
                                         :options="$this->product_types"
                                         wire:model.live="filters.type"
                                     />
+                                    
                                     <x-wireui:select
                                         :placeholder="__('Select one Dimension')"
                                         :options="$this->dimensions"
-                                        option-label="label"
-                                        option-value="value"
                                         wire:model.live="filters.dimension_id"
                                     />
                                 </div>

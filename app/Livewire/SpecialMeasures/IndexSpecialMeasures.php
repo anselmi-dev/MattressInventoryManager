@@ -41,7 +41,16 @@ class IndexSpecialMeasures extends DataTableComponent
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
             ->setPerPage(25)
-            ->setFilterSlideDownDefaultStatusEnabled();
+            ->setFilterSlideDownDefaultStatusEnabled()
+            ->setTdAttributes(function(Column $column, $row, $columnIndex, $rowIndex) {
+                if ($column->isField('DESLFA'))
+                    return [
+                        'default' => false,
+                        'class' => 'px-2 py-3 whitespace-normal text-sm font-medium dark:text-white',
+                    ];
+             
+                return [];
+            });
     }
 
     public function columns(): array

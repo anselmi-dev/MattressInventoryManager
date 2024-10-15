@@ -10,12 +10,11 @@
         </p>
     </div>
     
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid  grid-cols-1 md:grid-cols-2 gap-3">
         <x-cards.card-stok-items/>
         <x-cards.card-latest-sales/>
     </div>
     
-
     <div class="bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 p-6 lg:p-8">
         <div>
             <div class="flex items-center">

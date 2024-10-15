@@ -66,7 +66,7 @@ class ScanSales extends Command
 
         $bar->finish();
 
-        $this->info("Total de sales leidos {$total_factusola_sales} para la fecha {$last_updated_date_of_sales->toDateTimeString()}");
+        $this->info("Total de sales leidos {$total_factusola_sales} para la fecha {$last_updated_date_of_sales}");
     }
 
     /**

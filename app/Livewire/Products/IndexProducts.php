@@ -31,8 +31,8 @@ class IndexProducts extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                // 'rows' => $this->getRows(),
-                // 'customView' => $this->customView(),
+                'rows' => $this->getRows(),
+                'customView' => $this->customView(),
             ]);
     }
 
@@ -59,6 +59,10 @@ class IndexProducts extends DataTableComponent
                 ->searchable()
                 ->sortable(),
             Column::make(__('Code'), 'code')
+                ->searchable()
+                ->sortable()
+                ->deselected(),
+            Column::make(__('Reference'), 'reference')
                 ->searchable()
                 ->sortable(),
             Column::make(__('Name'), 'name')
@@ -105,7 +109,8 @@ class IndexProducts extends DataTableComponent
                 ->sortable(),
             Column::make(__('Created at'), 'created_at')
                 ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->deselected(),
             Column::make(__('Updated at'), 'updated_at')
                 ->searchable()
                 ->sortable()

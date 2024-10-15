@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Product;
-use App\Models\ProductType;
-use App\Jobs\AssignProductTypeJob;
+use App\Jobs\AssociateProductTypeJob;
 
 class AssignProductType extends Command
 {
@@ -22,16 +20,13 @@ class AssignProductType extends Command
      *
      * @var string
      */
-    protected $description = 'Asignar los tipos de producto a los productos';
+    protected $description = 'Asociar los tipos de producto a las partes (Productos)';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->withProgressBar(Product::all(), function (Product $product) {
-            AssignProductTypeJob::dispatchSync($product);
-        });
+        $this->withProgressBar(Product::all(), fn(Product $product) =>  AssociateProductTypeJob::dispatchSync($product));
     }
-
 }

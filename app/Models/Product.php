@@ -152,6 +152,20 @@ class Product extends Model
     }
 
     /**
+     * Scope para agregar una columna que indique si el producto tiene relación con factusolProduct.
+     */
+    public function scopeWithFactusolPresence(Builder $query)
+    {
+        $query->selectRaw(
+            'products.*, 
+             CASE 
+                WHEN factusol_products.CODART IS NOT NULL THEN 1 
+                ELSE 0 
+             END as has_factusol_product'
+        )->leftJoin('factusol_products', 'factusol_products.CODART', '=', 'products.code');
+    }
+
+    /**
      * Relación inversa de muchos a muchos para productos que son parte de combinaciones
      *
      * @return BelongsToMany

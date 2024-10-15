@@ -419,5 +419,7 @@
     "Represents the unique code stored in Factusol as 'EANART'.": "Representa el código único que se almacena en Factusol como 'EANART'.",
     "Product Types": "Tipos de products",
     "Edit Product Type": "Editar tipo de producto",
-    "New Product Type": "Nuevo tipo de producto"
+    "New Product Type": "Nuevo tipo de producto",
+    "Drag or upload an .xlsx document to import the parts.": "Arrastra o carga un documento .xlsx para importar las partes.",
+    "Import Products": "Importar productos"
 }

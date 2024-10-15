@@ -20,8 +20,8 @@ class ShowProduct extends Component
     public function render()
     {
         return view('livewire.products.show-product', [
-            'sales' => $this->model->sales()->paginate(3, ['*'], 'salesPage'),
-            'orders' => $this->model->orders()->rawProducts()->paginate(3, ['*'], 'ordersPage'),
+            'sales' => $this->model->sales()->paginate(5, ['*'], 'salesPage'),
+            'orders' => $this->model->orders()->rawProducts()->paginate(5, ['*'], 'ordersPage'),
         ]);
     }
 }

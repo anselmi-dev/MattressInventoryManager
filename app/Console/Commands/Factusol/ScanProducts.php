@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use App\Jobs\AssociateProductTypeJob;
+use App\Jobs\AssociateDimensionProductJob;
 
 class ScanProducts extends Command
 {
@@ -64,14 +66,19 @@ class ScanProducts extends Command
             'CODART' => $factusol_product['CODART']
         ], $factusol_product);
 
-        Product::withoutGlobalScopes()->firstOrCreate([
+        $product = Product::withoutGlobalScopes()->firstOrCreate([
             'code' => trim($factusol_product['CODART']),
         ], [
             'reference' => trim($factusol_product['EANART']),
             'name' => $factusol_product['DESART'],
-            'stock' => $factusol_product['ACTSTO'],
-            'type' => $this->getProductType($factusol_product['DESART'])
+            'stock' => $factusol_product['ACTSTO']
         ]);
+
+        // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
+        if ($product->wasRecentlyCreated) {
+            AssociateProductTypeJob::dispatchSync($product); // Asig
+            AssociateDimensionProductJob::dispatchSync($product);
+        }
     }
 
     /**
@@ -124,29 +131,5 @@ class ScanProducts extends Command
         $this->last_updated_date_of_products = $date_to_compare;
         
         settings()->set('last_updated_date_of_products', $date_to_compare->toDateTimeString());
-    }
-
-    /**
-     * Get type product by product code
-     *
-     * @param string $product
-     * @return string
-     */
-    protected function getProductType (string $CODART)
-    {
-        $product_types = Cache::remember('product_types', 100, function () {
-            return ProductType::all();
-        });
-
-        $product_type_name = 'OTRO';
-
-        foreach ($product_types as $key => $product_type) {
-            if ($product_type->getProductTypeByContains($CODART)) {
-                $product_type_name = $product_type->name;
-                break;
-            }
-        }
-
-        return $product_type_name;
     }
 }

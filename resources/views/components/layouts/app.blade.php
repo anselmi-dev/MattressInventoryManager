@@ -23,6 +23,17 @@
                 display: none;
             }
         </style>
+        <script>
+            document.addEventListener('livewire:navigate', (event) => {
+                document.body.classList.remove('in');
+                document.body.classList.add('out');
+            })
+            
+            document.addEventListener('livewire:navigated', () => {
+                document.body.classList.remove('out');
+                document.body.classList.add('in');
+            })
+        </script>
         
         <!-- Scripts -->
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
@@ -44,17 +55,6 @@
         
         @stack('styles')
 
-        <script>
-            document.addEventListener('livewire:navigate', (event) => {
-                document.body.classList.remove('in');
-                document.body.classList.add('out');
-            })
-            
-            document.addEventListener('livewire:navigated', () => {
-                document.body.classList.remove('out');
-                document.body.classList.add('in');
-            })
-        </script>
     </head>
     <body class="font-sans antialiased">
         <x-banner />

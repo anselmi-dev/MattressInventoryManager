@@ -51,6 +51,8 @@ class ShowOrder extends Component
 
         $this->order->order_products->map(function($order_product) {
             $order_product->product->increment('stock', $order_product->quantity);
+            $order_product->status = 'processed';
+            $order_product->save();
         });
 
         $this->order->save();

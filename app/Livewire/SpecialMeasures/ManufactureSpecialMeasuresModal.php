@@ -9,6 +9,7 @@ use App\Models\ProductSale;
 use Illuminate\Support\Facades\Cache;
 use LivewireUI\Modal\ModalComponent;
 use WireUi\Traits\WireUiActions;
+use Illuminate\Support\Facades\DB;
 
 class ManufactureSpecialMeasuresModal extends ModalComponent
 {
@@ -27,7 +28,7 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
     public $filters = [
         'product_id'  => null,
         'dimension_id' => null,
-        'type' => null
+        'type' => 'COLCHON'
     ];
 
     protected function rules()
@@ -126,7 +127,7 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
         if ($product)
             $this->currentProduct = $product;
         else
-            $this->notification('Producto no encontrado.');
+            $this->notification()->error(__('Producto no encontrado.'));
     }
 
     public function selectProduct (Product $product): void
@@ -136,7 +137,17 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
 
     public function getDimensionsProperty ()
     {
-        return Selector::dimensions();
+        $dimensions = Dimension::orderBy('width')
+            ->selectRaw('id, code as label, COALESCE(description, label) as description, CONCAT(width, " x ", height) as dimensions')
+            ->select('description', 'height','width', 'id')
+            ->when($this->filters['type'], function ($query) {
+                $query->whereRelation('products', 'type', $this->filters['type']);
+            })
+            ->pluck('description', 'id')
+            ->toArray();
+
+        
+        return array_merge(['' => __('DImensions')], $dimensions);
     }
 
     public function getProductTypesProperty ()
