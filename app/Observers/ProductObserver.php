@@ -38,7 +38,7 @@ class ProductObserver
                 'new' => $new_stock,
                 'quantity' => $new_stock - ($old_stock)
             ]);
-
+            
             StockChangeFactusol::dispatch($stock_change);
         }
         

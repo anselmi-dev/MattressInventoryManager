@@ -25,25 +25,38 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
     public function collection (Collection $rows)
     {
         foreach ($rows as $key => $row) {
-            if (!isset($row['referencia']) || (isset($row['referencia']) && is_null(trim($row['referencia']))) || is_null($row)) {
+            if (!isset($row['referencia_colchon']) || (isset($row['referencia_colchon']) && is_null(trim($row['referencia_colchon']))) || is_null($row)) {
                 continue;
             }
 
-            $product = Product::withoutGlobalScopes()->firstOrCreate([
-                'code' => trim($row['referencia']),
-            ], [
-                'reference' => trim($row['referencia']),
-                'name' => $row['nombre'],
-                'stock' => (int)str_replace(' UNIDADES', '', strtoupper(trim($row['tipo']))),
-                'type' => $row['tipo'],
-            ]);
-    
-            // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
-            if ($product->wasRecentlyCreated) {
-                AssociateDimensionProductJob::dispatchSync($product);
-            } else {
-                $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["La parte '{$product->code}' ya estaba creada"], array([]));
-            }
+            Product::withoutEvents(function () use ($row) {
+                $tipo = $this->getTypeByString($row['tipo']);
+
+                $product = Product::withoutGlobalScopes()->updateOrCreate([
+                    'code' => trim($row['referencia_colchon']),
+                ], [
+                    'reference' => trim($row['referencia_colchon']),
+                    'name' => $row['nombre'],
+                    'stock' => (int)str_replace(' UNIDADES', '', strtoupper(trim($row['stock']))),
+                    'type' => $tipo,
+                ]);
+        
+                if ($tipo == 'COLCHON') {
+                    $codes = array_map('trim', explode(',', $row['referencia_piezas']));
+
+                    $parts = Product::whereIn('code', $codes)->get()->pluck('id')->toArray();
+
+                    $product->combinedProducts()->sync($parts);
+
+                    if (count($codes) != count($parts))
+                        $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["LA COMBINACIÓN '{$product->code}' NO ENCONTRÓ TODAS LAS PARTES"], array([]));
+                }
+
+                // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
+                if ($product->wasRecentlyCreated) {
+                    AssociateDimensionProductJob::dispatchSync($product);
+                }
+            });
         }
     }
 
@@ -76,5 +89,31 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
     public function chunkSize(): int
     {
         return 1000;
+    }
+
+    public function getTypeByString (string $type)
+    {
+        switch (strtoupper($type)) {
+            case 'COLCHON':
+            case 'COLCHÓN':
+                return 'COLCHON';
+                break;
+            case 'FUNDA':
+                return 'FUNDA';
+                break;
+            case 'ALMOHADA':
+                return 'ALMOHADA';
+                break;
+            case 'NIDO':
+                return 'NIDO';
+                break;
+            case 'SABANA':
+            case 'SÁBANA':
+                return 'SABANA';
+                break;
+            default:
+                return 'OTRO';
+                break;
+        }
     }
 }
