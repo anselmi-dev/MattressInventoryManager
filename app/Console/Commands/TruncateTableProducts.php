@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\UpdateStockFactusol;
 use App\Models\Product;
 use Illuminate\Console\Command;
 
@@ -12,7 +13,7 @@ class TruncateTableProducts extends Command
      *
      * @var string
      */
-    protected $signature = 'app:truncate-table-products {--factursol} {--force}';
+    protected $signature = 'app:truncate-table-products {--factusol} {--force} {--product=} {--not-delete}';
 
     /**
      * The console command description.
@@ -32,10 +33,20 @@ class TruncateTableProducts extends Command
         }
         
         Product::withoutEvents(function () {
-            Product::withoutGlobalScopes()->update([
-                'deleted_at' => now(),
-                'stock' => 0
-            ]);
+            $products = Product::withoutGlobalScopes()->when($this->option('product'), function ($query) {
+                $query->where('id', $this->option('product'))->orWhere('code', $this->option('product'));
+            })->get();
+
+            $this->withProgressBar($products, function (Product $product) {
+                $product->update(['stock' => 0]);
+                
+                if ($this->option('factusol')) {
+                    UpdateStockFactusol::dispatchSync($product->code, 0, true);
+                }
+    
+                if (!$this->option('not-delete'))
+                    $product->delete();
+            });
         });
 
         $this->info('Se reinició el stock de todo los productos. además, se aplicó el softdelete');

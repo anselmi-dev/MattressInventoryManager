@@ -280,26 +280,28 @@ class FactusolService
                     $this->initToken();
 
                     return $this->get_stock ($code);
-                } else {
-                    logger('!intent');
                 }
 
                 return [
                     'error' => 'Autenticación'
                 ];
             }
-            logger('error');
+
         } catch (\Exception $e) {
             report($e);
             return [];
         }
     }
 
-    public function update_stock (string $code, int $quantity)
+    public function update_stock (string $code, int $quantity, bool $force = false): bool
     {   
-        $F_STOC = $this->get_stock($code);
-
-        $F_STOC[4]['dato'] = $F_STOC[4]['dato'] + ($quantity);
+        if ($force) {
+            $F_STOC[4]['dato'] = $quantity;
+        } else {
+            $F_STOC = $this->get_stock($code);
+            
+            $F_STOC[4]['dato'] = $F_STOC[4]['dato'] + ($quantity);
+        }
 
         $data = json_encode([
             "ejercicio" => "2024",
@@ -308,6 +310,7 @@ class FactusolService
         ]);
 
         try {
+
             $response = Http::withOptions([
                 'verify' => false,
             ])->withToken($this->apiKey)
@@ -315,10 +318,11 @@ class FactusolService
             ->post($this->baseUrl . '/admin/ActualizarRegistro')
             ->throw();
 
-            return $response['resultado'];
+            $dataResponse = $response->json();
+
+            return $dataResponse['respuesta'] == 'KO';
 
         } catch (RequestException $e) {
-
             if ($e->response->status() === 401) {
                 if (!$this->intent) {
 
@@ -326,7 +330,7 @@ class FactusolService
 
                     $this->initToken();
 
-                    return $this->update_stock ($code, $quantity);
+                    return $this->update_stock ($code, $quantity, $force);
                 }
 
                 return [
@@ -335,7 +339,8 @@ class FactusolService
             }
         } catch (\Exception $e) {
             report($e);
-            return [];
+
+            return false;
         }
     }
     

@@ -14,14 +14,18 @@ class UpdateStockFactusol implements ShouldQueue
 
     protected int $quantity;
 
+    protected bool $force = false;
+
     /**
      * Create a new job instance.
      */
-    public function __construct (string $code, int $quantity)
+    public function __construct (string $code, int $quantity, bool $force = false)
     {
         $this->code  = $code;
 
         $this->quantity = $quantity;
+
+        $this->force = $force;
     }
 
     /**
@@ -32,7 +36,9 @@ class UpdateStockFactusol implements ShouldQueue
         if (app()->isProduction()) {
             $factusolService = new FactusolService();
             
-            $factusolService->update_stock($this->code, $this->quantity);
+            $response = $factusolService->update_stock($this->code, $this->quantity, $this->force);
+            
+            dd($response);
         }
     }
 }

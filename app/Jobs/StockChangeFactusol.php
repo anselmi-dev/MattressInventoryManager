@@ -35,13 +35,16 @@ class StockChangeFactusol implements ShouldQueue
         if (app()->isProduction()) {
             $factusolService = new FactusolService();
             
-            $factusolService->update_stock($this->stock_change->product->code, $this->stock_change->quantity);
+            if (
+                $factusolService->update_stock($this->stock_change->product->code, $this->stock_change->quantity)
+            ) {
+                $this->stock_change->product->factusolProduct->increment('ACTSTO', $this->stock_change->quantity);
+        
+                $this->stock_change->status = 'processed';
+                
+                $this->stock_change->save();
+            }
         }
 
-        $this->stock_change->product->factusolProduct->increment('ACTSTO', $this->stock_change->quantity);
-
-        $this->stock_change->status = 'processed';
-        
-        $this->stock_change->save();
     }
 }
