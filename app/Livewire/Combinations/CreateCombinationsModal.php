@@ -66,9 +66,18 @@ class CreateCombinationsModal extends ModalComponent
     {
         $this->validate();
         
-        $minStock = $this->combination->combinedProducts()->min('stock');
+        $minStock = (int) $this->combination->combinedProducts()->min('stock');
 
-        if ($this->quantity > $minStock) {
+        if ($this->combination->combinedProducts()->doesntExist()) {
+            $this->addError('parts', __('La combinación no tiene partes asociadas. Por favor, revisa y asocia las partes correspondientes a la combinación.'));
+            return;
+        } elseif ($minStock == 0) {
+            $this->addError('parts', __('Las partes no poseen suficiente Stock para crear la combinación.'));
+            return;
+        } elseif ($this->quantity < 0) {
+            $this->addError('quantity', __('La cantidad no puede ser menor a 1'));
+            return;
+        } elseif ($this->quantity > $minStock) {
             $this->addError('quantity', __('The quantity must be equal to or less than :quantity', ['quantity' => $minStock]));
             return;
         }

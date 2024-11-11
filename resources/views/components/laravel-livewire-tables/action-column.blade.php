@@ -17,6 +17,7 @@
                 type="button"
                 class="relative inline-flex items-center bg-white px-1 py-1 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
                 <x-wireui:icon name="plus" class="h-4"/>
+                {{ __('Manufacture') }}
             </button>
         @endif
         

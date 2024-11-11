@@ -29,8 +29,10 @@ class UpdateStockFactusol implements ShouldQueue
      */
     public function handle(): void
     {
-        $factusolService = new FactusolService();
-
-        $factusolService->update_stock($this->code, $this->quantity);
+        if (app()->isProduction()) {
+            $factusolService = new FactusolService();
+            
+            $factusolService->update_stock($this->code, $this->quantity);
+        }
     }
 }

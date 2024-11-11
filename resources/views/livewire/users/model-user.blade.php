@@ -59,7 +59,7 @@
                         </span>
                     </x-alerts.warning>
                 @else     
-                    <x-wireui:button black href="{{ route('users.index') }}">
+                    <x-wireui:button black href="{{ route('users.index') }}" wire:navigate>
                         {{ __('Cancel') }}
                     </x-wireui:button>
 

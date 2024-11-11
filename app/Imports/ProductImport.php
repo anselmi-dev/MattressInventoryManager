@@ -14,8 +14,7 @@ use Maatwebsite\Excel\Validators\Failure;
 use Illuminate\Support\Facades\DB;
 
 use App\Jobs\{
-    AssociateDimensionProductJob,
-    AssociateProductTypeJob
+    AssociateDimensionProductJob
 };
 
 class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChunkReading, WithBatchInserts
@@ -25,35 +24,49 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
     public function collection (Collection $rows)
     {
         foreach ($rows as $key => $row) {
-            if (!isset($row['referencia_colchon']) || (isset($row['referencia_colchon']) && is_null(trim($row['referencia_colchon']))) || is_null($row)) {
-                continue;
-            }
-
             Product::withoutEvents(function () use ($row) {
-                $tipo = $this->getTypeByString($row['tipo']);
-
-                $product = Product::withoutGlobalScopes()->updateOrCreate([
-                    'code' => trim($row['referencia_colchon']),
+                $attributes = $this->getAttributeDataByRow($row);
+                
+                $product = Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
+                    'reference' => $attributes->code,
+                    'code' => $attributes->code,
                 ], [
-                    'reference' => trim($row['referencia_colchon']),
-                    'name' => $row['nombre'],
-                    'stock' => (int)str_replace(' UNIDADES', '', strtoupper(trim($row['stock']))),
-                    'type' => $tipo,
+                    'name'  => $attributes->name,
+                    'stock' => $attributes->stock,
+                    'type'  => $attributes->type
                 ]);
-        
-                if ($tipo == 'COLCHON') {
-                    $codes = array_map('trim', explode(',', $row['referencia_piezas']));
 
-                    $parts = Product::whereIn('code', $codes)->get()->pluck('id')->toArray();
+                $product->restore();
+        
+                // ASIGNAR PRODUCTOS SI ES UNA COMBINACIÓN
+                if (count($attributes->codes)) {
+                    $queryProduct = Product::withoutGlobalScopes()
+                        ->withTrashed()
+                        ->whereIn('code', $attributes->codes)
+                        ->get();
+
+                    $parts = [];
+                    foreach ($queryProduct as $key => $part) {
+                        $part->restore();
+                        $parts[] = $part->id;
+                    }
+                    
+                    $diff = array_diff($attributes->codes, $queryProduct->pluck('code')->toArray());
 
                     $product->combinedProducts()->sync($parts);
 
-                    if (count($codes) != count($parts))
-                        $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["LA COMBINACIÓN '{$product->code}' NO ENCONTRÓ TODAS LAS PARTES"], array([]));
+                    if (count($diff)) {
+                        $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["LA COMBINACIÓN <b>'{$product->code}'</b> NO ENCONTRÓ LA(S) PARTES(S): <b>" . implode(',', $diff) . "</b>"], array([]));
+                    }
+                }
+
+                // INDICAR SI EL PRODUCTO NO SE ENCONTRÓ EL TIPO
+                if ($attributes->type == 'OTROS') {
+                    $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["EL CÓDIGO '{$product->code}' SE ASIGNÓ COMO 'OTROS'"], array([]));
                 }
 
                 // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
-                if ($product->wasRecentlyCreated) {
+                if (!$product->dimension) {
                     AssociateDimensionProductJob::dispatchSync($product);
                 }
             });
@@ -91,6 +104,31 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
         return 1000;
     }
 
+    protected function getAttributeDataByRow ($row)
+    {
+        $referencia_piezas = isset($row['referencia_piezas']) ? explode(',', $row['referencia_piezas']) : [];
+
+        $referencia_piezas = array_map('trim', $referencia_piezas);
+
+        return (object) [
+            'type'   => $this->getTypeByString($row['tipo']),
+            'code'   => trim($row['referencia_colchon'] ?? $row['referencia']),
+            'name'   => trim($row['nombre']),
+            'stock'  => (int) rtrim(
+                str_replace('UNIDADES', '', strtoupper(
+                    $row['stock'] ?? $row['stock_actual']
+                ))
+            ),
+            'codes'  => $referencia_piezas
+        ];
+    }
+
+    /**
+     * Obtener el código mendiante el tipo que proviene del excel
+     *
+     * @param string $type
+     * @return string
+     */
     public function getTypeByString (string $type)
     {
         switch (strtoupper($type)) {
@@ -103,6 +141,9 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
                 break;
             case 'ALMOHADA':
                 return 'ALMOHADA';
+                break;
+            case 'NUCLEO':
+                return 'NUCLEO';
                 break;
             case 'NIDO':
                 return 'NIDO';

@@ -85,7 +85,7 @@ class IndexCombinations extends DataTableComponent
                 ->sortable()
                 ->deselected(),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('laravel-livewire-tables.combinations.actions')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

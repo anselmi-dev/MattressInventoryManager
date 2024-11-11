@@ -57,7 +57,8 @@ class IndexProducts extends DataTableComponent
         return [
             Column::make('ID', 'id')
                 ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->hideIf(auth()->user()->hasRole('develop')),
             Column::make(__('Code'), 'code')
                 ->searchable()
                 ->sortable()
@@ -65,13 +66,7 @@ class IndexProducts extends DataTableComponent
             Column::make(__('Reference'), 'reference')
                 ->searchable()
                 ->sortable(),
-            Column::make(__('Reference'), 'reference')
-                ->searchable()
-                ->sortable(),
             Column::make(__('Name'), 'name')
-                ->sortable(),
-            Column::make(__('Type'), 'type')
-                ->searchable()
                 ->sortable(),
             Column::make(__('Med. Día'), 'average_sales_media')
                 ->label(function ($row) {
@@ -95,9 +90,6 @@ class IndexProducts extends DataTableComponent
                 ->sortable(
                     fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_quantity {$direction}")
                 ),
-            Column::make(__('Dimension'), 'dimension.code')
-                ->eagerLoadRelations()
-                ->sortable(),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
@@ -106,6 +98,12 @@ class IndexProducts extends DataTableComponent
                     'average_sales_quantity' => doubleval(optional($row)->average_sales_quantity ?? 0),
                     'average_sales_media' => doubleval(optional($row)->average_sales_media ?? 0),
                 ])
+                ->sortable(),
+            Column::make(__('Dimension'), 'dimension.code')
+                ->eagerLoadRelations()
+                ->sortable(),
+            Column::make(__('Type'), 'type')
+                ->searchable()
                 ->sortable(),
             Column::make(__('Min. Order'), 'minimum_order')
                 ->searchable()

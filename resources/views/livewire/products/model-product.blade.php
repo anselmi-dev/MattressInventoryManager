@@ -96,7 +96,7 @@
 
             </x-form.section-left>
             <x-slot name="actions">
-                <x-wireui:button black href="{{ route('products.index') }}">
+                <x-wireui:button black href="{{ route('products.index') }}" wire:navigate>
                     {{ __('Cancel') }}
                 </x-wireui:button>
 

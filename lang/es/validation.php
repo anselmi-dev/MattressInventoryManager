@@ -211,6 +211,7 @@ return [
         'form.cover_id'            => 'funda',
         'form.visible'             => 'visible',
         'form.type'                => 'tipo',
+        'form.quantity'            => 'cantidad',
         'form.password'            => 'contraseña'
     ],
 ];
