@@ -28,9 +28,9 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
                 $attributes = $this->getAttributeDataByRow($row);
                 
                 $product = Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
-                    'reference' => $attributes->code,
                     'code' => $attributes->code,
                 ], [
+                    'reference' => $attributes->code,
                     'name'  => $attributes->name,
                     'stock' => $attributes->stock,
                     'type'  => $attributes->type

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3406ec6d0a3b73a37e219feaee29ab8d",
+    "content-hash": "12202b58d988ed7cf3c312d3e7f8868c",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3787,16 +3787,16 @@
         },
         {
             "name": "opcodesio/log-viewer",
-            "version": "v3.10.2",
+            "version": "v3.11.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opcodesio/log-viewer.git",
-                "reference": "8d44a049fce71753905ac4cd35e01c00544b17cb"
+                "reference": "993492fd9482771e928d47d45b323825ca7bebc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opcodesio/log-viewer/zipball/8d44a049fce71753905ac4cd35e01c00544b17cb",
-                "reference": "8d44a049fce71753905ac4cd35e01c00544b17cb",
+                "url": "https://api.github.com/repos/opcodesio/log-viewer/zipball/993492fd9482771e928d47d45b323825ca7bebc0",
+                "reference": "993492fd9482771e928d47d45b323825ca7bebc0",
                 "shasum": ""
             },
             "require": {
@@ -3859,7 +3859,7 @@
             ],
             "support": {
                 "issues": "https://github.com/opcodesio/log-viewer/issues",
-                "source": "https://github.com/opcodesio/log-viewer/tree/v3.10.2"
+                "source": "https://github.com/opcodesio/log-viewer/tree/v3.11.2"
             },
             "funding": [
                 {
@@ -3871,7 +3871,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-08-03T17:20:45+00:00"
+            "time": "2024-10-04T04:01:15+00:00"
         },
         {
             "name": "opcodesio/mail-parser",
@@ -10319,12 +10319,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
