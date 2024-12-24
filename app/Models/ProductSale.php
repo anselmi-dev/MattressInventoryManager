@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +25,20 @@ class ProductSale extends Model
         'ARTLFA', // CÓDIGO DEL ARTÍCULO
         'TOTLFA', // TOTAL DE LA LINEA DE LA FACTURA
         'DESLFA', // DESCRIPCIÓN
+        'processed_at',
     ];
+    
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'processed_at' => 'datetime',
+        ];
+    }
 
     /**
      * Belongs to a product, including soft-deleted ones.
@@ -63,8 +77,13 @@ class ProductSale extends Model
      */
     public function decrementStock() : void
     {
-        if ($this->product) {
+        if ($this->product)
+        {
             $this->product->decrementStock($this->CANLFA);
+
+            $this->processed_at = Carbon::now();
+
+            $this->save();
         }
     }
 
@@ -77,5 +96,4 @@ class ProductSale extends Model
     {
         return $this->manufactured_quantity > 0;
     }
-    
 }

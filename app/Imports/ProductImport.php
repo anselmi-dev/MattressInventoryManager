@@ -25,51 +25,61 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
     {
         foreach ($rows as $key => $row) {
             Product::withoutEvents(function () use ($row) {
-                $attributes = $this->getAttributeDataByRow($row);
-                
-                $product = Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
-                    'code' => $attributes->code,
-                ], [
-                    'reference' => $attributes->code,
-                    'name'  => $attributes->name,
-                    'stock' => $attributes->stock,
-                    'type'  => $attributes->type
-                ]);
-
-                $product->restore();
-        
-                // ASIGNAR PRODUCTOS SI ES UNA COMBINACIÓN
-                if (count($attributes->codes)) {
-                    $queryProduct = Product::withoutGlobalScopes()
-                        ->withTrashed()
-                        ->whereIn('code', $attributes->codes)
-                        ->get();
-
-                    $parts = [];
-                    foreach ($queryProduct as $key => $part) {
-                        $part->restore();
-                        $parts[] = $part->id;
-                    }
-                    
-                    $diff = array_diff($attributes->codes, $queryProduct->pluck('code')->toArray());
-
-                    $product->combinedProducts()->sync($parts);
-
-                    if (count($diff)) {
-                        $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["LA COMBINACIÓN <b>'{$product->code}'</b> NO ENCONTRÓ LA(S) PARTES(S): <b>" . implode(',', $diff) . "</b>"], array([]));
-                    }
-                }
-
-                // INDICAR SI EL PRODUCTO NO SE ENCONTRÓ EL TIPO
-                if ($attributes->type == 'OTROS') {
-                    $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["EL CÓDIGO '{$product->code}' SE ASIGNÓ COMO 'OTROS'"], array([]));
-                }
-
-                // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
-                if (!$product->dimension) {
-                    AssociateDimensionProductJob::dispatchSync($product);
+                try {
+                    if (!is_null(optional($row)['reference']))
+                        $this->handleRow($row);
+                } catch (\Throwable $th) {
+                    $this->errors[] = new Failure(count($this->errors) + 1, 'ERROR', ["ERROR {$th->getMessage()}"], array([]));
                 }
             });
+        }
+    }
+
+    protected function handleRow (array $row):void
+    {
+        $attributes = $this->getAttributeDataByRow($row);
+                
+        $product = Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
+            'code' => $attributes->code,
+        ], [
+            'reference' => $attributes->code,
+            'name'  => $attributes->name,
+            'stock' => $attributes->stock,
+            'type'  => $attributes->type
+        ]);
+
+        $product->restore();
+
+        // ASIGNAR PRODUCTOS SI ES UNA COMBINACIÓN
+        if (count($attributes->codes)) {
+            $queryProduct = Product::withoutGlobalScopes()
+                ->withTrashed()
+                ->whereIn('code', $attributes->codes)
+                ->get();
+
+            $parts = [];
+            foreach ($queryProduct as $key => $part) {
+                $part->restore();
+                $parts[] = $part->id;
+            }
+            
+            $diff = array_diff($attributes->codes, $queryProduct->pluck('code')->toArray());
+
+            $product->combinedProducts()->sync($parts);
+
+            if (count($diff)) {
+                $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["LA COMBINACIÓN <b>'{$product->code}'</b> NO ENCONTRÓ LA(S) PARTES(S): <b>" . implode(',', $diff) . "</b>"], array([]));
+            }
+        }
+
+        // INDICAR SI EL PRODUCTO NO SE ENCONTRÓ EL TIPO
+        if ($attributes->type == 'OTROS') {
+            $this->errors[] = new Failure(count($this->errors) + 1, $product->code, ["EL CÓDIGO '{$product->code}' SE ASIGNÓ COMO 'OTROS'"], array([]));
+        }
+
+        // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
+        if (!$product->dimension) {
+            AssociateDimensionProductJob::dispatchSync($product);
         }
     }
 
@@ -147,6 +157,9 @@ class ProductImport implements ToCollection, WithHeadingRow, WithEvents, WithChu
                 break;
             case 'NIDO':
                 return 'NIDO';
+                break;
+            case 'NUCLEO NIDO':
+                return 'NUCLEO NIDO';
                 break;
             case 'SABANA':
             case 'SÁBANA':

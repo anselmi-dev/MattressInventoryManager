@@ -37,8 +37,6 @@ class UpdateStockFactusol implements ShouldQueue
             $factusolService = new FactusolService();
             
             $response = $factusolService->update_stock($this->code, $this->quantity, $this->force);
-            
-            dd($response);
         }
     }
 }
