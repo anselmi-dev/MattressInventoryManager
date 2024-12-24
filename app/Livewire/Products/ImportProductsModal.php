@@ -65,7 +65,16 @@ class ImportProductsModal extends ModalComponent
         try {
             
             Excel::import(new ProductImport, $this->file->storeAs('public', sha1(time()) . '.csv'), null, \Maatwebsite\Excel\Excel::XLSX);
+            
+            $this->closeModal();
         
+            $this->notification()->success(
+                'Maravilloso!',
+                __("La importación finalizó correctamente"),
+            );
+
+            $this->dispatch('products:refresh-datatable');
+
         } catch (ValidationException $e) {
 
             $failures = $e->failures();
@@ -81,9 +90,5 @@ class ImportProductsModal extends ModalComponent
                 view('responses.dialog-errors', ['warning' => $rows])->render()
             );
         }
-
-        $this->closeModal();
-        
-        $this->dispatch('products:refresh-datatable');
     }
 }

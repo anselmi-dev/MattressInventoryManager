@@ -22,7 +22,8 @@ class IndexProducts extends DataTableComponent
     protected $model = Model::class;
 
     protected $listeners = [
-        'products:delete' => 'delete'
+        'products:delete' => 'delete',
+        'products:refresh-datatable' => 'refreshDataTableComponent'
     ];
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -63,6 +64,9 @@ class IndexProducts extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->deselected(),
+            BooleanColumn::make(__('Factusol'), 'factusolProduct.id')
+                ->searchable()
+                ->sortable(),
             Column::make(__('Reference'), 'reference')
                 ->searchable()
                 ->sortable(),
@@ -195,7 +199,7 @@ class IndexProducts extends DataTableComponent
         );
     }
 
-    protected function refreshDataTableComponent (): void
+    public function refreshDataTableComponent (): void
     {
         $this->dispatch('refreshDatatable');
     }

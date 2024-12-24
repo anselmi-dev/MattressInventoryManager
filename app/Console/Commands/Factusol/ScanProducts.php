@@ -66,16 +66,29 @@ class ScanProducts extends Command
             'CODART' => $factusol_product['CODART']
         ], $factusol_product);
 
-        $product = Product::withoutGlobalScopes()->firstOrCreate([
-            'code' => trim($factusol_product['CODART']),
-        ], [
-            'reference' => trim($factusol_product['EANART']),
-            'name' => $factusol_product['DESART'],
-            'stock' => $factusol_product['ACTSTO']
-        ]);
+        $product = Product::withoutGlobalScopes()->where('code', trim($factusol_product['CODART']))->withTrashed()->first();
+    
+        if ($product) {
+            if ($product->trashed())
+                $product->restore();
+
+            $product->update([
+                'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : $product->reference,
+                'name' => $factusol_product['DESART'],
+                'stock' => $factusol_product['ACTSTO']
+            ]);
+        } else {
+            $product = Product::withoutGlobalScopes()->firstOrCreate([
+                'code' => trim($factusol_product['CODART']),
+            ], [
+                'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : trim($factusol_product['CODART']),
+                'name' => $factusol_product['DESART'],
+                'stock' => $factusol_product['ACTSTO']
+            ]);
+        }
 
         // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
-        if ($product->wasRecentlyCreated) {
+        if ($product && $product->wasRecentlyCreated) {
             AssociateProductTypeJob::dispatchSync($product); 
             AssociateDimensionProductJob::dispatchSync($product);
         }
