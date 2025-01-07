@@ -35,7 +35,7 @@ class IndexCombinations extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                // 'rows' => $this->getRows(),
+                'rows' => $this->getRows(),
                 // 'customView' => $this->customView(),
             ]);
     }
@@ -66,12 +66,12 @@ class IndexCombinations extends DataTableComponent
                 ->sortable()
                 ->format(fn ($value) => $value ?? 'N/D'),
             ViewComponentColumn::make(__('Media'), 'id')
-                ->component('laravel-livewire-tables.products.average_sales_media')
+                ->component('components.laravel-livewire-tables.products.average_sales_media')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => optional($row)->average_sales_quantity ?? 0
                 ]),
             ViewComponentColumn::make(__('Stock'), 'stock')
-                ->component('laravel-livewire-tables.products.average-stock')
+                ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                     'stock_order' => doubleval(optional($row)->stock_order ?? 0),
@@ -85,7 +85,7 @@ class IndexCombinations extends DataTableComponent
                 ->sortable()
                 ->deselected(),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.combinations.actions')
+                ->component('components.laravel-livewire-tables.combinations.actions')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

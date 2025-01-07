@@ -12,6 +12,7 @@ class ProductController extends Controller
     public function parts (Request $request)
     {
         return Product::whereNotCombinations()
+            ->whereNull('deleted_at')
             ->withoutGlobalScopes()
             ->where(function ($query) use ($request) {
                 $query->where('code', 'like', "%$request->search%")

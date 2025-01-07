@@ -30,7 +30,7 @@ class IndexSales extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                // 'rows' => $this->getRows(),
+                'rows' => $this->getRows(),
                 // 'customView' => $this->customView(),
             ]);
     }
@@ -62,7 +62,7 @@ class IndexSales extends DataTableComponent
             Column::make(__('Cod. Client'), 'CLIFAC')->searchable()->sortable(),
             Column::make(__('Client'), 'CNOFAC')->searchable()->sortable(),
             ViewComponentColumn::make(__('Parts'), 'id')
-                ->component('laravel-livewire-tables.value')
+                ->component('components.laravel-livewire-tables.value')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $row->quantity ?? 0,
                     'icon' => 'shopping-cart',
@@ -70,7 +70,7 @@ class IndexSales extends DataTableComponent
                 ->sortable(),
             Column::make(__('Total'), 'TOTFAC')->searchable()->sortable(),
             ViewComponentColumn::make(__('Status'), 'ESTFAC')
-                ->component('laravel-livewire-tables.sales.status')
+                ->component('components.laravel-livewire-tables.sales.status')
                 ->sortable()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
@@ -80,7 +80,7 @@ class IndexSales extends DataTableComponent
                     return $value ? $value->format('Y-m-d') : null;
                 }),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('components.laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

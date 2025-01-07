@@ -69,16 +69,13 @@ class ScanProducts extends Command
         $product = Product::withoutGlobalScopes()->where('code', trim($factusol_product['CODART']))->withTrashed()->first();
     
         if ($product) {
-            if ($product->trashed())
-                $product->restore();
-
             $product->update([
                 'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : $product->reference,
                 'name' => $factusol_product['DESART'],
                 'stock' => $factusol_product['ACTSTO']
             ]);
         } else {
-            $product = Product::withoutGlobalScopes()->firstOrCreate([
+            $product = Product::withoutGlobalScopes()->withTrashed()->firstOrCreate([
                 'code' => trim($factusol_product['CODART']),
             ], [
                 'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : trim($factusol_product['CODART']),

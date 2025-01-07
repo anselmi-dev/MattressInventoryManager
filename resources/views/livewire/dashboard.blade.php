@@ -12,6 +12,7 @@
     
     <div class="grid  grid-cols-1 md:grid-cols-2 gap-3">
         <x-cards.card-stok-items/>
+        
         <x-cards.card-latest-sales/>
     </div>
     

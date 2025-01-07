@@ -33,7 +33,7 @@ class IndexProducts extends DataTableComponent
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
                 'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
@@ -47,7 +47,7 @@ class IndexProducts extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setFilterLayoutSlideDown()
             ->setDefaultSort('id', 'desc')
-            ->setPerPage(25)
+            ->setPerPage(10)
             ->setColumnSelectEnabled()
             ->setRememberColumnSelectionStatus(true)
             ->setFilterSlideDownDefaultStatusEnabled();
@@ -95,7 +95,7 @@ class IndexProducts extends DataTableComponent
                     fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_quantity {$direction}")
                 ),
             ViewComponentColumn::make(__('Stock'), 'stock')
-                ->component('laravel-livewire-tables.products.average-stock')
+                ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                     'stock_order' => doubleval(optional($row)->stock_order ?? 0),
@@ -121,7 +121,7 @@ class IndexProducts extends DataTableComponent
                 ->sortable()
                 ->deselected(),
             ViewComponentColumn::make(__('Actions'), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('components.laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

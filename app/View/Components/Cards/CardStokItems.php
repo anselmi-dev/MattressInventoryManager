@@ -23,7 +23,7 @@ class CardStokItems extends Component
     public function render(): View|Closure|string
     {
         return view('components.cards.card-stok-items', [
-            'collection' => Product::whereNotCombinations()->orderBy('average_sales_difference', 'asc')->paginate(5)
+            'collection' => Product::whereNotCombinations()->orderBy('average_sales_difference', 'asc')->paginate(3)
         ]);
     }
 }

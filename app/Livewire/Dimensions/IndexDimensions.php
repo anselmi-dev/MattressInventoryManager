@@ -28,7 +28,7 @@ class IndexDimensions extends DataTableComponent
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
                 'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
@@ -93,7 +93,7 @@ class IndexDimensions extends DataTableComponent
                 })
                 ->deselected(),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('components.laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

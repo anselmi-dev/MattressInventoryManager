@@ -29,7 +29,7 @@ class IndexProductTypes extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                // 'rows' => $this->getRows(),
+                'rows' => $this->getRows(),
                 // 'customView' => $this->customView(),
             ]);
     }
@@ -68,7 +68,7 @@ class IndexProductTypes extends DataTableComponent
                 ->sortable()
                 ->deselected(),
             ViewComponentColumn::make(__('Actions'), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('components.laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

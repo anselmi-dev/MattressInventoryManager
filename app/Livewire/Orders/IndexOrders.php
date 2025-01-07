@@ -35,7 +35,7 @@ class IndexOrders extends DataTableComponent
             ->with([
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
-                // 'rows' => $this->getRows(),
+                'rows' => $this->getRows(),
                 // 'customView' => $this->customView(),
             ]);
     }
@@ -64,14 +64,14 @@ class IndexOrders extends DataTableComponent
                 ->sortable()
                 ->format(fn ($value) => __($value)),
             ViewComponentColumn::make(__('Parts'), 'id')
-                ->component('laravel-livewire-tables.value')
+                ->component('components.laravel-livewire-tables.value')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $row->products_count ?? 0,
                     'icon' => 'shopping-cart',
                 ])
                 ->sortable(),
             ViewComponentColumn::make(__('Quantity'), 'id')
-                ->component('laravel-livewire-tables.value')
+                ->component('components.laravel-livewire-tables.value')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => optional($row)->products_quantity ?? 0,
                     'icon' => 'archive-box',
@@ -85,7 +85,7 @@ class IndexOrders extends DataTableComponent
                 ->sortable()
                 ->deselected(),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.action-column')
+                ->component('components.laravel-livewire-tables.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

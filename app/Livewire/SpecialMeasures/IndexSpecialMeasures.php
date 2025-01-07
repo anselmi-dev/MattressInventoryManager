@@ -26,7 +26,7 @@ class IndexSpecialMeasures extends DataTableComponent
                 'filterGenericData' => $this->getFilterGenericData(),
                 'columns' => $this->getColumns(),
                 'rows' => $this->getRows(),
-                'customView' => $this->customView(),
+                // 'customView' => $this->customView(),
             ]);
     }
 
