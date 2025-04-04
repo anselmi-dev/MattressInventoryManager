@@ -18,7 +18,7 @@ class ScanSales extends Command
      *
      * @var string
      */
-    protected $signature = 'app:scan-sales {--force}';
+    protected $signature = 'app:scan-sales {--force} {--factusol}';
 
     /**
      * The console command description.
@@ -34,7 +34,7 @@ class ScanSales extends Command
     {
         $this->info("ÚLTIMO PROCE DE IMPORTACIÓN LANZADO EL " . settings()->get('last_updated_date_of_sales'));
         
-        $this->last_updated_date_of_sales = Carbon::now()->subDays(7);
+        $this->last_updated_date_of_sales = Carbon::now()->subDays(60);
 
         $query = \Str::replaceArray('?', [
             (!$this->option('force') && $this->last_updated_date_of_sales) ? "WHERE F_FAC.FECFAC > '{$this->last_updated_date_of_sales->toDateTimeString()}'" : ''
@@ -90,9 +90,7 @@ class ScanSales extends Command
                 'IREC1FAC' => $factusol_sale['IREC1FAC'],
                 'FECFAC' => $factusol_sale['FECFAC'],
                 'TIPFAC' => $factusol_sale['TIPFAC'],
-                'IIVA1FAC' => $factusol_sale['IIVA1FAC'],
-                'created_at' => $factusol_sale['FECFAC'],
-                'updated_at' => $factusol_sale['FECFAC'],
+                'IIVA1FAC' => $factusol_sale['IIVA1FAC']
             ]);
 
         /* Se verifica que la factura no contenga líneas de productos. */
@@ -103,16 +101,22 @@ class ScanSales extends Command
             ->updateOrCreate([
                 'sale_id' => (int) $sale->id,
                 'ARTLFA' => $factusol_sale['ARTLFA'],
+            ], [
                 'CANLFA' => (int) $factusol_sale['CANLFA'],
                 'TOTLFA' => $factusol_sale['TOTLFA'],
                 'DESLFA' => $factusol_sale['DESLFA'],
                 'created_at' => $factusol_sale['FECFAC'],
                 'updated_at' => $factusol_sale['FECFAC'],
+                // 'processed_at' => $sale->is_processed ? Carbon::now() : null,
             ]);
-        
-        /* Verifica que la venta esté en estado "procesada" y que no se haya emitido un decremento de stock previamente en el product_sale. */
-        if ($sale->is_processed && is_null($productSale->processed_at)) {
+
+        if ($productSale->wasRecentlyCreated) {
             $productSale->decrementStock();
         }
+        
+        /* Verifica que la venta esté en estado "procesada" y que no se haya emitido un decremento de stock previamente en el product_sale. */
+        //if ($sale->is_processed && is_null($productSale->processed_at)) {
+        //    $productSale->decrementStock();
+        //}
     }
 }

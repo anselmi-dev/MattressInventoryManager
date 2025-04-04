@@ -12,6 +12,7 @@ class ShowSale extends Component
     public function mount(Model $model)
     {
         $this->model = $model;
+        $this->model->load(['product_sales', 'product_sales.product']);
     }
 
     public function render()

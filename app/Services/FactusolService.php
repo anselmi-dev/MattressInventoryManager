@@ -78,7 +78,7 @@ class FactusolService
     {
         try {
             $data = json_encode([
-                'ejercicio' => '2024',
+                'ejercicio' => '2025',
                 'consulta' => $query
             ]);
 
@@ -110,7 +110,7 @@ class FactusolService
     public function last_updated_date_of_products ()
     {
         $data = json_encode([
-            'ejercicio' => '2024',
+            'ejercicio' => '2025',
             'consulta' => "SELECT MAX(FUMART) FROM F_ART"
         ]);
 
@@ -150,7 +150,7 @@ class FactusolService
                 ])->withToken($this->apiKey)
                 ->withBody(
                     '{
-                        "ejercicio": "2024",
+                        "ejercicio": "2025",
                         "consulta": "SELECT top 4 F_ART.CODART, F_ART.DESART, F_ART.FUMART, F_ART.FALART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ORDER BY F_ART.FUMART DESC"
                     }', 'application/json'
                 )->post($this->baseUrl . '/admin/LanzarConsulta');
@@ -182,7 +182,7 @@ class FactusolService
                 ])->withToken($this->apiKey)
                 ->withBody(
                     '{
-                        "ejercicio": "2024",
+                        "ejercicio": "2025",
                         "tabla": "F_ART",
                         "filtro": "CODART != \'\'"
                     }', 'application/json'
@@ -215,13 +215,13 @@ class FactusolService
     public function sales ()
     {
         try {
-            return Cache::remember('factusol:sales:2024', 10100, function () {
+            return Cache::remember('factusol:sales:2025', 10100, function () {
                 $response = Http::withOptions([
                     'verify' => false,
                 ])->withToken($this->apiKey)
                 ->withBody(
                     '{
-                        "ejercicio": "2024",
+                        "ejercicio": "2025",
                         "consulta": "SELECT F_LFA.ARTLFA, F_LFA.CANLFA, F_FAC.ESTFAC, F_FAC.FECFAC, F_FAC.CLIFAC, F_FAC.CNOFAC, F_FAC.CODFAC, F_FAC.TOTFAC FROM F_LFA JOIN F_FAC ON F_LFA.CODLFA = F_FAC.CODFAC"
                     }', 'application/json'
                 )->post($this->baseUrl . '/admin/LanzarConsulta');
@@ -254,7 +254,7 @@ class FactusolService
     public function get_stock (string $code)
     {
         $data = json_encode([
-            'ejercicio' => '2024',
+            'ejercicio' => '2025',
             'consulta' => "SELECT * FROM F_STO WHERE ARTSTO = '$code'"
         ]);
 
@@ -295,16 +295,12 @@ class FactusolService
 
     public function update_stock (string $code, int $quantity, bool $force = false): bool
     {   
-        if ($force) {
-            $F_STOC[4]['dato'] = $quantity;
-        } else {
-            $F_STOC = $this->get_stock($code);
-            
-            $F_STOC[4]['dato'] = $F_STOC[4]['dato'] + ($quantity);
-        }
+        $F_STOC = $this->get_stock($code);
+
+        $F_STOC[4]['dato'] = $quantity;
 
         $data = json_encode([
-            "ejercicio" => "2024",
+            "ejercicio" => "2025",
             "tabla" =>  "F_STO",
             "registro" => $F_STOC
         ]);

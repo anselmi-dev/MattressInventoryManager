@@ -69,7 +69,7 @@ class IndexSpecialMeasures extends DataTableComponent
                 ->searchable()
                 ->sortable(),
             ViewComponentColumn::make(__(''), 'id')
-                ->component('laravel-livewire-tables.special-measures.action-column')
+                ->component('components.laravel-livewire-tables.special-measures.action-column')
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,

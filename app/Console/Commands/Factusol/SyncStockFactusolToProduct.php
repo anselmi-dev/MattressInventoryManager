@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Factusol;
 
 use App\Models\Product;
 use Illuminate\Console\Command;
 use App\Services\FactusolService;
 
-class SyncStockToFactusol extends Command
+
+class SyncStockFactusolToProduct extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:sync-stock-to-factusol  {--product=} {--stock=}';
+    protected $signature = 'app:sync-stock-factusol-to-product  {--product=}';
 
     /**
      * The console command description.
@@ -28,7 +29,7 @@ class SyncStockToFactusol extends Command
     public function handle()
     {
         Product::withoutEvents(function () {
-            $products = Product::withoutGlobalScopes()->when($this->option('product'), function ($query) {
+            $products = Product::when($this->option('product'), function ($query) {
                 $query->where('id', $this->option('product'))->orWhere('code', $this->option('product'));
             })->get();
 
@@ -38,17 +39,20 @@ class SyncStockToFactusol extends Command
 
                 if (app()->isProduction()) {
 
-                    if ($product->stock < 0) {
-                        $product->stock = 0;
-                        $product->save();
-                    }
-                    
                     $factusolService = new FactusolService();
 
-                    $factusolService->update_stock(
-                        $product->code,
-                        $this->option('stock') ? (int) $this->option('stock') : $product->stock
-                    );
+                    $F_STOC = $factusolService->get_stock($product->code);
+
+                    if (empty($F_STOC)) {
+                        $this->output->writeln("The product {$product->code} has no stock");
+                        return;
+                    }
+
+                    $this->output->writeln("The product {$product->code} has a stock of {$product->stock} => {$F_STOC[4]['dato']}");
+                    
+                    $product->stock = $F_STOC;
+
+                    $product->save();
                 }
             });
         });
