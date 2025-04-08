@@ -3,7 +3,7 @@
 <span
     @if ($tooltip)    
         x-data="{ tooltip: '{{ $tooltip }}' }"
-        x-tooltip="tooltip"
+        x-tooltip.html="tooltip"
     @endif
     class="inline-flex gpa-0.5 items-center cursor-help">
     @isset($icon)

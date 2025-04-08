@@ -43,26 +43,31 @@ if (!function_exists('appendCentimeters')) {
 }
 
 if (!function_exists('color_average_stock')) {
-    function color_average_stock (int $stock, $AVERAGE_SALES) {
+    // Esto tenemos que hacer lo siguiente:
+    // - Si stock_actual >= 1.2*stock_requerido = verde
+    // - Si stock_actual >= 1*stock_requerido && stock_actual < 1.2*stock_requerido = naranja
+    // - Si stock_actual < stock_requerido = rojo
+    function color_average_stock (int $stock, $AVERAGE_SALES)
+    {
+        if ($stock < 0)
+            return 'red';
 
-        $media = $AVERAGE_SALES == 0 ? 0 : ($stock * 100 ) / $AVERAGE_SALES;
-
-        if ($media == 0)
+        if ($AVERAGE_SALES >= ($stock * 1.2))
             return 'green';
 
-        if ($media > 110)
-            return 'emerald';
-
-        if ($media >= 100)
+        if ($AVERAGE_SALES >= ($stock * 1) && $stock < 1.2 * $AVERAGE_SALES)
             return 'orange';
 
-        return 'red';
+        if ($stock < $AVERAGE_SALES)
+            return 'red';
+
+        return 'emerald';
     }
 }
 
 if (!function_exists('color_stock')) {
-    function color_stock (int $stock) {
-
+    function color_stock (int $stock)
+    {
         $danger = Cache::rememberForever('alert:danger:stock', function() {
             return settings()->get('alert:danger', 50);
         });

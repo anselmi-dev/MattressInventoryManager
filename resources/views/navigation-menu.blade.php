@@ -162,6 +162,9 @@
                                 <x-dropdown-link href="{{ route('settings.index') }}" wire:navigate title="{{ __('Settings') }}">
                                     {{ __('Settings') }}
                                 </x-dropdown-link>
+                                <x-dropdown-link href="{{ route('products.export') }}" title="{{ __('Exportar') }}">
+                                    {{ __('Exportar productos') }}
+                                </x-dropdown-link>
                                 <x-dropdown-link href="{{ route('users.index') }}" wire:navigate title="{{ __('Users') }}">
                                     {{ __('Users') }}
                                 </x-dropdown-link>

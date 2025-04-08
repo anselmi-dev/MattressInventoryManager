@@ -30,7 +30,7 @@ class AverageSalesForLastDaysScope implements Scope
 
         // OBTENER EL PROMEDIO DE LAS VENTAS EN UN PERIODO
         // TOTAL_SALES / DÍAS = PROMEDIO POR DÍA
-        $subqueryAverageSalesPerDay = "CEIL($subqueryTotalSales / $days)";
+        $subqueryAverageSalesPerDay = "($subqueryTotalSales / $days)";
 
         $builder
             ->leftJoin('product_sale', function ($join) use ($startDate, $endDate) {

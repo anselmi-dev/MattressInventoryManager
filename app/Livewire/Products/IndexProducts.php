@@ -85,18 +85,7 @@ class IndexProducts extends DataTableComponent
                 ->sortable(
                     fn(Builder $query, string $direction) => $query->orderByRaw("TOTAL_SALES {$direction}")
                 ),
-            // AVERAGE_SALES_PER_DAY
-            Column::make(__('Med. Día'), 'AVERAGE_SALES_PER_DAY')
-                ->label(function ($row) {
-                    return view('components.laravel-livewire-tables.value', [
-                        'value' => doubleval(optional($row)->AVERAGE_SALES_PER_DAY ?? 0),
-                        'tooltip' => 'Venta media por día en los últimos '. (int) settings()->get('stock:days', 10) . ' días'
-                    ]);
-                })
-                ->html()
-                ->sortable(
-                    fn(Builder $query, string $direction) => $query->orderByRaw("AVERAGE_SALES_PER_DAY {$direction}")
-                ),
+            // STOCK_ORDER
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [

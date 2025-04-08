@@ -311,5 +311,4 @@ class Product extends Model
     {
         return color_average_stock($this->stock, $this->AVERAGE_SALES);
     }
-
 }

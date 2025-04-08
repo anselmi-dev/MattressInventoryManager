@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// VOLANA72X30
-// REVISAR EL STOK
 Route::middleware('auth')->group(function () {
     
     Route::middleware([
@@ -11,17 +9,6 @@ Route::middleware('auth')->group(function () {
         config('jetstream.auth_session'),
         'verified',
     ])->group(function () {
-
-        Route::get('/product-info/{code}', function ($code) {
-            // $products = \App\Models\Product::take(3)->get()->toArray();
-            // dd($products);
-            $product = \App\Models\Product::where('code', $code)->first();
-            dd([
-                ...$product->toArray(),
-                'AVERAGE_SALES_DIFFERENCE___' => $product->AVERAGE_SALES == 0 ? 0 : ($product->stock * 100 ) / $product->AVERAGE_SALES
-            ]);
-        })->name('product-info');
-
 
         Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
         
@@ -35,6 +22,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', \App\Livewire\Products\IndexProducts::class)->name('index');
             Route::get('/s/{model:code}', \App\Livewire\Products\ShowProduct::class)->name('show');
             Route::get('/p/{model:code?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
+            Route::get('/export', [\App\Http\Controllers\ProductController::class, 'export'])->name('export.index');
         });
 
         Route::middleware([])->prefix('combinaciones')->name('combinations.')->group(function () {
@@ -75,7 +63,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/', \App\Livewire\ProductTypes\IndexProductTypes::class)->name('index');
             Route::get('/m/{model?}', \App\Livewire\ProductTypes\ModelProductTypes::class)->name('model');
         });
-        
+
+        Route::get('exportar-productos', [\App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
 
         Route::get('activity-log', \App\Livewire\ActivityLog::class)->name('activity.index');
     });
