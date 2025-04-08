@@ -2,7 +2,7 @@
     <x-page.heading title="{{ __('Product') }} #{{ $model->code }}" breadcrumbs="parts.show" :model="$model">
         <x-slot name="actions">
             <div class="flex gap-1">
-                <x-wireui:button primary href="{{ route('products.model', ['model' => $model]) }}">
+                <x-wireui:button primary href="{{ $model->route_edit }}">
                     {{ __('Edit') }}
                 </x-wireui:button>
                 <x-wireui:button
@@ -28,24 +28,25 @@
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 ">
                   <dt class="text-sm font-medium leading-6 text-gray-500">Ventas días anteriores</dt>
                   {{-- <dd class="text-xs font-medium text-gray-700"</dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->quantity_sales }}</dd>
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->TOTAL_SALES }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
-                  <dt class="text-sm font-medium leading-6 text-gray-500">Media del periodo</dt>
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Promedio por día</dt>
                   {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_media }}</dd>
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES_PER_DAY }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 lg:border-l">
-                  <dt class="text-sm font-medium leading-6 text-gray-500">Stock requerido del periodo</dt>
+                  <dt class="text-sm font-medium leading-6 text-gray-500">
+                    <span>Stock requerido en los próximos {{ settings()->get('stock:days', 10) }} días</span>
+                  </dt>
                   {{-- <dd class="text-xs font-medium text-gray-700"</dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_quantity }}</dd>
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
-                  <dt class="text-sm font-medium leading-6 text-gray-500">Diferencia del stock</dt>
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Stock disponible - Stock requerido</dt>
                   {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->average_sales_difference }}</dd>
-                </div>
-              
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES_DIFFERENCE }}</dd>
+            </div>
             </dl>
         </div>
     </x-page.content>

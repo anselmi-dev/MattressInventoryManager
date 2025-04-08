@@ -20,7 +20,7 @@ class ShowDimension extends Component
     public function render()
     {
         return view('livewire.dimensions.show-dimension', [
-            'products' => $this->model->products()->paginate(10),
+            'products' => $this->model->products()->averageSalesForLastDays()->paginate(10),
         ]);
     }
 }

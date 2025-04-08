@@ -60,14 +60,14 @@
                         @if($item->stock_color == 'red')
                             <span class="flex flex-col justify-center">
                                 <span>
-                                    STOCK REQUERIDO: {{ abs((int)$item->average_sales_quantity) }}
+                                    STOCK REQUERIDO: {{ abs((int)$item->AVERAGE_SALES) }}
                                 </span>
-                                REQUIERE {{ abs($item->average_sales_difference) }} MÁS
+                                REQUIERE {{ abs($item->AVERAGE_SALES_DIFFERENCE) }} MÁS
                             </span>
                         @elseif($item->stock_color == 'yellow')
                             <span class="flex flex-col justify-center">
                                 <span>
-                                    STOCK REQUERIDO: {{ abs((int)$item->average_sales_quantity) }}
+                                    STOCK REQUERIDO: {{ abs((int)$item->AVERAGE_SALES) }}
                                 </span>
                                 STOCK EN EL LÍNITE
                             </span>

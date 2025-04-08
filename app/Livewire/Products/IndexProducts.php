@@ -39,7 +39,7 @@ class IndexProducts extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->with('dimension')->whereNotCombinations();
+        return Model::query()->averageSalesForLastDays()->with('dimension')->whereNotCombinations();
     }
     
     public function configure(): void
@@ -72,35 +72,40 @@ class IndexProducts extends DataTableComponent
                 ->sortable(),
             Column::make(__('Name'), 'name')
                 ->sortable(),
-            Column::make(__('Med. Día'), 'average_sales_media')
+
+            // TOTAL_SALES
+            Column::make(__('Ventas'), 'TOTAL_SALES')
                 ->label(function ($row) {
                     return view('components.laravel-livewire-tables.value', [
-                        'value' => round($row->average_sales_media, 0),
-                        'tooltip' => 'Media x Día'
+                        'value' => doubleval(optional($row)->TOTAL_SALES ?? 0),
+                        'tooltip' => 'Ventas en los últimos '. (int) settings()->get('stock:days', 10) . ' días'
                     ]);
                 })
                 ->html()
                 ->sortable(
-                    fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_media {$direction}")
+                    fn(Builder $query, string $direction) => $query->orderByRaw("TOTAL_SALES {$direction}")
                 ),
-            Column::make(__('Requerido'), 'average_sales_quantity')
+            // AVERAGE_SALES_PER_DAY
+            Column::make(__('Med. Día'), 'AVERAGE_SALES_PER_DAY')
                 ->label(function ($row) {
                     return view('components.laravel-livewire-tables.value', [
-                        'value' => round($row->average_sales_quantity, 0),
-                        'tooltip' => 'Stock requerido en los próximos '. (int) settings()->get('stock:days', 10) . ' días.'
+                        'value' => doubleval(optional($row)->AVERAGE_SALES_PER_DAY ?? 0),
+                        'tooltip' => 'Venta media por día en los últimos '. (int) settings()->get('stock:days', 10) . ' días'
                     ]);
                 })
                 ->html()
                 ->sortable(
-                    fn(Builder $query, string $direction) => $query->orderByRaw("average_sales_quantity {$direction}")
+                    fn(Builder $query, string $direction) => $query->orderByRaw("AVERAGE_SALES_PER_DAY {$direction}")
                 ),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                     'stock_order' => doubleval(optional($row)->stock_order ?? 0),
-                    'average_sales_quantity' => doubleval(optional($row)->average_sales_quantity ?? 0),
-                    'average_sales_media' => doubleval(optional($row)->average_sales_media ?? 0),
+                    'AVERAGE_SALES_DIFFERENCE' => doubleval(optional($row)->AVERAGE_SALES_DIFFERENCE ?? 0),
+                    'AVERAGE_SALES' => doubleval(optional($row)->AVERAGE_SALES ?? 0),
+                    'AVERAGE_SALES_PER_DAY' => doubleval(optional($row)->AVERAGE_SALES_PER_DAY ?? 0),
+                    'TOTAL_SALES' => doubleval(optional($row)->TOTAL_SALES ?? 0),
                 ])
                 ->sortable(),
             Column::make(__('Dimension'), 'dimension.code')

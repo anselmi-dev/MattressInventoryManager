@@ -12,6 +12,17 @@ Route::middleware('auth')->group(function () {
         'verified',
     ])->group(function () {
 
+        Route::get('/product-info/{code}', function ($code) {
+            // $products = \App\Models\Product::take(3)->get()->toArray();
+            // dd($products);
+            $product = \App\Models\Product::where('code', $code)->first();
+            dd([
+                ...$product->toArray(),
+                'AVERAGE_SALES_DIFFERENCE___' => $product->AVERAGE_SALES == 0 ? 0 : ($product->stock * 100 ) / $product->AVERAGE_SALES
+            ]);
+        })->name('product-info');
+
+
         Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
         
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
@@ -22,8 +33,8 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware([])->prefix('partes')->name('products.')->group(function () {
             Route::get('/', \App\Livewire\Products\IndexProducts::class)->name('index');
-            Route::get('/s/{model}', \App\Livewire\Products\ShowProduct::class)->name('show');
-            Route::get('/p/{model?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
+            Route::get('/s/{model:code}', \App\Livewire\Products\ShowProduct::class)->name('show');
+            Route::get('/p/{model:code?}', \App\Livewire\Products\ModelProduct::class)->middleware(['role:develop|admin'])->name('model');
         });
 
         Route::middleware([])->prefix('combinaciones')->name('combinations.')->group(function () {

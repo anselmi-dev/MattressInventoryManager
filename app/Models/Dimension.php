@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\Product\AverageSalesForLastDaysScope;
 use App\Models\Traits\ScopeTrait;
 use App\Observers\DimensionObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

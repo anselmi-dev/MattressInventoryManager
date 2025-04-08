@@ -35,17 +35,23 @@
     </div>
 
     <div class="hidden md:flex shrink-0 items-center gap-y-1 flex-col text-xs text-center justify-center">
-        @if($product->stock_color == 'red')
+        @if($product->stock_color == 'green')
             <span class="flex flex-col justify-center">
                 <span>
-                    STOCK REQUERIDO: {{ abs((int)$product->average_sales_quantity) }}
+                    STOCK SUFICIENTE
                 </span>
-                REQUIERE {{ abs($product->average_sales_difference) }} MÁS
             </span>
         @elseif($product->stock_color == 'yellow')
             <span class="flex flex-col justify-center">
                 <span>
-                    STOCK REQUERIDO: {{ abs((int)$product->average_sales_quantity) }}
+                    STOCK REQUERIDO: {{ abs((int)$product->AVERAGE_SALES) }}
+                </span>
+                REQUIERE {{ abs($product->AVERAGE_SALES_DIFFERENCE) }} MÁS
+            </span>
+        @elseif($product->stock_color == 'yellow')
+            <span class="flex flex-col justify-center">
+                <span>
+                    STOCK REQUERIDO: {{ abs((int)$product->AVERAGE_SALES) }}
                 </span>
                 STOCK EN EL LÍNITE
             </span>

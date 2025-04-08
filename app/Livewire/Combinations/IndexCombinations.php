@@ -68,14 +68,14 @@ class IndexCombinations extends DataTableComponent
             ViewComponentColumn::make(__('Media'), 'id')
                 ->component('components.laravel-livewire-tables.products.average_sales_media')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row)->average_sales_quantity ?? 0
+                    'value' => optional($row)->AVERAGE_SALES ?? 0
                 ]),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
                     'value' => $value,
                     'stock_order' => doubleval(optional($row)->stock_order ?? 0),
-                    'row' => doubleval(optional($row)->average_sales_quantity ?? 0),
+                    'row' => doubleval(optional($row)->AVERAGE_SALES ?? 0),
                 ]),
             Column::make(__('Created at'), 'created_at')
                 ->searchable()

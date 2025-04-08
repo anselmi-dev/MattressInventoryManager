@@ -24,6 +24,18 @@ class ModelProduct extends Component
         return new RequestModel($prefix = 'form');
     }
     
+    public function mount($model = null)
+    {
+        // Obtiene el nombre de la clase del modelo
+        $modelClass = $this->getModelClass();
+
+        $this->model = $model ? $modelClass::where('id', $model)->orWhere('code', $model)->firstOrFail() : new $modelClass;
+
+        $fill = ($this->getRequestInstance())->fill();
+
+        $this->form = $this->model->only($fill);
+    }
+
     protected function getRedirectRoute()
     {
         return 'products.index';

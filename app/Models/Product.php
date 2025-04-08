@@ -59,7 +59,7 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $appends = [
-        'route_edit'
+        'route_edit',
     ];
 
     /**
@@ -72,8 +72,8 @@ class Product extends Model
         'type' => '',
         'stock' => 0,
         'minimum_order' => 0,
-        'visible' => TRUE,
         'minimum_order_notification_enabled' => FALSE,
+        'visible' => TRUE,
         'description' => '',
     ];
 
@@ -90,9 +90,8 @@ class Product extends Model
     {
         return [
             'minimum_order_notification_enabled' => 'bool',
-            'minimum_order' => 'bool',
-            'visible' => 'bool',
             'minimum_order' => 'integer',
+            'visible' => 'bool',
             'stock' => 'integer'
         ];
     }
@@ -104,7 +103,7 @@ class Product extends Model
      */
     protected static function booted()
     {
-        static::addGlobalScope(new AverageSalesForLastDaysScope);
+        // static::addGlobalScope(new AverageSalesForLastDaysScope);
         
         static::addGlobalScope(new StockOrderScope);
     }
@@ -149,6 +148,11 @@ class Product extends Model
     public function factusolProduct()
     {
         return $this->hasOne(FactusolProduct::class, 'CODART', 'code');
+    }
+
+    public function scopeAverageSalesForLastDays(Builder $query)
+    {
+        $query->withGlobalScope('average_sales', new \App\Models\Scopes\Product\AverageSalesForLastDaysScope());
     }
 
     /**
@@ -272,7 +276,7 @@ class Product extends Model
             return route('combinations.model', ['model' => $this->id]);
         }
 
-        return route('products.model', ['model' => $this->id]);
+        return route('products.model', ['model' => $this->code]);
     }
 
     /**
@@ -285,7 +289,7 @@ class Product extends Model
         if ($this->type === 'combination')
             return route('combinations.show', ['model' => $this->id]);
 
-        return route('products.show', ['model' => $this->id]);
+        return route('products.show', ['model' => $this->code]);
     }
 
     /**
@@ -305,6 +309,7 @@ class Product extends Model
      */
     public function getStockColorAttribute () : string|null
     {
-        return color_average_stock($this->stock, $this->average_sales_quantity);
+        return color_average_stock($this->stock, $this->AVERAGE_SALES);
     }
+
 }

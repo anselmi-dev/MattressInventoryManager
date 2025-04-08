@@ -1,6 +1,8 @@
 <div class="flex items-center gap-1">
     {{-- bg-yellow-600 --}}
     {{-- bg-yellow-500/20 --}}
+    {{-- bg-green-600 --}}
+    {{-- bg-green-500/20 --}}
     {{-- bg-emerald-600 --}}
     {{-- bg-emerald-500/20 --}}
     {{-- bg-red-600 --}}

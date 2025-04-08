@@ -34,7 +34,7 @@ class IndexDimensions extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->WithProductCount();
+        return Model::query()->withProductCount();
     }
 
     public function configure(): void

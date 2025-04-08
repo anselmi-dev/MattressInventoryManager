@@ -43,9 +43,13 @@ if (!function_exists('appendCentimeters')) {
 }
 
 if (!function_exists('color_average_stock')) {
-    function color_average_stock (int $stock, $average_sales) {
-        $media = $average_sales == 0 ? 0 : ($stock * 100 ) / $average_sales;
-    
+    function color_average_stock (int $stock, $AVERAGE_SALES) {
+
+        $media = $AVERAGE_SALES == 0 ? 0 : ($stock * 100 ) / $AVERAGE_SALES;
+
+        if ($media == 0)
+            return 'green';
+
         if ($media > 110)
             return 'emerald';
 

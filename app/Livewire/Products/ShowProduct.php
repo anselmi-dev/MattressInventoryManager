@@ -14,7 +14,7 @@ class ShowProduct extends Component
 
     public function mount(Model $model)
     {
-        $this->model = $model;
+        $this->model = Model::averageSalesForLastDays()->findOrFail($model->id);
     }
 
     public function render()
