@@ -19,21 +19,21 @@
             </div>
         </x-slot>
     </x-page.heading>
-        
+
     <x-page.content>
         <x-products.card-product :product="$model"/>
-        
+
         <div class="border-b border-b-gray-900/10 lg:border-t lg:border-t-gray-900/5">
             <dl class="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 ">
-                  <dt class="text-sm font-medium leading-6 text-gray-500">Ventas días anteriores</dt>
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Ventas en los últimos {{ settings()->get('stock:days', 10) }} días</dt>
                   {{-- <dd class="text-xs font-medium text-gray-700"</dd> --}}
                   <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->TOTAL_SALES }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
                   <dt class="text-sm font-medium leading-6 text-gray-500">Promedio por día</dt>
                   {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES_PER_DAY }}</dd>
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ round($model->AVERAGE_SALES_PER_DAY, 2) }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 lg:border-l">
                   <dt class="text-sm font-medium leading-6 text-gray-500">
@@ -43,14 +43,14 @@
                   <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES }}</dd>
                 </div>
               <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-2 py-4 sm:px-3 lg:border-t-0 xl:px-4 sm:border-l">
-                  <dt class="text-sm font-medium leading-6 text-gray-500">Stock disponible - Stock requerido</dt>
+                  <dt class="text-sm font-medium leading-6 text-gray-500">Unidades faltantes para cubrir las ventas en los próximos {{ settings()->get('stock:days', 10) }} días</dt>
                   {{-- <dd class="text-xs font-medium text-rose-600"></dd> --}}
-                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES_DIFFERENCE }}</dd>
+                  <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{ $model->AVERAGE_SALES_DIFFERENCE < 0 ? abs($model->AVERAGE_SALES_DIFFERENCE) : 0 }}</dd>
             </div>
             </dl>
         </div>
     </x-page.content>
-    
+
     <x-page.content>
 
         <x-loading-livewire/>
@@ -74,7 +74,7 @@
                                 <p>{{ __('No record was found in the database') }}</p>
                             </div>
                         </div>
-                    </div>                          
+                    </div>
                 </ul>
                 @endforelse
             </ul>
@@ -82,9 +82,9 @@
             {{ $orders->links() }}
         </div>
     </x-page.content>
-    
+
     <x-page.content>
-        
+
         <x-page.heading title="{{ __('Sales') }}" md/>
 
         <div class="space-y-2 mt-2">
@@ -104,7 +104,7 @@
                                     <p>{{ __('No record was found in the database') }}</p>
                                 </div>
                             </div>
-                        </div>                          
+                        </div>
                     </ul>
                 @endforelse
             </ul>

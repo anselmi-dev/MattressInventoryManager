@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\SoftDeletes;
- 
+
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use App\Models\Traits\ScopeTrait;
@@ -104,7 +104,7 @@ class Product extends Model
     protected static function booted()
     {
         // static::addGlobalScope(new AverageSalesForLastDaysScope);
-        
+
         static::addGlobalScope(new StockOrderScope);
     }
 
@@ -161,10 +161,10 @@ class Product extends Model
     public function scopeWithFactusolPresence(Builder $query)
     {
         $query->selectRaw(
-            'products.*, 
-             CASE 
-                WHEN factusol_products.CODART IS NOT NULL THEN 1 
-                ELSE 0 
+            'products.*,
+             CASE
+                WHEN factusol_products.CODART IS NOT NULL THEN 1
+                ELSE 0
              END as has_factusol_product'
         )->leftJoin('factusol_products', 'factusol_products.CODART', '=', 'products.code');
     }

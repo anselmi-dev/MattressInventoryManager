@@ -51,6 +51,12 @@ class IndexCombinations extends DataTableComponent
 
     public function columns(): array
     {
+        $days = (int) settings()->get('stock:days', 10);
+
+        $startDate = \Carbon\Carbon::now()->subDays($days)->startOfDay();
+
+        $endDate = \Carbon\Carbon::now()->endOfDay();
+
         return [
             Column::make('ID', 'id')
                 ->searchable()
@@ -65,17 +71,22 @@ class IndexCombinations extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->format(fn ($value) => $value ?? 'N/D'),
+
             ViewComponentColumn::make(__('Media'), 'id')
                 ->component('components.laravel-livewire-tables.products.average_sales_media')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => optional($row)->AVERAGE_SALES ?? 0
+                    'value' => $row->AVERAGE_SALES_PER_DAY
                 ]),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => $value,
-                    'stock_order' => doubleval(optional($row)->stock_order ?? 0),
-                    'row' => doubleval(optional($row)->AVERAGE_SALES ?? 0),
+                    'stock' => $value,
+                    'stock_order' => doubleval($row->stock_order),
+                    'AVERAGE_SALES_DIFFERENCE' => doubleval($row->AVERAGE_SALES_DIFFERENCE),
+                    'AVERAGE_SALES' => doubleval($row->AVERAGE_SALES),
+                    'AVERAGE_SALES_PER_DAY' => doubleval($row->AVERAGE_SALES_PER_DAY),
+                    'TOTAL_SALES' => doubleval($row->TOTAL_SALES),
+                    // 'sales' => $row->product_sales()->whereBetween('created_at', [$startDate, $endDate])->count()
                 ]),
             Column::make(__('Created at'), 'created_at')
                 ->searchable()

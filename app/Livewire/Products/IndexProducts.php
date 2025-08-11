@@ -39,9 +39,12 @@ class IndexProducts extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->averageSalesForLastDays()->with('dimension')->whereNotCombinations();
+        return Model::query()
+            ->whereNotCombinations()
+            ->averageSalesForLastDays()
+            ->with('dimension');
     }
-    
+
     public function configure(): void
     {
         $this->setPrimaryKey('id')
@@ -55,6 +58,16 @@ class IndexProducts extends DataTableComponent
 
     public function columns(): array
     {
+
+        $days = (int) settings()->get('stock:media:days', 10);
+
+        $stock_days = (int) settings()->get('stock:days', 10);
+
+        $startDate = \Carbon\Carbon::now()->subDays($days)->startOfDay();
+
+        $endDate = \Carbon\Carbon::now()->endOfDay();
+
+
         return [
             Column::make('ID', 'id')
                 ->searchable()
@@ -89,16 +102,20 @@ class IndexProducts extends DataTableComponent
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => $value,
-                    'stock_order' => doubleval(optional($row)->stock_order ?? 0),
-                    'AVERAGE_SALES_DIFFERENCE' => doubleval(optional($row)->AVERAGE_SALES_DIFFERENCE ?? 0),
-                    'AVERAGE_SALES' => doubleval(optional($row)->AVERAGE_SALES ?? 0),
-                    'AVERAGE_SALES_PER_DAY' => doubleval(optional($row)->AVERAGE_SALES_PER_DAY ?? 0),
-                    'TOTAL_SALES' => doubleval(optional($row)->TOTAL_SALES ?? 0),
+                    'stock' => $value,
+                    'stock_order' => doubleval($row->stock_order),
+                    'AVERAGE_SALES_DIFFERENCE' => doubleval($row->AVERAGE_SALES_DIFFERENCE),
+                    'AVERAGE_SALES' => doubleval($row->AVERAGE_SALES),
+                    'AVERAGE_SALES_PER_DAY' => doubleval($row->AVERAGE_SALES_PER_DAY),
+                    'TOTAL_SALES' => doubleval($row->TOTAL_SALES),
+                    // 'sales' => $row->product_sales()->whereBetween('created_at', [$startDate, $endDate])->count()
                 ])
-                ->sortable(),
-            Column::make(__('Dimension'), 'dimension.code')
+                ->sortable(
+                    fn(Builder $query, string $direction) => $query->orderByRaw("stock {$direction}")
+                ),
+            Column::make(__('Dimension'), 'dimension')
                 ->eagerLoadRelations()
+                ->format(fn ($value) => $value->code)
                 ->sortable(),
             Column::make(__('Type'), 'type')
                 ->searchable()
@@ -133,7 +150,7 @@ class IndexProducts extends DataTableComponent
         ->orderBy('width')
         ->get()
         ->pluck('description','id');
-        
+
         $options_dimensions = array_merge(['0' => __('All')], $options_dimensions->toArray());
 
         return [
@@ -162,6 +179,20 @@ class IndexProducts extends DataTableComponent
                         $query->where('dimension_id', $value);
                     });
                 }),
+
+            SelectFilter::make(__('Stock por ventas'))
+                ->options([
+                    '' => __('Todos'),
+                    'insufficient' => __('De más a menos requerido'),
+                    'sufficient' => __('De menos a más requerido'),
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->when($value == 'insufficient', function ($query) {
+                        $query->orderBy('AVERAGE_SALES_DIFFERENCE', 'asc');
+                    })->when($value == 'sufficient', function ($query) {
+                        $query->orderBy('AVERAGE_SALES_DIFFERENCE', 'desc');
+                    });
+                }),
         ];
     }
 
@@ -175,7 +206,7 @@ class IndexProducts extends DataTableComponent
     public function generateOrder(): void
     {
         $products_id = $this->getSelected();
-     
+
         $this->clearSelected();
 
         $this->dispatch('openModal', component: 'orders.generate-order-modal', arguments: ['product_ids' => $products_id]);
