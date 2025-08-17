@@ -5,11 +5,23 @@
                 <x-wireui:icon name="plus" class="h-4"/>
             </x-slot>
         </x-laravel-livewire-tables.action-column.action>
-        <x-laravel-livewire-tables.action-column.action label="{{ __('Edit') }}" href="{{ $editLink }}" wire:navigate>
-            <x-slot name="icon">
-                <x-wireui:icon name="pencil" class="h-4"/>
-            </x-slot>
-        </x-laravel-livewire-tables.action-column.action>
+
+        @if($showLink)
+            <x-laravel-livewire-tables.action-column.action label="{{ __('Ver') }}" href="{{ $showLink }}" wire:navigate>
+                <x-slot name="icon">
+                    <x-wireui:icon name="eye" class="h-4"/>
+                </x-slot>
+            </x-laravel-livewire-tables.action-column.action>
+        @endif
+
+        @if($editLink)
+            <x-laravel-livewire-tables.action-column.action label="{{ __('Edit') }}" href="{{ $editLink }}" wire:navigate>
+                <x-slot name="icon">
+                    <x-wireui:icon name="pencil" class="h-4"/>
+                </x-slot>
+            </x-laravel-livewire-tables.action-column.action>
+        @endif
+
         <x-laravel-livewire-tables.action-column.action label="{{ __('Destroy') }}" wire:click="$dispatch('openModal', { component: 'modal-prevent-delete', arguments: {model_id: {{ $id }}, emit: '{{ $deleteEmit }}'} })">
             <x-slot name="icon">
                 <x-wireui:icon name="trash" class="h-4"/>

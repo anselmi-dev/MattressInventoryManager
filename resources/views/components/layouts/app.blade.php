@@ -28,13 +28,13 @@
                 document.body.classList.remove('in');
                 document.body.classList.add('out');
             })
-            
+
             document.addEventListener('livewire:navigated', () => {
                 document.body.classList.remove('out');
                 document.body.classList.add('in');
             })
         </script>
-        
+
         <!-- Scripts -->
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
 
@@ -43,16 +43,16 @@
         <wireui:scripts />
         <!-- Adds the Core Table Styles -->
         @rappasoftTableStyles
-        
+
         <!-- Adds any relevant Third-Party Styles (Used for DateRangeFilter (Flatpickr) and NumberRangeFilter) -->
         @rappasoftTableThirdPartyStyles
-        
+
         <style>
             #modal-container {
                 overflow: initial !important;
             }
         </style>
-        
+
         @stack('styles')
 
     </head>
@@ -89,7 +89,7 @@
         @livewireScripts
 
         @livewire('wire-elements-modal')
-        
+
         @stack('scripts-end')
     </body>
 </html>

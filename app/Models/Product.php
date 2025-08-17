@@ -62,6 +62,8 @@ class Product extends Model
         'route_edit',
     ];
 
+    protected $with = ['productType'];
+
     /**
      * The model's default values for attributes.
      *
@@ -272,7 +274,7 @@ class Product extends Model
      */
     public function getRouteEditAttribute (): string
     {
-        if ($this->type === 'combination') {
+        if ($this->isCombination) {
             return route('combinations.model', ['model' => $this->id]);
         }
 
@@ -286,7 +288,7 @@ class Product extends Model
      */
     public function getRouteShowAttribute (): string
     {
-        if ($this->type === 'combination')
+        if ($this->isCombination)
             return route('combinations.show', ['model' => $this->id]);
 
         return route('products.show', ['model' => $this->code]);
@@ -299,7 +301,7 @@ class Product extends Model
      */
     public function getIsCombinationAttribute () : bool
     {
-        return $this->type == 'combination';
+        return $this->productType->part == false;
     }
 
     /**

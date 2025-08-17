@@ -26,7 +26,10 @@ class IndexCombinations extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Model::query()->whereCombinations();
+        return Model::query()
+            ->whereCombinations()
+            ->averageSalesForLastDays()
+            ->with('dimension');
     }
 
     public function render(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -71,12 +74,18 @@ class IndexCombinations extends DataTableComponent
                 ->searchable()
                 ->sortable()
                 ->format(fn ($value) => $value ?? 'N/D'),
-
-            ViewComponentColumn::make(__('Media'), 'id')
-                ->component('components.laravel-livewire-tables.products.average_sales_media')
-                ->attributes(fn ($value, $row, Column $column) => [
-                    'value' => $row->AVERAGE_SALES_PER_DAY
-                ]),
+            // TOTAL_SALES
+            Column::make(__('Ventas'), 'TOTAL_SALES')
+                ->label(function ($row) {
+                    return view('components.laravel-livewire-tables.value', [
+                        'value' => doubleval(optional($row)->TOTAL_SALES ?? 0),
+                        'tooltip' => 'Ventas en los últimos '. (int) settings()->get('stock:days', 10) . ' días'
+                    ]);
+                })
+                ->html()
+                ->sortable(
+                    fn(Builder $query, string $direction) => $query->orderByRaw("TOTAL_SALES {$direction}")
+                ),
             ViewComponentColumn::make(__('Stock'), 'stock')
                 ->component('components.laravel-livewire-tables.products.average-stock')
                 ->attributes(fn ($value, $row, Column $column) => [
@@ -100,7 +109,8 @@ class IndexCombinations extends DataTableComponent
                 ->excludeFromColumnSelect()
                 ->attributes(fn ($value, $row, Column $column) => [
                     'id' => $row->id,
-                    'editLink' => route('combinations.model', ['model' => $row->id]),
+                    'editLink' => $row->route_edit,
+                    'showLink' => $row->route_show,
                     'deleteEmit' => 'combinations:delete',
                     'manufacture' => 'combinations:create',
                 ]),

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
-    
+
     Route::middleware([
         'auth:sanctum',
         config('jetstream.auth_session'),
@@ -11,7 +11,7 @@ Route::middleware('auth')->group(function () {
     ])->group(function () {
 
         Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
-        
+
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
             Route::get('/', \App\Livewire\Dimensions\IndexDimensions::class)->name('index');
             Route::get('/s/{model}', \App\Livewire\Dimensions\ShowDimension::class)->name('show');
@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware([])->prefix('combinaciones')->name('combinations.')->group(function () {
             Route::get('/', \App\Livewire\Combinations\IndexCombinations::class)->name('index');
-            Route::get('/s/{model}', \App\Livewire\Combinations\IndexCombinations::class)->name('show');
+            Route::get('/s/{model}', \App\Livewire\Combinations\ShowCombinations::class)->name('show');
             Route::get('/m/{model?}', \App\Livewire\Combinations\ModelCombination::class)->middleware(['role:develop|admin'])->name('model');
         });
 
@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', \App\Livewire\Users\IndexUsers::class)->name('index');
             Route::get('/{model?}', \App\Livewire\Users\ModelUser::class)->name('model');
         });
-        
+
         Route::middleware([])->prefix('ordenes')->name('orders.')->group(function () {
             Route::get('/', \App\Livewire\Orders\IndexOrders::class)->name('index');
             Route::get('/{model}', \App\Livewire\Orders\ShowOrder::class)->name('show');
@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', \App\Livewire\Sales\IndexSales::class)->name('index');
             Route::get('/{model}', \App\Livewire\Sales\ShowSale::class)->name('show');
         });
-        
+
         Route::middleware([])->prefix('fabricacion-de-medidas-especiales')->name('manufacture-special-measures.')->group(function () {
             Route::get('/', \App\Livewire\SpecialMeasures\IndexSpecialMeasures::class)->name('index');
         });
@@ -70,4 +70,10 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+Route::get('test/{code}', function ($code) {
+    $products = \App\Models\Product::where('code', $code)->first();
+
+    dd($products->sales()->orderBy('created_at', 'asc')->first());
+});
 
