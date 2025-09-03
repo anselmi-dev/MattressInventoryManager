@@ -2,14 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', function () {
-    return \App\Models\Product::averageSalesForLastDays()->having('STOCK_LOTES', '>', 0)->get();
 
-    return \App\Models\Product::query()->whereHas('lots', function($query) {
-        $query->whereRaw('quantity > average_sales');
-    })->count();
-
-    return \App\Models\Product::where('code', 'FINT105X190')->first();
+Route::get('login', function () {
+    return redirect('admin/login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -84,11 +79,3 @@ Route::middleware('auth')->group(function () {
         Route::get('activity-log', \App\Livewire\ActivityLog::class)->name('activity.index');
     });
 });
-
-
-Route::get('test/{code}', function ($code) {
-    $products = \App\Models\Product::where('code', $code)->first();
-
-    dd($products->sales()->orderBy('created_at', 'asc')->first());
-});
-
