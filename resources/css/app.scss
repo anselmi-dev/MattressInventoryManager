@@ -1,28 +1,99 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
 @import 'filepond';
 @import 'nprogress';
+
+@theme {
+    --breakpoint-xs: 440px;
+
+    --font-sans: "Figtree", var(--font-sans);
+
+    --text-xxs: 0.6rem;
+
+    --animate-infinite-scroll: infinite-scroll 25s linear infinite;
+
+    @keyframes infinite-scroll {
+      from { transform: translateX(0) }
+      to { transform: translateX(-100%) }
+    }
+
+    /* z-index */
+    --z-1: 1;
+    --z-2: 2;
+    --z-3: 3;
+    --z-4: 4;
+    --z-5: 5;
+    --z-50: 50;
+    --z-100: 100;
+
+    --app-default: #57B797;
+    /* Colors */
+    --color-primary-50:  #f4faf3;
+    --color-primary-100: #e4f5e3;
+    --color-primary-200: #caeac8;
+    --color-primary-300: #86cd82;
+    --color-primary-400: #6fbd6b;
+    --color-primary-500: #57B797;
+    --color-primary-600: #287961;
+    --color-primary-700: #2f682d;
+    --color-primary-800: #295427;
+    --color-primary-900: #234522;
+    --color-primary-950: #0e250e;
+
+    --color-secondary-dark:   #333333;
+    --color-secondary-hover:  #dcd9cc;
+    --color-secondary:        #f2f1ec;
+    --color-secondary-50:     #f8f7f4;
+    --color-secondary-100:    #f2f1ec;
+    --color-secondary-200:    #dcd9cc;
+    --color-secondary-300:    #c5c0ac;
+    --color-secondary-400:    #ada38a;
+    --color-secondary-500:    #9d8f72;
+    --color-secondary-600:    #907f66;
+    --color-secondary-700:    #786956;
+    --color-secondary-800:    #635749;
+    --color-secondary-900:    #51473d;
+    --color-secondary-950:    #2b251f;
+
+    --color-app:       #57B797;
+    --color-app-primary:       #57B797;
+    --color-app-hover: #287961;
+    --color-app-50:    #f3faf8;
+    --color-app-100:   #d5f2e6;
+    --color-app-200:   #abe4cd;
+    --color-app-300:   #7aceb0;
+    --color-app-400:   #57b797;
+    --color-app-500:   #349878;
+    --color-app-600:   #287961;
+    --color-app-700:   #236250;
+    --color-app-800:   #204f42;
+    --color-app-900:   #1f4239;
+    --color-app-950:   #0c2720;
+
+    /* flex */
+    --flex-2: 2 2 0%;
+    --flex-3: 3 3 0%;
+    --flex-4: 4 4 0%;
+    --flex-9: 9 9 0%;
+}
 
 .dot-pattern {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAACqADAAQAAAABAAAACgAAAAAYsJrPAAAAHUlEQVQYGWNgYGBQhWIghRswQaX+41YyKkPNEAAA4OoBTP5jT7kAAAAASUVORK5CYII=);
 }
 
 .x-text-base-color {
-    @apply text-secondary-950 dark:text-white;
+    color: var(--color-secondary-950);
 }
 
 .x-text-base-primary {
-    @apply text-app-default;
+    color: var(--app-default);
 }
 
 .x-text-primary-link {
-    @apply text-app-default relative;
+    color: var(--app-default);
 }
 
 .x-text-black {
-    @apply text-black dark:text-white;
+    color: var(--color-secondary-dark);
 }
 
 .highlight {
@@ -45,12 +116,13 @@
 }
 
 #nprogress .bar.bar {
-    @apply bg-app-default
+    background-color: var(--app-default);
 }
 
 
 .cout-nav-item {
-    @apply bg-app-primary absolute min-w-3 h-3 flex items-center justify-center -bottom-0.5 text-white rounded;
+    @apply absolute min-w-3 h-3 flex items-center justify-center -bottom-0.5 text-white rounded;
+    background: var(--app-default);
     font-size: .5rem;
 }
 
@@ -68,14 +140,14 @@
         justify-items: center;
         text-align: center;
     }
-    
+
     &__stock {
         font-size: 2.5rem;
         line-height: 1;
     }
-    
+
     &__name {
-        @apply text-app-default;
+        color: var(--app-default);
         font-size: 1.5rem;
         line-height: 1;
         @media screen and (max-width: 500px) {
@@ -84,13 +156,13 @@
     }
 
     &__code {
-        @apply text-app-default;
+        color: var(--app-default);
         font-size: 1rem;
         line-height: 1;
     }
 
     &__type {
-        @apply text-app-default;
+        color: var(--app-default);
         font-size: 1rem;
         line-height: 1;
     }
@@ -124,7 +196,7 @@
         text-align: center;
         &:hover {
             opacity: 1;
-            @apply text-app-default
+            color: var(--app-default);
         }
     }
 
@@ -138,17 +210,17 @@
             width: 100%;
         }
     }
-    
+
     &__input:checked ~ &__label {
         opacity: 1;
-        @apply text-app-default
+        color: var(--app-default);
     }
 
     &:hover &__label {
         opacity: .2;
         &:hover {
             opacity: 1;
-            @apply text-app-default
+            color: var(--app-default);
         }
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class AverageSalesForLastDaysScope implements Scope
 {
     /**
@@ -25,23 +26,28 @@ class AverageSalesForLastDaysScope implements Scope
 
         $endDate = Carbon::now()->endOfDay();
 
-        // OBTENER EL TOTAL DE LAS VENTAS EN UN PERIODO
-        $subqueryTotalSales = "CAST(COALESCE(SUM(product_sale.CANLFA), 0) AS DOUBLE)";
+        // $builder->leftJoin('product_lots', 'product_lots.reference', '=', 'products.reference')
+        //     ->leftJoin('product_sale', function($join) use ($startDate, $endDate) {
+        //         $join->on('product_sale.ARTLFA', '=', 'products.code')
+        //             ->whereBetween('product_sale.created_at', [$startDate, $endDate]);
+        //     })
+        //     ->select('products.*')
+        //     ->selectRaw('CAST(COALESCE(SUM(product_lots.quantity), 0) as DOUBLE) as STOCK_LOTES')
+        //     ->selectRaw('CAST(COALESCE(SUM(product_sale.CANLFA), 0) as DOUBLE) as AVERAGE_SALES')
+        //     ->selectRaw('CAST(COALESCE(SUM(product_sale.CANLFA), 0) / ? AS DOUBLE) as AVERAGE_SALES_PER_DAY', [$stock_days])
+        //     ->selectRaw('(CAST(COALESCE(SUM(product_lots.quantity), 0) as DOUBLE) - CAST(COALESCE(SUM(product_sale.CANLFA), 0) as DOUBLE)) as AVERAGE_SALES_DIFFERENCE')
+        //     ->groupBy('products.id');
 
-        // OBTENER EL PROMEDIO DE LAS VENTAS EN UN PERIODO
-        // TOTAL_SALES / DÍAS = PROMEDIO POR DÍA
-        $subqueryAverageSalesPerDay = "($subqueryTotalSales / $days)";
-
-        $builder
-            ->leftJoin('product_sale', function ($join) use ($startDate, $endDate) {
-                $join->on('product_sale.ARTLFA', '=', 'products.code')
-                     ->whereBetween('product_sale.created_at', [$startDate, $endDate]);
-            })
-            ->select('products.*')
-            ->selectRaw("$subqueryTotalSales as TOTAL_SALES")
-            ->selectRaw("$subqueryAverageSalesPerDay as AVERAGE_SALES_PER_DAY")
-            ->selectRaw("($subqueryAverageSalesPerDay * $stock_days) as AVERAGE_SALES")
-            ->selectRaw("(CAST(products.stock as DOUBLE)) - ($subqueryAverageSalesPerDay * $stock_days) as AVERAGE_SALES_DIFFERENCE")
-            ->groupBy('products.code');
+        $builder->select('products.*')
+            ->addSelect([
+                'LOTES_COUNT' => DB::table('product_lots')->whereColumn('product_lots.reference', 'products.reference')->selectRaw("COUNT(*)")->take(1),
+                'STOCK_LOTES' => DB::table('product_lots')->whereColumn('product_lots.reference', 'products.reference')->selectRaw("CAST(COALESCE(SUM(quantity), 0) as DOUBLE)")->take(1),
+                // Total de ventas ocurridas en un periodo
+                'AVERAGE_SALES' => DB::table('product_sale')->whereColumn('product_sale.ARTLFA', 'products.code')->whereBetween('product_sale.created_at', [$startDate, $endDate])->selectRaw("CAST(COALESCE(SUM(product_sale.CANLFA), 0) AS DOUBLE)")->take(1),
+                // Promedio de ventas por día en un periodo
+                'AVERAGE_SALES_PER_DAY' => DB::table('product_sale')->selectRaw('CAST((AVERAGE_SALES / ?) AS DOUBLE)', [$stock_days])->take(1),
+                // Diferencia entre el stock y el promedio de ventas por día en un periodo
+                'AVERAGE_SALES_DIFFERENCE' => DB::table('product_sale')->selectRaw('CAST(STOCK_LOTES - AVERAGE_SALES AS DOUBLE)')->take(1),
+            ]);
     }
 }

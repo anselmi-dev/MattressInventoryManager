@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Casts\StatusOrderProductCast;
 
 class OrderProduct extends Model
 {
@@ -18,6 +19,8 @@ class OrderProduct extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'product_id',
+        'order_id',
         'attribute_data',
         'status',
         'quantity',
@@ -33,6 +36,7 @@ class OrderProduct extends Model
     {
         return [
             'attribute_data' => 'array',
+            'status' => StatusOrderProductCast::class
         ];
     }
 

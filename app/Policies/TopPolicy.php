@@ -13,7 +13,7 @@ class TopPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class TopPolicy
      */
     public function view(User $user, Top $top): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class TopPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class TopPolicy
      */
     public function update(User $user, Top $top): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class TopPolicy
      */
     public function delete(User $user, Top $top): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class TopPolicy
      */
     public function restore(User $user, Top $top): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class TopPolicy
      */
     public function forceDelete(User $user, Top $top): bool
     {
-        //
+        return true;
     }
 }

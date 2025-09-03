@@ -13,7 +13,7 @@ class DimensionPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class DimensionPolicy
      */
     public function view(User $user, Dimension $dimension): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class DimensionPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class DimensionPolicy
      */
     public function update(User $user, Dimension $dimension): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class DimensionPolicy
      */
     public function delete(User $user, Dimension $dimension): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class DimensionPolicy
      */
     public function restore(User $user, Dimension $dimension): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class DimensionPolicy
      */
     public function forceDelete(User $user, Dimension $dimension): bool
     {
-        //
+        return true;
     }
 }

@@ -13,7 +13,7 @@ class CombinationPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CombinationPolicy
      */
     public function view(User $user, Combination $combination): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class CombinationPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class CombinationPolicy
      */
     public function update(User $user, Combination $combination): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class CombinationPolicy
      */
     public function delete(User $user, Combination $combination): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class CombinationPolicy
      */
     public function restore(User $user, Combination $combination): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class CombinationPolicy
      */
     public function forceDelete(User $user, Combination $combination): bool
     {
-        //
+        return true;
     }
 }

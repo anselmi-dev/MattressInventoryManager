@@ -37,14 +37,6 @@ class Sale extends Model
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array<int, string>
@@ -53,21 +45,13 @@ class Sale extends Model
         'status',
     ];
 
-    /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-    ];
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly($this->fillable)
             ->logOnlyDirty();
     }
-    
+
     /**
      * Get the attributes that should be cast.
      *
@@ -90,16 +74,31 @@ class Sale extends Model
         static::addGlobalScope(new QuantitySalesScope);
     }
 
+    /**
+     * Get the product sales associated with the sale.
+     *
+     * @return HasMany
+     */
     public function product_sales(): HasMany
     {
         return $this->hasMany(ProductSale::class);
     }
 
+    /**
+     * Get the product sales special measures associated with the sale.
+     *
+     * @return HasMany
+     */
     public function product_sales_special_measures(): HasMany
     {
         return $this->hasMany(ProductSale::class)->where('DESLFA', 'like', "%MED. ESPECIAL%")->orWhere('DESLFA', 'like', "%MEDIDA ESPECIAL%");
     }
 
+    /**
+     * Get the products associated with the sale.
+     *
+     * @return BelongsToMany
+     */
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'product_sale', 'sale_id', 'ARTLFA', 'id', 'code')->withTimestamps();

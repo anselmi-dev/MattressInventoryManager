@@ -13,7 +13,7 @@ class CoverPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CoverPolicy
      */
     public function view(User $user, Cover $cover): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class CoverPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class CoverPolicy
      */
     public function update(User $user, Cover $cover): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class CoverPolicy
      */
     public function delete(User $user, Cover $cover): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class CoverPolicy
      */
     public function restore(User $user, Cover $cover): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class CoverPolicy
      */
     public function forceDelete(User $user, Cover $cover): bool
     {
-        //
+        return true;
     }
 }

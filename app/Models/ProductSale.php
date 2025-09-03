@@ -25,9 +25,10 @@ class ProductSale extends Model
         'ARTLFA', // CÓDIGO DEL ARTÍCULO
         'TOTLFA', // TOTAL DE LA LINEA DE LA FACTURA
         'DESLFA', // DESCRIPCIÓN
+        'product_lot_id',
         'processed_at',
     ];
-    
+
     /**
      * Get the attributes that should be cast.
      *
@@ -58,6 +59,16 @@ class ProductSale extends Model
     public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class);
+    }
+
+    /**
+     * Belongs to a product lot
+     *
+     * @return BelongsTo
+     */
+    public function product_lot(): BelongsTo
+    {
+        return $this->belongsTo(ProductLot::class);
     }
 
     /**

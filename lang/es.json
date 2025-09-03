@@ -375,7 +375,7 @@
     "order:next:processed:message": "El pedido se ha confirmado y se han procesado los stocks de cada producto.",
     "order:next:canceled:message": "El pedido se ha confirmado y se han procesado los stocks de cada producto.",
     "No record was found in the database": "No se ha encontrado ningún registro en la base de datos",
-    "Email that will be sent with the orders.": "Correo electrónico que se enviará con las órdenes.", 
+    "Email that will be sent with the orders.": "Correo electrónico que se enviará con las órdenes.",
     "Number of days of stock": "Número de días de stock",
     "Days used to calculate the basis for the average of previous sales.": "Días utilizados para calcular la base de la media de ventas anteriores.",
     "Number of days": "Número de días",
@@ -383,7 +383,7 @@
     "Days used for the average of previous sales.": "Días utilizados para la media de ventas anteriores.",
     "Create request": "Crear solicitud",
     "Generate new order": "Generar nuevo pedido",
-    "There are no products in this order": "No hay ningún producto en esta orden", 
+    "There are no products in this order": "No hay ningún producto en esta orden",
     "average-stock:blue": "El stock actual excede la cantidad promedio requerida.",
     "average-stock:red": "El stock está considerablemente por debajo del nivel promedio requerido.",
     "average-stock:yellown": "El stock disponible es inferior a la cantidad promedio necesaria.",
@@ -413,7 +413,7 @@
     "Show invoice": "Ver factura",
     "Select": "Seleccionar",
     "Products associated with the dimension": "Products asociado a la dimensión",
-    "Dimension in centimeters (cm)": "Dimensión en centímetros (cm)", 
+    "Dimension in centimeters (cm)": "Dimensión en centímetros (cm)",
     "The code must be unique. It is recommended to start with :string": "El código debe ser único. Se recomienda que comience con :string",
     "The product's stock has been modified. The stock will be updated in Factusol.": "Se ha modificado el stock del producto. El stock se actualizará en Factusol.",
     "Represents the unique code stored in Factusol as 'EANART'.": "Representa el código único que se almacena en Factusol como 'EANART'.",
@@ -421,5 +421,6 @@
     "Edit Product Type": "Editar tipo de producto",
     "New Product Type": "Nuevo tipo de producto",
     "Drag or upload an .xlsx document to import the parts.": "Arrastra o carga un documento .xlsx para importar las partes.",
-    "Import Products": "Importar productos"
+    "Import Products": "Importar productos",
+    "Notification": "Notificación"
 }

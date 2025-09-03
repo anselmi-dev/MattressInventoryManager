@@ -38,7 +38,7 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
             'currentProduct.stock' => 'required|integer|gte:'. (int)$this->productSale->CANLFA
         ];
     }
-    
+
     /**
      * Supported: 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'
      */
@@ -56,7 +56,7 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
     {
         return false;
     }
-    
+
     public static function closeModalOnEscape(): bool
     {
         return false;
@@ -78,7 +78,6 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
 
             $this->width = (float) $width;
 
-            // whereBase()
             $this->products = Product::whereHas('dimension', function ($query) {
                 $query->where([
                     ['width', '>=', (float) $this->width],
@@ -98,11 +97,11 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
     public function submit (): void
     {
         $this->validate();
-        
+
         $CANLFA = (int)$this->productSale->CANLFA;
 
         $this->currentProduct->decrementStock($CANLFA);
-        
+
         $this->productSale->special_measurement()->create([
             'quantity' => $CANLFA,
             'product_id' => $this->currentProduct->id
@@ -146,7 +145,7 @@ class ManufactureSpecialMeasuresModal extends ModalComponent
             ->pluck('description', 'id')
             ->toArray();
 
-        
+
         return array_merge(['' => __('DImensions')], $dimensions);
     }
 

@@ -75,14 +75,14 @@ class Dimension extends Model
             'visible' => 'bool',
         ];
     }
-    
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly($this->fillable)
             ->logOnlyDirty();
     }
-            
+
     /**
      * Defines the "one-to-many" relationship between Dimension and Product.
      *
@@ -96,7 +96,7 @@ class Dimension extends Model
     /**
      * Scope to include the count of products associated with each dimension.
      *
-     * This scope allows querying dimensions along with an additional field that contains 
+     * This scope allows querying dimensions along with an additional field that contains
      * the number of products linked to each dimension.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder instance.
@@ -108,7 +108,7 @@ class Dimension extends Model
     }
 
     /**
-     * This attribute formats the height and width of the dimension into a 
+     * This attribute formats the height and width of the dimension into a
      * readable label (e.g., "120x200").
      *
      * @return string
@@ -117,7 +117,7 @@ class Dimension extends Model
     {
         return "{$this->height}x{$this->width}";
     }
-    
+
     /**
      * Return route edit model
      *

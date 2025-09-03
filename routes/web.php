@@ -2,6 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('test', function () {
+    return \App\Models\Product::averageSalesForLastDays()->having('STOCK_LOTES', '>', 0)->get();
+
+    return \App\Models\Product::query()->whereHas('lots', function($query) {
+        $query->whereRaw('quantity > average_sales');
+    })->count();
+
+    return \App\Models\Product::where('code', 'FINT105X190')->first();
+});
+
 Route::middleware('auth')->group(function () {
 
     Route::middleware([
@@ -10,7 +20,12 @@ Route::middleware('auth')->group(function () {
         'verified',
     ])->group(function () {
 
-        Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
+        Route::get('/', function () {
+            return redirect('admin');
+        })->name('home');
+
+
+        Route::get('/old', \App\Livewire\Dashboard::class)->name('dashboard');
 
         Route::middleware([])->prefix('medidas')->name('dimensions.')->group(function () {
             Route::get('/', \App\Livewire\Dimensions\IndexDimensions::class)->name('index');

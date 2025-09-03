@@ -13,7 +13,7 @@ class IssuePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class IssuePolicy
      */
     public function view(User $user, Issue $issue): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class IssuePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class IssuePolicy
      */
     public function update(User $user, Issue $issue): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class IssuePolicy
      */
     public function delete(User $user, Issue $issue): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class IssuePolicy
      */
     public function restore(User $user, Issue $issue): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class IssuePolicy
      */
     public function forceDelete(User $user, Issue $issue): bool
     {
-        //
+        return true;
     }
 }

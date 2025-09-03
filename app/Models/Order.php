@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Mail\OrderShipped;
+use Illuminate\Support\Facades\Mail;
 
 class Order extends Model
 {
@@ -24,18 +29,18 @@ class Order extends Model
         'email',
     ];
     // 'pending', 'canceled', 'shipped', 'processed', 'error'
-    
-    public function sentEmail()
+
+    public function sentEmail(): BelongsTo
     {
         return $this->belongsTo(SentEmail::class);
     }
 
-    public function order_products()
+    public function order_products(): HasMany
     {
         return $this->hasMany(OrderProduct::class);
     }
 
-    public function products()
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, OrderProduct::class)->withTimestamps();
     }
@@ -112,5 +117,48 @@ class Order extends Model
                     $query->select(\DB::raw("SUM(quantity)"));
                 },
             ], 'quantity');
+    }
+
+    /**
+     * Enviar por correo la orden
+     *
+     * @return void
+     */
+    public function sendEmail (): void
+    {
+        if (!$this->getIsPendingAttribute()) {
+            throw new \Exception('La orden no está pendiente');
+        }
+
+        if (settings()->get('notification', true)) {
+            Mail::to($this->email)->queue(new OrderShipped($this));
+        }
+
+        $this->status = 'shipped';
+
+        $this->save();
+    }
+
+    /**
+     * Confirmar envío
+     *
+     * @param string $loteName
+     * @return void
+     */
+    public function confirmDelivery (string $loteName): void
+    {
+        if (!$this->getIsShippedAttribute()) {
+            throw new \Exception('La orden no está enviada');
+        }
+
+        $this->order_products->map(fn ($order_product) => ProductLot::create([
+            'name' => $loteName,
+            'reference' => $order_product->product->reference,
+            'quantity' => $order_product->quantity,
+        ]));
+
+        $this->status = 'processed';
+
+        $this->save();
     }
 }
