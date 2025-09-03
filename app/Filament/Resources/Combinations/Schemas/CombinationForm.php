@@ -35,7 +35,8 @@ class CombinationForm
                         TextInput::make('type')
                             ->label(__('filament.resources.type'))
                             ->readOnly()
-                            ->default(fn (): ?string => ProductType::query()->where('part', true)->first()?->name),
+                            // ->default(fn (): ?string => ProductType::query()->where('part', true)->first()?->name),
+                            ->default('COLCHON'),
                         TextInput::make('reference')
                             ->label(__('filament.resources.reference') . " (Factusol) ")
                             ->belowContent('Representa el código único que se almacena en Factusol como EANART.')

@@ -28,7 +28,7 @@ class ProductObserver
     public function updated(Product $product): void
     {
         if ($product->isDirty('stock')) {
-            
+
             $old_stock = (int) $product->getOriginal('stock');
 
             $new_stock = (int) $product->stock;
@@ -38,10 +38,10 @@ class ProductObserver
                 'new' => $new_stock,
                 'quantity' => $new_stock - ($old_stock)
             ]);
-            
+
             StockChangeFactusol::dispatch($stock_change);
         }
-        
+
         $this->refreshCache();
     }
 
@@ -50,6 +50,12 @@ class ProductObserver
      */
     public function deleted(Product $product): void
     {
+        $product->code = $product->code . '_DELETED';
+
+        $product->reference = $product->reference . '_DELETED';
+
+        $product->save();
+
         $this->refreshCache();
     }
 
@@ -59,6 +65,12 @@ class ProductObserver
     public function restored(Product $product): void
     {
         $this->refreshCache();
+
+        $product->code = str_replace('_DELETED', '', $product->code);
+
+        $product->reference = str_replace('_DELETED', '', $product->reference);
+
+        $product->save();
     }
 
     /**

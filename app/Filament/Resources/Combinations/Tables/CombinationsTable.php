@@ -23,7 +23,7 @@ use Illuminate\Contracts\View\View;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\Combinations\Actions\ManufactureAction;
 use App\Filament\Tables\Columns\StockColumn;
-use App\Filament\Resources\ProductLots\Actions\CreateLotAction;
+use App\Filament\Resources\ProductLots\Actions\CreateLotCombinationAction;
 use App\Filament\Forms\Components\CombinationsSelectLot;
 use App\Models\ProductLot;
 use Filament\Forms\Components\TextInput;
@@ -109,7 +109,7 @@ class CombinationsTable
                     EditAction::make()
                         ->slideOver()
                         ->modalWidth('xl'),
-                    // CreateLotAction::make('productLots'),
+                    // CreateLotCombinationAction::make('productLots'),
                     ManufactureAction::make(__('Manufacture')),
                     DeleteAction::make(),
                 ])->icon('heroicon-m-ellipsis-horizontal')

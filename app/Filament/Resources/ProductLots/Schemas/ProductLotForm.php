@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductLot;
+use App\Models\Product;
 
 class ProductLotForm
 {
@@ -29,13 +30,21 @@ class ProductLotForm
                     ->getOptionLabelFromRecordUsing(function (Model $record) {
                         return new HtmlString("<b>{$record->reference}</b> <br> <b>{$record->name}</b>");
                     })
+                    ->afterStateUpdated(function ($state, callable $set) use ($schema) {
+                        $product = Product::where('reference', $state)->first();
+
+                        if ($product) {
+                            $set('relatedLots', []);
+                            $schema->getComponent('relatedLots')->hidden(fn (): bool => $product->isCombination);
+                        }
+                    })
                     ->columnSpanFull()
                     ->allowHtml()
                     ->searchable()
                     ->preload()
                     ->required(),
                 TextInput::make('name')
-                    ->label(__('filament.resources.name'))
+                    ->label(__('Nombre del Lote'))
                     ->columnSpanFull()
                     ->required(),
                 TextInput::make('quantity')
@@ -43,6 +52,7 @@ class ProductLotForm
                     ->helperText('La cantidad inicial del Lote. Esto no afectará el stock disponible de las partes.')
                     ->minValue(0)
                     ->default(0)
+                    ->hidden()
                     ->numeric(),
                 DateTimePicker::make('created_at')
                     ->label(__('filament.resources.created_at'))
@@ -50,7 +60,7 @@ class ProductLotForm
                     ->required(),
                 Repeater::make('relatedLots')
                     ->relationship()
-                    ->label('Lotes de partes')
+                    ->label('Partes del Lote')
                     ->schema([
                         Select::make('related_product_lot_id')
                             ->label('Lote de parte')

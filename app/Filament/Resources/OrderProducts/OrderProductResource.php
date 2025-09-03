@@ -33,7 +33,7 @@ class OrderProductResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'product.name';
 
-    public static function hasNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         return false;
     }

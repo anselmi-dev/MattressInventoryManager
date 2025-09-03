@@ -39,7 +39,7 @@ class ProductLotsTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('quantity')
-                    ->label(__('filament.resources.quantity'))
+                    ->label(__('filament.resources.stock'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('related_lots_count')

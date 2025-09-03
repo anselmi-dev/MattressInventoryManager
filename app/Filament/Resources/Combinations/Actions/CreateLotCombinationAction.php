@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ProductLots\Actions;
+namespace App\Filament\Resources\Combinations\Actions;
 
 use App\Filament\Resources\ProductLots\Schemas\ProductLotForm;
 use App\Models\Product;
@@ -9,7 +9,7 @@ use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Notifications\Notification;
 
-class CreateLotAction extends Action
+class CreateLotCombinationAction extends Action
 {
     public static function make(?string $name = null): static
     {
@@ -22,6 +22,8 @@ class CreateLotAction extends Action
             ->schema(function ($schema, $record) {
 
                 $schema = ProductLotForm::configure($schema)->model(ProductLot::class);
+
+                $schema->getComponent('quantity')->hidden();
 
                 $schema->getComponent('reference')
                     ->searchable(false)
