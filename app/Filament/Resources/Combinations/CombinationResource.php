@@ -17,6 +17,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\HtmlString;
 use App\Filament\Resources\Combinations\RelationManagers;
+use Illuminate\Database\Eloquent\Builder;
 
 class CombinationResource extends Resource
 {
@@ -48,6 +49,11 @@ class CombinationResource extends Resource
         );
     }
 
+    public static function getGlobalSearchResultsLimit(): int
+    {
+        return 3;
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
         return ['code', 'name'];
@@ -71,6 +77,10 @@ class CombinationResource extends Resource
         ];
     }
 
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return static::getEloquentQuery()->whereCombinations();
+    }
 
     public static function getPages(): array
     {

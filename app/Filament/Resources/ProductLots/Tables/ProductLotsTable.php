@@ -14,8 +14,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Section;
-use App\Models\ProductLot;
-
+use App\Filament\Exports\ProductLotExporter;
+use Filament\Actions\ExportBulkAction;
+use Filament\Support\Icons\Heroicon;
 class ProductLotsTable
 {
     public static function configure(Table $table): Table
@@ -39,11 +40,14 @@ class ProductLotsTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('quantity')
+                    ->icon(Heroicon::OutlinedArchiveBox)
                     ->label(__('filament.resources.stock'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('related_lots_count')
-                    ->label('Total de Lotes de partes')
+                    ->tooltip('Cantidad de partes asociadas a este lote.')
+                    ->icon(Heroicon::OutlinedRectangleStack)
+                    ->label('Partes')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -127,6 +131,7 @@ class ProductLotsTable
                 DeleteAction::make(),
             ])
             ->toolbarActions([
+                ExportBulkAction::make()->exporter(ProductLotExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

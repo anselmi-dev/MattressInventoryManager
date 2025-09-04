@@ -5,32 +5,18 @@ namespace App\Filament\Resources\Combinations\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\CreateAction;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Filament\Tables\Columns\StockCombinationColumn;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\Filter;
-use App\Models\Product;
-use Filament\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Support\Enums\TextSize;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Contracts\View\View;
-use Filament\Notifications\Notification;
 use App\Filament\Resources\Combinations\Actions\ManufactureAction;
 use App\Filament\Tables\Columns\StockColumn;
-use App\Filament\Resources\ProductLots\Actions\CreateLotCombinationAction;
-use App\Filament\Forms\Components\CombinationsSelectLot;
-use App\Models\ProductLot;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
-use Illuminate\Support\HtmlString;
-use Filament\Forms\Components\Select;
-use Illuminate\Database\Eloquent\Model;
+use App\Filament\Exports\ProductExporter;
+use Filament\Actions\ExportBulkAction;
 
 class CombinationsTable
 {
@@ -48,17 +34,22 @@ class CombinationsTable
                 TextColumn::make('name')
                     ->label(__('filament.resources.name'))
                     ->sortable(),
+                TextColumn::make('reference')
+                    ->label(__('filament.resources.reference'))
+                    ->sortable(),
                 IconColumn::make('visible')
                     ->label(__('filament.resources.visible'))
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable()
                     ->boolean()
                     ->sortable(),
                 StockColumn::make('STOCK_LOTES')
                     ->label(__('filament.resources.stock'))
+                    ->toggleable()
                     ->sortable(),
                 TextColumn::make('LOTES_COUNT')
                     ->tooltip('Lotes que posee el Colchón')
                     ->label(__('filament.resources.lotes'))
+                    ->toggleable()
                     ->icon(Heroicon::Cube)
                     ->iconPosition(IconPosition::After)
                     ->numeric()
@@ -66,10 +57,12 @@ class CombinationsTable
                 TextColumn::make('AVERAGE_SALES')
                     ->label('Total Ventas')
                     ->suffix(' (' . $days . ' días)')
+                    ->toggleable()
                     ->sortable(),
                 TextColumn::make('AVERAGE_SALES_PER_DAY')
                     ->label('Promedio Ventas')
                     ->suffix(' (' . $days . ' días)')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('AVERAGE_SALES_DIFFERENCE')
@@ -97,7 +90,7 @@ class CombinationsTable
             ->searchable([
                 'code',
                 'name',
-                'dimension.description',
+                'reference',
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 return $query->whereCombinations()->stockOrder()->averageSalesForLastDays();
@@ -116,6 +109,8 @@ class CombinationsTable
                 ->label('Acciones'),
             ])
             ->toolbarActions([
+                ExportBulkAction::make()
+                    ->exporter(ProductExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

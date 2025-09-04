@@ -29,7 +29,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithS
             'Tipo',
             'Creado',
             'Actualizado'
-        ];  
+        ];
     }
 
     public function map($product): array

@@ -11,10 +11,11 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Filament\Support\Enums\IconPosition;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\Filter;
+use App\Filament\Exports\DimentionExporter;
+use Filament\Actions\ExportBulkAction;
 
 class DimensionsTable
 {
@@ -85,6 +86,8 @@ class DimensionsTable
                     ->modalWidth('xl')
             ])
             ->toolbarActions([
+                ExportBulkAction::make()
+                    ->exporter(DimentionExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),

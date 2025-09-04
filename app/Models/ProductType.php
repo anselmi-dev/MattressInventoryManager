@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class ProductType extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,12 +39,12 @@ class ProductType extends Model
     {
         $query->where('part', true);
     }
-    
+
     public function scopeWhereCombination (Builder $query)
     {
         $query->where('part', false);
     }
-    
+
     /**
      * Veriticar si en los elementos contains está el $string
      *
@@ -56,15 +56,5 @@ class ProductType extends Model
         return array_filter($this->contains, function ($word) use ($string) {
             return Str::contains($string, $word);
         });
-    }
-
-    /**
-     * Return route edit model
-     *
-     * @return string
-     */
-    public function getRouteEditAttribute (): string
-    {
-        return route('product_types.model', ['model' => $this->id]);
     }
 }

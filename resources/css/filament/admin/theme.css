@@ -80,3 +80,9 @@
 
 
 }
+
+
+.fi-global-search-result-group-header {
+    text-transform: uppercase;
+    background-color: var(--color-app-200);
+}

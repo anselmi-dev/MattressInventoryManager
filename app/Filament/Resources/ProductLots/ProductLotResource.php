@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\ProductLots;
 
-use App\Filament\Resources\ProductLots\Pages\CreateProductLot;
-use App\Filament\Resources\ProductLots\Pages\EditProductLot;
 use App\Filament\Resources\ProductLots\Pages\ListProductLots;
 use App\Filament\Resources\ProductLots\Schemas\ProductLotForm;
 use App\Filament\Resources\ProductLots\Tables\ProductLotsTable;
@@ -13,6 +11,9 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Support\HtmlString;
 
 class ProductLotResource extends Resource
 {
@@ -31,6 +32,27 @@ class ProductLotResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return (string) Model::count();
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
+
+    public static function getGlobalSearchResultTitle(BaseModel $record): string | Htmlable
+    {
+        return new HtmlString(
+            sprintf(
+                '<div>%s <br> <b>%s</b></div>',
+                $record->name,
+                $record->reference,
+            )
+        );
+    }
+
+    public static function getGlobalSearchResultsLimit(): int
+    {
+        return 3;
     }
 
     protected static ?string $recordTitleAttribute = 'name';

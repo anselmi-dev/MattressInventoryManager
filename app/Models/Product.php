@@ -62,7 +62,6 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $appends = [
-        'route_edit',
     ];
 
     protected $with = ['productType'];
@@ -111,33 +110,6 @@ class Product extends Model
         return LogOptions::defaults()
             ->logOnly($this->fillable)
             ->logOnlyDirty();
-    }
-
-    /**
-     * Return route edit model
-     *
-     * @return string
-     */
-    public function getRouteEditAttribute (): string
-    {
-        if ($this->isCombination) {
-            return route('combinations.model', ['model' => $this->id]);
-        }
-
-        return route('products.model', ['model' => $this->code]);
-    }
-
-    /**
-     * Return route edit model
-     *
-     * @return string
-     */
-    public function getRouteShowAttribute (): string
-    {
-        if ($this->isCombination)
-            return route('combinations.show', ['model' => $this->id]);
-
-        return route('products.show', ['model' => $this->code]);
     }
 
     /**

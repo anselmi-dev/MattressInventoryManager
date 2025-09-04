@@ -77,6 +77,16 @@ class ProductResource extends Resource
         ];
     }
 
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return static::getEloquentQuery()->whereNotCombinations();
+    }
+
+    public static function getGlobalSearchResultsLimit(): int
+    {
+        return 3;
+    }
+
     public static function getPages(): array
     {
         return [

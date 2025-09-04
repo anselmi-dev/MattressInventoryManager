@@ -66,7 +66,7 @@ class OrderForm
                                     ];
                                 });
 
-                                $set('message', view('livewire.orders.template-email', [
+                                $set('message', view('emails.template-email', [
                                     'products' => $products
                                 ])->render());
                             })

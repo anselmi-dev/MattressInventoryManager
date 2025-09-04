@@ -55,6 +55,11 @@ class DimensionResource extends Resource
         );
     }
 
+    public static function getGlobalSearchResultsLimit(): int
+    {
+        return 3;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DimensionForm::configure($schema);

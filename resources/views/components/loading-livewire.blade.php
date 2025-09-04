@@ -1,1 +1,0 @@
-<x-loading wire:loading.class.remove="hidden" class="hidden" {{ $attributes->merge([]) }}/>

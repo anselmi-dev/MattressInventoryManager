@@ -15,9 +15,11 @@ use Filament\Support\Icons\Heroicon;
 class StockLotsStatuses extends TableWidget
 {
     protected int | string | array $columnSpan = [
-        'md' => 2,
+        'md' => 6,
         'xl' => 3,
     ];
+
+    protected static bool $isLazy = false;
 
     public function getTableHeading(): ?string
     {

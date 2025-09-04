@@ -117,28 +117,4 @@ class Dimension extends Model
     {
         return "{$this->height}x{$this->width}";
     }
-
-    /**
-     * Return route edit model
-     *
-     * @return string
-     */
-    public function getRouteEditAttribute (): string
-    {
-        return route('dimensions.model', [
-            'model' => $this->id
-        ]);
-    }
-
-    /**
-     * Return route show model
-     *
-     * @return string
-     */
-    public function getRouteShowAttribute (): string
-    {
-        return route('dimensions.show', [
-            'model' => $this->id
-        ]);
-    }
 }

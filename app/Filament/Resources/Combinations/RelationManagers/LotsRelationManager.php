@@ -29,8 +29,10 @@ class LotsRelationManager extends RelationManager
     {
         $schema = ProductLotForm::configure($schema)->columns(1);
 
-        $schema->getComponent('quantity')
-            ->hidden();
+        if ($schema->getComponent('quantity')) {
+            $schema->getComponent('quantity')
+                ->hidden();
+        }
 
         $schema->getComponent('reference')
             ->searchable(false)

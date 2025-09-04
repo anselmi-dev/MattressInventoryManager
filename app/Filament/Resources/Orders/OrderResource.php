@@ -40,6 +40,11 @@ class OrderResource extends Resource
         return false;
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return (string) Order::count();

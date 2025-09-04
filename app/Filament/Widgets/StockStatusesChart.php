@@ -10,8 +10,10 @@ class StockStatusesChart extends ChartWidget
 {
     protected ?string $heading = 'Estado de Stock por Producto';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = [
-        'md' => 2,
+        'md' => 6,
         'xl' => 3,
     ];
 

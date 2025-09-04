@@ -22,6 +22,8 @@ use App\Filament\Resources\ProductLots\Actions\CreateLotAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\SelectFilter;
 use App\Models\Product;
+use App\Filament\Exports\ProductExporter;
+use Filament\Actions\ExportBulkAction;
 
 class ProductsTable
 {
@@ -60,7 +62,7 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('reference')
                     ->label(__('filament.resources.reference'))
-                    ->searchable(),
+                    ->sortable(),
                 TextColumn::make('name')
                     ->label(__('filament.resources.name'))
                     ->searchable(),
@@ -127,7 +129,7 @@ class ProductsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->stockOrder()->averageSalesForLastDays();
+                return $query->stockOrder()->whereNotCombinations()->averageSalesForLastDays();
             })
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -160,6 +162,8 @@ class ProductsTable
                 ])
             ])
             ->toolbarActions([
+                ExportBulkAction::make()
+                    ->exporter(ProductExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),

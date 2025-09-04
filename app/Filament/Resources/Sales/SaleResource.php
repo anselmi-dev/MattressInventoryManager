@@ -44,6 +44,11 @@ class SaleResource extends Resource
         return 0;
     }
 
+    public static function canGloballySearch(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SaleForm::configure($schema);

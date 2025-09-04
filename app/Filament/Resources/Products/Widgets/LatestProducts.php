@@ -16,7 +16,7 @@ use App\Filament\Resources\Products\ProductResource;
 class LatestProducts extends TableWidget
 {
     protected int | string | array $columnSpan = [
-        'md' => 2,
+        'md' => 6,
         'xl' => 3,
     ];
 

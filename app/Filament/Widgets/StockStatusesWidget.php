@@ -10,8 +10,10 @@ class StockStatusesWidget extends Widget
 {
     protected string $view = 'filament.widgets.stock-statuses-widget';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = [
-        'md' => 2,
+        'md' => 6,
         'xl' => 6,
     ];
 

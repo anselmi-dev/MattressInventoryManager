@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\ProductLots\Pages;
 
-use App\Filament\Resources\ProductLots\ProductLotResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\ProductLots\ProductLotResource;
 
 class CreateProductLot extends CreateRecord
 {

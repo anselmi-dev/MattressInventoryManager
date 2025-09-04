@@ -30,7 +30,12 @@ class FactusolProductResource extends Resource
 
     public static function getNavigationSort(): ?int
     {
-        return 2;
+        return 3;
+    }
+
+    public static function canGloballySearch(): bool
+    {
+        return false;
     }
 
     protected static ?string $label = "Data Factusol";
