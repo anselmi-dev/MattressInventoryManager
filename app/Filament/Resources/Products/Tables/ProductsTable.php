@@ -24,7 +24,6 @@ use Filament\Tables\Filters\SelectFilter;
 use App\Models\Product;
 use App\Filament\Exports\ProductExporter;
 use Filament\Actions\ExportBulkAction;
-
 class ProductsTable
 {
     public static function configure(Table $table): Table
@@ -62,15 +61,19 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('reference')
                     ->label(__('filament.resources.reference'))
+                    ->toggleable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->label(__('filament.resources.name'))
+                    ->toggleable()
                     ->searchable(),
                 TextColumn::make('type')
                     ->label(__('filament.resources.type'))
+                    ->toggleable()
                     ->searchable(),
                 TextColumn::make('dimension.code')
                     ->label(__('filament.resources.dimension'))
+                    ->toggleable()
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('visible')
@@ -79,7 +82,8 @@ class ProductsTable
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('stock')
-                    ->label(__('Stock (old)'))
+                    ->label(__('Stock (Factusol)'))
+                    ->tooltip('Stock que se sincronizará con Factusol')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 StockColumn::make('STOCK_LOTES')
@@ -94,23 +98,28 @@ class ProductsTable
                 TextColumn::make('AVERAGE_SALES')
                     ->label('Total Ventas')
                     ->suffix(' (' . $days . ' días)')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('AVERAGE_SALES_PER_DAY')
                     ->label('Promedio Ventas')
                     ->suffix(' (' . $days . ' días)')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('AVERAGE_SALES_DIFFERENCE')
                     ->label('Diferencia (' . $stock_days . ' días)')
                     ->suffix(' x día')
                     ->numeric()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('minimum_order')
                     ->label(__('filament.resources.minimum_order'))
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('minimum_order_notification_enabled')
                     ->label(__('filament.resources.notification'))
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->label(__('filament.resources.created_at'))
@@ -154,7 +163,7 @@ class ProductsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    CreateLotAction::make('productLots'),
+                    // CreateLotAction::make('productLots'),
                     Action::make('viewLots')
                         ->label('Ver Lotes')
                         ->icon('heroicon-o-list-bullet')

@@ -86,3 +86,11 @@
     text-transform: uppercase;
     background-color: var(--color-app-200);
 }
+
+.fi-ta-header-toolbar .fi-ta-col-manager-items .fi-ta-col-manager-item {
+    padding-top: 0.4rem;
+}
+.fi-ta-header-toolbar .fi-ta-col-manager .fi-ta-col-manager-items {
+    columns: 2;
+    padding-top: 10px;
+}

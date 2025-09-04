@@ -42,6 +42,11 @@ class CombinationsTable
                     ->toggleable()
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('stock')
+                    ->label(__('Stock (Factusol)'))
+                    ->tooltip('Stock que se sincronizará con Factusol')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 StockColumn::make('STOCK_LOTES')
                     ->label(__('filament.resources.stock'))
                     ->toggleable()

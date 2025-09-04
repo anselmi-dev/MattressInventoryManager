@@ -65,10 +65,9 @@ class ProductLotForm
                     ->required(),
                 TextInput::make('quantity')
                     ->label(__('filament.resources.quantity') . ' (Opcional)')
-                    ->helperText('La cantidad inicial del Lote. Esto no afectará el stock disponible de las partes.')
+                    ->helperText('Stock inicial del lote. Esto se sumará al Stock real del producto.')
                     ->minValue(0)
                     ->default(0)
-                    ->hidden()
                     ->numeric(),
                 DateTimePicker::make('created_at')
                     ->label(__('Fecha del Lote'))

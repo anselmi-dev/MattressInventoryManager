@@ -8,12 +8,10 @@ use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
 use App\Filament\Resources\Products\ProductResource;
-use App\Filament\Resources\ProductLots\ProductLotResource;
 use App\Filament\Resources\ProductLots\Tables\ProductLotsTable;
 use Filament\Tables\Concerns\InteractsWithTable;
-
+use Filament\Support\Icons\Heroicon;
 class ListProductLots extends Page implements Tables\Contracts\HasTable
 {
     use InteractsWithTable;
@@ -47,10 +45,12 @@ class ListProductLots extends Page implements Tables\Contracts\HasTable
         return [
             Action::make('back')
                 ->label('Volver a Productos')
+                ->color('gray')
+                ->icon(Heroicon::ArrowLeft)
                 ->url(fn () => ProductResource::getUrl('index')),
             Action::make('create')
-                ->label('Nuevo Lote')
-                ->url(fn () => ProductLotResource::getUrl('create', ['reference' => $this->record->reference])),
+                ->icon(Heroicon::Plus)
+                ->label('Nuevo Lote'),
         ];
     }
 }
