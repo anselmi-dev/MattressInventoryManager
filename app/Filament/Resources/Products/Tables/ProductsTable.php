@@ -164,10 +164,10 @@ class ProductsTable
                 ActionGroup::make([
                     EditAction::make(),
                     // CreateLotAction::make('productLots'),
-                    Action::make('viewLots')
-                        ->label('Ver Lotes')
-                        ->icon('heroicon-o-list-bullet')
-                        ->url(fn (Product $record): string => ProductResource::getUrl('listLots', ['record' => $record])),
+                    // Action::make('viewLots')
+                    //     ->label('Ver Lotes')
+                    //     ->icon('heroicon-o-list-bullet')
+                    //     ->url(fn (Product $record): string => ProductResource::getUrl('listLots', ['record' => $record])),
                 ])
             ])
             ->toolbarActions([
