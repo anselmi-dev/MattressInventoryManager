@@ -150,7 +150,7 @@ class ProductLotForm
                                 if ($state && $productLot = ProductLot::with('product', 'product.factusolProduct')->find($state)) {
 
                                     if (!$productLot->product->factusolProduct) {
-                                        return new HtmlString(view('components.alert-product-factusol')->render());
+                                        return new HtmlString(view('components.alerts.product-factusol')->render());
                                     }
 
                                     return "El lote '{$productLot->product->name}' tiene un stock de ({$productLot->quantity})";

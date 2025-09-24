@@ -26,7 +26,7 @@
                         </div>
 
                         @if (!$item->relatedLot->product->factusolProduct)
-                            <x-alerts.warning-product-factusol />
+                            <x-alerts.product-factusol />
                         @endif
                     </div>
                 </fieldset>
