@@ -27,6 +27,27 @@ class ProductLotsTable
                     ->label(__('filament.resources.name'))
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('product.code')
+                    ->label(__('filament.resources.code'))
+                    ->icon(function ($record) {
+                        if ($record->product->factusolProduct)
+                            return Heroicon::CheckCircle;
+
+                        return Heroicon::XCircle;
+                    })
+                    ->iconColor(function ($record) {
+                        if ($record->product->factusolProduct)
+                            return 'success';
+
+                        return 'danger';
+                    })
+                    ->tooltip(function ($record) {
+                        if ($record->product->factusolProduct)
+                            return __('Existe en Factusol');
+
+                        return __('No existe en Factusol');
+                    })
+                    ->searchable(),
                 TextColumn::make('reference')
                     ->label(__('filament.resources.reference'))
                     ->sortable()
@@ -61,7 +82,7 @@ class ProductLotsTable
             ])
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->withCount('relatedLots');
+                return $query->with('product')->withCount('relatedLots');
             })
             ->filters([
                 Filter::make('search')

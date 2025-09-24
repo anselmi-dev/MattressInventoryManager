@@ -53,13 +53,11 @@ class CombinationForm
                             ->maxLength(255),
                     ])
                     ->columns([
-                        'sm' => 1,
-                        'xl' => 2,
-                    ]),
-            ])
-            ->columns([
-                'sm' => 1,
-                'lg' => 2,
+                        'sm' => 2,
+                        'lg' => 3,
+                        'xl' => 4,
+                    ])
+                    ->columnSpanFull()
             ]);
     }
 }

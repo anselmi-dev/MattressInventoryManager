@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Email;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class BouncedEmail
+class EmailLinkClicked
 {
     /**
      * Create the event listener.

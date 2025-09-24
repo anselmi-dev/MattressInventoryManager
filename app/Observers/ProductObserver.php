@@ -2,9 +2,11 @@
 
 namespace App\Observers;
 
-use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\StockChangeFactusol;
+use App\Events\ProductCreated;
+use App\Events\ProductUpdated;
+use App\Models\Product;
 
 class ProductObserver
 {
@@ -13,11 +15,7 @@ class ProductObserver
      */
     public function created(Product $product): void
     {
-        $product->stock_change()->create([
-            'old' => 0,
-            'new' => $product->stock,
-            'quantity' => $product->stock
-        ]);
+        event(new ProductCreated($product));
 
         $this->refreshCache();
     }
@@ -41,6 +39,8 @@ class ProductObserver
 
             StockChangeFactusol::dispatch($stock_change);
         }
+
+        event(new ProductUpdated($product));
 
         $this->refreshCache();
     }

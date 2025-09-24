@@ -30,7 +30,25 @@ class CombinationsTable
             ->columns([
                 TextColumn::make('code')
                     ->label(__('filament.resources.code'))
-                    ->sortable(),
+                    ->icon(function ($record) {
+                        if ($record->factusolProduct)
+                            return Heroicon::CheckCircle;
+
+                        return Heroicon::XCircle;
+                    })
+                    ->iconColor(function ($record) {
+                        if ($record->factusolProduct)
+                            return 'success';
+
+                        return 'danger';
+                    })
+                    ->tooltip(function ($record) {
+                        if ($record->factusolProduct)
+                            return __('Existe en Factusol');
+
+                        return __('No existe en Factusol');
+                    })
+                    ->searchable(),
                 TextColumn::make('name')
                     ->label(__('filament.resources.name'))
                     ->sortable(),

@@ -21,11 +21,13 @@ class ProductLotForm
     {
         return $schema
             ->components([
-                InfoField::make('product_lot_info')
+                InfoField::make('product_info_factusol')
                     ->columnSpanFull()
                     ->hiddenLabel()
-                    ->title('El lote debe pertenecer a un producto.')
-                    ->description('Un producto puede tener múltiples lotes. La referencia del lote no necesariamente debe ser única para cada producto.'),
+                    ->title('El producto no tiene relación con Factusol')
+                    ->description('El producto no tiene relación con Factusol. Por lo tanto, no se puede sincronizar con Factusol.')
+                    ->status('warning')
+                    ->hidden(fn ($record) => $record?->product ? $record->product->factusolProduct : true),
                 Select::make('reference')
                     ->label(__('Referencia del Producto'))
                     ->relationship(
@@ -74,6 +76,11 @@ class ProductLotForm
                     ->default(now())
                     ->columnSpanFull()
                     ->required(),
+                InfoField::make('product_lot_info')
+                    ->columnSpanFull()
+                    ->hiddenLabel()
+                    ->title('El lote debe pertenecer a un producto')
+                    ->description('Un producto puede tener múltiples lotes. La referencia del lote no necesariamente debe ser única para cada producto.'),
                 Repeater::make('relatedLots')
                     ->relationship()
                     ->label('Partes del Lote')
@@ -139,7 +146,13 @@ class ProductLotForm
                             ->preload()
                             ->required()
                             ->helperText(function ($state) {
-                                if ($state && $productLot = ProductLot::with('product')->find($state)) {
+
+                                if ($state && $productLot = ProductLot::with('product', 'product.factusolProduct')->find($state)) {
+
+                                    if (!$productLot->product->factusolProduct) {
+                                        return new HtmlString(view('components.alert-product-factusol')->render());
+                                    }
+
                                     return "El lote '{$productLot->product->name}' tiene un stock de ({$productLot->quantity})";
                                 }
                                 return null;

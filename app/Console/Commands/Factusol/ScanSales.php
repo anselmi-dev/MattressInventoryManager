@@ -25,7 +25,7 @@ class ScanSales extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Obtener las ventas de factusol y sincronizarlas a la base de datos';
 
     /**
      * Execute the console command.
@@ -33,7 +33,7 @@ class ScanSales extends Command
     public function handle()
     {
         $this->info("ÚLTIMO PROCE DE IMPORTACIÓN LANZADO EL " . settings()->get('last_updated_date_of_sales'));
-        
+
         $this->last_updated_date_of_sales = Carbon::now()->subDays(60);
 
         $query = \Str::replaceArray('?', [
@@ -113,7 +113,7 @@ class ScanSales extends Command
         if ($productSale->wasRecentlyCreated) {
             $productSale->decrementStock();
         }
-        
+
         /* Verifica que la venta esté en estado "procesada" y que no se haya emitido un decremento de stock previamente en el product_sale. */
         //if ($sale->is_processed && is_null($productSale->processed_at)) {
         //    $productSale->decrementStock();

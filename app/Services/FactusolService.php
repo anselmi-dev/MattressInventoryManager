@@ -64,7 +64,7 @@ class FactusolService
     protected function getBearerToken()
     {
         $data = '{"codigoFabricante":"'.$this->fabricanteCode.'","codigoCliente":"'.$this->clienteCode.'","baseDatosCliente":"'.$this->database.'","password":"'.$this->secret.'"}';
-        
+
         $response = Http::baseUrl($this->baseUrl)->withOptions([
             'verify' => true,
         ])->withBody(
@@ -106,7 +106,7 @@ class FactusolService
             throw $e;
         }
     }
-    
+
     public function last_updated_date_of_products ()
     {
         $data = json_encode([
@@ -172,7 +172,7 @@ class FactusolService
             throw $e;
         }
     }
-    
+
     public function getProducts()
     {
         try {
@@ -250,15 +250,15 @@ class FactusolService
             return [];
         }
     }
-    
-    public function get_stock (string $code)
-    {
-        $data = json_encode([
-            'ejercicio' => '2025',
-            'consulta' => "SELECT * FROM F_STO WHERE ARTSTO = '$code'"
-        ]);
 
+    public function get_stock (string $code): array
+    {
         try {
+
+            $data = json_encode([
+                'ejercicio' => '2025',
+                'consulta' => "SELECT * FROM F_STO WHERE ARTSTO = '$code'"
+            ]);
 
             $response = Http::withOptions([
                 'verify' => false,
@@ -271,54 +271,58 @@ class FactusolService
             return $response['resultado'] ? optional($response['resultado'])[0] : [];
 
         } catch (RequestException $e) {
-            report($e->getMessage());
 
             if ($e->response->status() === 401) {
                 if (!$this->intent) {
+
                     $this->intent = true;
 
                     $this->initToken();
 
                     return $this->get_stock ($code);
                 }
-
-                return [
-                    'error' => 'Autenticación'
-                ];
             }
 
-        } catch (\Exception $e) {
             report($e);
+
+            return [];
+
+        } catch (\Exception $e) {
+
+            report($e);
+
             return [];
         }
     }
 
     public function update_stock (string $code, int $quantity, bool $force = false): bool
-    {   
-        $F_STOC = $this->get_stock($code);
-
-        $F_STOC[4]['dato'] = $quantity;
-
-        $data = json_encode([
-            "ejercicio" => "2025",
-            "tabla" =>  "F_STO",
-            "registro" => $F_STOC
-        ]);
-
+    {
         try {
 
+            $F_STOC = $this->get_stock($code);
+
+            $F_STOC[4]['dato'] = $quantity;
+
+            $data = json_encode([
+                "ejercicio" => "2025",
+                "tabla" =>  "F_STO",
+                "registro" => $F_STOC
+            ]);
+
             $response = Http::withOptions([
-                'verify' => false,
-            ])->withToken($this->apiKey)
-            ->withBody($data, 'application/json')
-            ->post($this->baseUrl . '/admin/ActualizarRegistro')
-            ->throw();
+                    'verify' => false,
+                ])
+                ->withToken($this->apiKey)
+                ->withBody($data, 'application/json')
+                ->post($this->baseUrl . '/admin/ActualizarRegistro')
+                ->throw();
 
             $dataResponse = $response->json();
 
-            return $dataResponse['respuesta'] == 'KO';
+            return $dataResponse['respuesta'] == 'OK';
 
         } catch (RequestException $e) {
+
             if ($e->response->status() === 401) {
                 if (!$this->intent) {
 
@@ -328,16 +332,18 @@ class FactusolService
 
                     return $this->update_stock ($code, $quantity, $force);
                 }
-
-                return [
-                    'error' => 'Autenticación'
-                ];
             }
+
+            report($e);
+
+            return false;
+
         } catch (\Exception $e) {
+
             report($e);
 
             return false;
         }
     }
-    
+
 }

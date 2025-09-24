@@ -29,6 +29,6 @@ class CombinationsSelectLot extends Field
     {
         $productLot = $this->getLot();
 
-        return $productLot->relatedLots()->with('relatedLot', 'relatedLot.product')->get();
+        return $productLot->relatedLots()->with('relatedLot', 'relatedLot.product', 'relatedLot.product.factusolProduct')->get();
     }
 }

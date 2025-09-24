@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-use App\Listeners\{
+use App\Listeners\Email\{
     EmailSent,
     EmailViewed,
     EmailLinkClicked,
@@ -21,6 +21,11 @@ use jdavidbakr\MailTracker\Events\{
     ComplaintMessageEvent,
     PermanentBouncedMessageEvent,
 };
+
+use App\Events\ProductCreated;
+use App\Listeners\Product\InitializeProductStock;
+use App\Listeners\Product\AssociateProductType;
+use App\Listeners\Product\AssociateDimensionProduct;
 
 
 class EventServiceProvider extends ServiceProvider
@@ -48,6 +53,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         PermanentBouncedMessageEvent::class => [
             BouncedEmail::class,
+        ],
+        ProductCreated::class => [
+            InitializeProductStock::class,
+            AssociateProductType::class,
+            AssociateDimensionProduct::class,
         ],
     ];
 

@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Factusol;
 
 use App\Services\FactusolService;
+use GPBMetadata\Temporal\Api\Enums\V1\Common;
 use Illuminate\Console\Command;
 
 class SetStockProduct extends Command
@@ -32,10 +33,15 @@ class SetStockProduct extends Command
 
         $quantity = (int) $this->option('quantity');
 
-        if ($factusolService->update_stock($code, $quantity, true)) {
+        if ($factusolService->update_stock($code, $quantity, true))
+        {
             $this->info("ACTUALIZACIÓN DEL STOCK CORRECTO");
-        } else {
-            $this->error("OCURRIÓ UN ERROR");
+
+            return Command::SUCCESS;
         }
+
+        $this->error("OCURRIÓ UN ERROR");
+
+        return Command::FAILURE;
     }
 }

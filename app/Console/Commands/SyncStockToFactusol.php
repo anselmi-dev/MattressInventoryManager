@@ -20,7 +20,7 @@ class SyncStockToFactusol extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Sincroniza el stock de los productos a Factusol';
 
     /**
      * Execute the console command.
@@ -33,7 +33,7 @@ class SyncStockToFactusol extends Command
             })->get();
 
             $this->output->writeln('Starting stock synchronization to Factusol...');
-            
+
             $this->withProgressBar($products, function (Product $product) {
 
                 if (app()->isProduction()) {
@@ -42,7 +42,7 @@ class SyncStockToFactusol extends Command
                         $product->stock = 0;
                         $product->save();
                     }
-                    
+
                     $factusolService = new FactusolService();
 
                     $factusolService->update_stock(
@@ -52,7 +52,7 @@ class SyncStockToFactusol extends Command
                 }
             });
         });
-        
+
         $this->output->writeln('Stock synchronization completed.');
     }
 }

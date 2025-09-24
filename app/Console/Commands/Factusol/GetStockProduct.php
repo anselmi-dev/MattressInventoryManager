@@ -12,26 +12,28 @@ class GetStockProduct extends Command
      *
      * @var string
      */
-    protected $signature = 'app:get-stock-product {--code=}';
+    protected $signature = 'app:get-stock-product {--code=} {--all-data}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Obtener el stock de un producto de Factusol';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $factusolService = new FactusolService();
-            
         $code = $this->option('code');
 
-        $F_STOC = $factusolService->get_stock($code);
+        $F_STOC = (new FactusolService())->get_stock($code);
 
-        $this->info("El product {$code} posee un stock de {$F_STOC[4]['dato']}");
+        if ($this->option('all-data')) {
+            $this->info(json_encode($F_STOC));
+        } else {
+            $this->info("El product {$code} posee un stock de {$F_STOC[4]['dato']}");
+        }
     }
 }

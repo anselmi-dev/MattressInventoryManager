@@ -20,7 +20,7 @@ class ScanProducts extends Command
      *
      * @var string
      */
-    protected $signature = 'app:scan-products {--force}';
+    protected $signature = 'app:scan-products {--force} {--code=}';
 
     protected $last_updated_date_of_products = null;
 
@@ -39,12 +39,20 @@ class ScanProducts extends Command
         $last_updated_date_of_products = settings()->get('last_updated_date_of_products');
 
         $this->last_updated_date_of_products = $last_updated_date_of_products ? Carbon::parse($last_updated_date_of_products) : null;
-        
-        $this->withProgressBar($this->getProductsFactusol(), function (array $factusol_product) {
+
+        $products = $this->getProductsFactusol();
+
+        $this->withProgressBar($products, function (array $factusol_product) {
             $this->firstOrCreateProduct($factusol_product);
         });
 
         $this->info("Fecha de la última actualización " . settings()->get('last_updated_date_of_products'));
+
+        if ($this->option('code') && count($products) === 0) {
+            throw new \Exception('No se encontró el producto en Factusol');
+        }
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -53,7 +61,7 @@ class ScanProducts extends Command
      * @param array $factusol_product
      * @return void
      */
-    protected function firstOrCreateProduct (array $factusol_product) 
+    protected function firstOrCreateProduct (array $factusol_product): void
     {
         $factusol_product = array_reduce($factusol_product, function ($carry, $row) {
             $carry[$row['columna']] = $row['dato'];
@@ -66,29 +74,13 @@ class ScanProducts extends Command
             'CODART' => $factusol_product['CODART']
         ], $factusol_product);
 
-        $product = Product::withoutGlobalScopes()->where('code', trim($factusol_product['CODART']))->withTrashed()->first();
-    
-        if ($product) {
-            $product->update([
-                'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : $product->reference,
-                'name' => $factusol_product['DESART'],
-                'stock' => $factusol_product['ACTSTO']
-            ]);
-        } else {
-            $product = Product::withoutGlobalScopes()->withTrashed()->firstOrCreate([
-                'code' => trim($factusol_product['CODART']),
-            ], [
-                'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : trim($factusol_product['CODART']),
-                'name' => $factusol_product['DESART'],
-                'stock' => $factusol_product['ACTSTO']
-            ]);
-        }
-
-        // Comprobamos que el producto fué creado recientemente para asignar el tipo de producto
-        if ($product && $product->wasRecentlyCreated) {
-            AssociateProductTypeJob::dispatchSync($product); 
-            AssociateDimensionProductJob::dispatchSync($product);
-        }
+        Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
+            'code' => trim($factusol_product['CODART']),
+        ], [
+            'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : trim($factusol_product['CODART']),
+            'name' => $factusol_product['DESART'],
+            'stock' => $factusol_product['ACTSTO']
+        ]);
     }
 
     /**
@@ -103,21 +95,20 @@ class ScanProducts extends Command
         $where_force = (!$this->option('force') && $this->last_updated_date_of_products) ? "WHERE F_ART.FUMART > '{$this->last_updated_date_of_products->toDateTimeString()}'" : '';
 
         return Str::replaceArray('?', [
-            $where_force
-        ], "SELECT F_ART.FUMART as FUMART, F_ART.CODART as CODART, F_ART.DESART as DESART, F_ART.EANART as EANART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ? ORDER BY F_ART.FUMART DESC");
+            $where_force,
+            $this->option('code') ? "AND F_ART.CODART = '{$this->option('code')}'" : ''
+        ], "SELECT F_ART.FUMART as FUMART, F_ART.CODART as CODART, F_ART.DESART as DESART, F_ART.EANART as EANART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ? ? ORDER BY F_ART.FUMART DESC");
     }
 
     /**
      * Get products factusol
      * Mediante la query se obtiene los productos de factusol
      *
-     * @return array|null
+     * @return ?array
      */
-    protected function getProductsFactusol ()
+    protected function getProductsFactusol (): ?array
     {
-        $factusolService = new FactusolService();
-
-        return $factusolService->query(
+        return (new FactusolService())->query(
             $this->getQuery()
         );
     }
@@ -128,7 +119,7 @@ class ScanProducts extends Command
      * @param string $FUMART
      * @return void
      */
-    public function updateLastUpdatedDate (string $FUMART)
+    public function updateLastUpdatedDate (string $FUMART): void
     {
         $date_to_compare = Carbon::parse($FUMART);
 
@@ -139,7 +130,7 @@ class ScanProducts extends Command
             return;
 
         $this->last_updated_date_of_products = $date_to_compare;
-        
+
         settings()->set('last_updated_date_of_products', $date_to_compare->toDateTimeString());
     }
 }

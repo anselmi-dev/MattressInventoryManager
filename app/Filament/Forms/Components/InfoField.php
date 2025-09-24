@@ -12,6 +12,8 @@ class InfoField extends Field
 
     protected ?string $description = null;
 
+    protected ?string $status = null;
+
     public function title(?string $title): static
     {
         $this->title = $title;
@@ -34,5 +36,17 @@ class InfoField extends Field
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function status(?string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
     }
 }
