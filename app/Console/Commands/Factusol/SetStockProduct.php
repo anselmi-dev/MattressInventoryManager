@@ -33,8 +33,8 @@ class SetStockProduct extends Command
 
         $quantity = (int) $this->option('quantity');
 
-        if ($factusolService->update_stock($code, $quantity, true))
-        {
+        if ($factusolService->update_stock($code, $quantity, true)) {
+
             $this->info("ACTUALIZACIÓN DEL STOCK CORRECTO");
 
             return Command::SUCCESS;

@@ -7,21 +7,21 @@ use Illuminate\Console\Command;
 use App\Services\FactusolService;
 
 
-class SyncStockFactusolToProduct extends Command
+class SyncStockProductToFactusol extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:sync-stock-factusol-to-product  {--product=}';
+    protected $signature = 'app:sync-stock-product-to-factusol  {--product=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sincroniza el stock de los productos de Factusol a los productos de la base de datos';
+    protected $description = 'Sincroniza el stock de los productos a Factusol';
 
     /**
      * Execute the console command.
@@ -40,25 +40,20 @@ class SyncStockFactusolToProduct extends Command
                 if (app()->isProduction()) {
 
                     try {
+                        (new FactusolService())->update_stock($product->code, $product->stock);
 
-                        $F_STOC = (new FactusolService())->get_F_ART_STOCK($product->code);
-
-                        $this->output->writeln("<fg=green>The product {$product->code} has a stock of {$product->stock} => {$F_STOC[1]['dato']}</fg>");
-
-                        $product->stock = $F_STOC[1]['dato'];
-
-                        $product->save();
+                        $this->output->writeln("<fg=green>OK</fg> The product {$product->code} has a stock of {$product->stock}");
 
                     } catch (\Throwable $th) {
 
-                        $this->output->writeln($th->getMessage());
-
+                        $this->output->writeln("<fg=red>ERROR</fg> The product {$product->code} has a stock of {$product->stock}");
                     }
                 }
             });
         });
 
-        $this->output->writeln("\n<fg=green>Stock synchronization completed.</fg>\n");
+
+        $this->output->writeln("\nStock synchronization completed. \n");
 
         return Command::SUCCESS;
     }

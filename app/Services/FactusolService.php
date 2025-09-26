@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-
+use App\Exceptions\GetStockExceptions;
 class FactusolService
 {
     protected $client;
@@ -251,13 +251,13 @@ class FactusolService
         }
     }
 
-    public function get_stock (string $code): array
+    public function get_F_ART_STOCK (string $code): array
     {
         try {
 
             $data = json_encode([
                 'ejercicio' => '2025',
-                'consulta' => "SELECT * FROM F_STO WHERE ARTSTO = '$code'"
+                'consulta' => "SELECT CODART, STOART FROM F_ART WHERE CODART = '$code'"
             ]);
 
             $response = Http::withOptions([
@@ -268,7 +268,15 @@ class FactusolService
             ->post($this->baseUrl . '/admin/LanzarConsulta')
             ->throw();
 
-            return $response['resultado'] ? optional($response['resultado'])[0] : [];
+            if ($response['respuesta'] !== 'OK') {
+                throw new GetStockExceptions($response['respuesta']);
+            }
+
+            if (isset($response['resultado'][0])) {
+                return $response['resultado'][0];
+            }
+
+            throw new GetStockExceptions('No se encontro el producto');
 
         } catch (RequestException $e) {
 
@@ -279,19 +287,19 @@ class FactusolService
 
                     $this->initToken();
 
-                    return $this->get_stock ($code);
+                    return $this->get_F_ART_STOCK ($code);
                 }
             }
 
             report($e);
 
-            return [];
+            throw new GetStockExceptions($e->getMessage());
 
         } catch (\Exception $e) {
 
             report($e);
 
-            return [];
+            throw new GetStockExceptions($e->getMessage());
         }
     }
 
@@ -299,23 +307,23 @@ class FactusolService
     {
         try {
 
-            $F_STOC = $this->get_stock($code);
+            $F_STOC = $this->get_F_ART_STOCK($code);
 
-            $F_STOC[4]['dato'] = $quantity;
+            $F_STOC[1]['dato'] = $quantity;
 
             $data = json_encode([
                 "ejercicio" => "2025",
-                "tabla" =>  "F_STO",
+                "tabla" =>  "F_ART",
                 "registro" => $F_STOC
             ]);
 
             $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->withToken($this->apiKey)
-                ->withBody($data, 'application/json')
-                ->post($this->baseUrl . '/admin/ActualizarRegistro')
-                ->throw();
+                'verify' => false,
+            ])
+            ->withToken($this->apiKey)
+            ->withBody($data, 'application/json')
+            ->post($this->baseUrl . '/admin/ActualizarRegistro')
+            ->throw();
 
             $dataResponse = $response->json();
 

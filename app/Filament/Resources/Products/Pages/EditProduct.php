@@ -27,11 +27,11 @@ class EditProduct extends EditRecord
                     ->icon('heroicon-o-magnifying-glass')
                     ->action(function() {
                         try {
-                            $F_STOC = (new \App\Services\FactusolService())->get_stock($this->record->code);
+                            $F_ART_STOCK = (new \App\Services\FactusolService())->get_F_ART_STOCK($this->record->code);
 
-                            $stock = optional($F_STOC)[4]['dato'];
+                            $stock = optional($F_ART_STOCK)[1]['dato'];
 
-                            $message = "El product {$this->record->code} posee un stock de {$stock} en Factusol";
+                            $message = "El product {$this->record->code} tiene un stock de {$stock} en Factusol";
 
                         } catch (\Throwable $th) {
 
