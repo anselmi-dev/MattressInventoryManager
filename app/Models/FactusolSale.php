@@ -12,8 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-#[ObservedBy([SaleObserver::class])]
-class Sale extends Model
+class FactusolSale extends Model
 {
     use HasFactory, LogsActivity;
 
@@ -34,6 +33,10 @@ class Sale extends Model
         'NET1FAC', // IMPORTE NETO
         'TIPFAC', // TIPO DE FACTURA
         'IREC1FAC', // TARIFA ADICIONAL
+    ];
+
+    protected $casts = [
+        'FECFAC' => 'datetime',
     ];
 
     /**
@@ -81,7 +84,7 @@ class Sale extends Model
      */
     public function product_sales(): HasMany
     {
-        return $this->hasMany(ProductSale::class);
+        return $this->hasMany(ProductSale::class, 'sale_id', 'id');
     }
 
     /**

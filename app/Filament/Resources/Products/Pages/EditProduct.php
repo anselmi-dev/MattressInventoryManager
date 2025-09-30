@@ -11,6 +11,9 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Actions\ActionGroup;
+use App\Services\FactusolService;
+use App\Filament\Resources\Products\RelationManagers\StockChangeManager;
+
 class EditProduct extends EditRecord
 {
     protected static string $resource = ProductResource::class;
@@ -27,9 +30,8 @@ class EditProduct extends EditRecord
                     ->icon('heroicon-o-magnifying-glass')
                     ->action(function() {
                         try {
-                            $F_ART_STOCK = (new \App\Services\FactusolService())->get_F_ART_STOCK($this->record->code);
 
-                            $stock = optional($F_ART_STOCK)[1]['dato'];
+                            $stock = (new FactusolService())->getValueStockFactusol($this->record->code);
 
                             $message = "El product {$this->record->code} tiene un stock de {$stock} en Factusol";
 

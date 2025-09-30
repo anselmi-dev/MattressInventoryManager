@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class FactusolProduct extends Model
 {
@@ -127,4 +129,18 @@ class FactusolProduct extends Model
     // PESART: Peso del artículo.
     // ORDART: Orden del artículo.
     // FAVART: Indicador de favorito o activo (por ejemplo, "N" para no).
+
+    protected $casts = [
+        'FUMART' => 'datetime',
+    ];
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'CODART', 'code');
+    }
+
+    public function scopeWhereCODART(Builder $query, string $code): void
+    {
+        $query->where('CODART', $code);
+    }
 }

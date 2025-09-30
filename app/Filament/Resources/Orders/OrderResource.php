@@ -21,7 +21,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
     // protected static string | UnitEnum | null $navigationGroup = 'Pedidos';
 
@@ -42,7 +42,7 @@ class OrderResource extends Resource
 
     public static function getNavigationSort(): ?int
     {
-        return 3;
+        return 4;
     }
 
     public static function getNavigationBadge(): ?string

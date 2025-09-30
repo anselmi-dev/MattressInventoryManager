@@ -3,355 +3,222 @@
 namespace App\Services;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
-use App\Exceptions\GetStockExceptions;
+use App\Services\FactusolHttpService;
+
 class FactusolService
 {
-    protected $client;
-
-    protected $baseUrl;
-
-    protected $apiKey;
-
-    protected $secret;
-
-    protected $fabricanteCode;
-
-    protected $clienteCode;
-
-    protected $database;
-
-    protected $intent = false;
+    public FactusolHttpService $factusolHttpService;
 
     public function __construct()
     {
-        $this->baseUrl = config('services.factusol.url');
+        $this->factusolHttpService = new FactusolHttpService();
+    }
 
-        $this->secret = base64_encode(config('services.factusol.secret'));
+    /**
+     * Obtener el stock de un producto de factusol de la tabla F_ART
+     * Retorna un array con el stock del producto
+     *
+     * @param string $code
+     * @return mixed
+     */
+    public function getStockFactusol (string $code): mixed
+    {
+        // $response = $this->factusolHttpService->consultaQuery("SELECT CODART, STOART FROM F_ART WHERE CODART = '$code'");
+        $response = $this->factusolHttpService->consultaQuery("SELECT * FROM F_STO WHERE ARTSTO = '$code'");
 
-        $this->fabricanteCode = config('services.factusol.code');
+        if (!is_object($response) || count($response->resultado) === 0) {
+            throw new \Exception('No se encontró el producto en Factusol');
+        }
 
-        $this->clienteCode = config('services.factusol.client_code');
+        return $response->resultado[0];
+    }
 
-        $this->database = config('services.factusol.database');
+    /**
+     * Obtener el stock de un producto de factusol de la tabla F_ART
+     * Retorna un array con el stock del producto
+     *
+     * @param string $code
+     * @return mixed
+     */
+    public function getValueStockFactusol (string $code): mixed
+    {
+        return collect($this->getStockFactusol($code))->firstWhere('columna', 'ACTSTO')->dato;
+    }
 
-        $this->apiKey = Cache::remember('factusol:key', 1010, function () {
-            return $this->getBearerToken();
-        });
+    /**
+     * Setea el stock de un producto de factusol
+     *
+     * @param string $code
+     * @return bool
+     */
+    public function setStockFactusol (string $code, int $stock): bool
+    {
+        if (!app()->isProduction())
+            return true;
+        /*
+        * Este código es para obtener el registro del stock
+        * y actualizarlo el valor del campo ACTSTO
+        * para después actualizarlo en la tabla F_STO
+        * PERO CÓMO SOLO NECESITO ACTSTO, ALMOSTO y ACTSTO para actualizarlo en la tabla F_STO
+        * entonces voy a crear un array con solo esos campos para actualizarlo en la tabla F_STO
+        * Tener en cuenta que esto es si ALMOSTO es GEN siempre!!! ya que desduzco que es así.
+        */
+        /*
+            $stockFactusol = collect($this->getStockFactusol($code))->transform(function ($item) use ($quantity) {
+                if ($item->columna === 'ACTSTO') {
+                    $item->dato = $quantity;
+                }
 
-        $this->client = new Client([
-            'base_uri' => $this->baseUrl,
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
+                return $item;
+            });
+        */
+
+        $stockFactusol = collect([
+            [
+                'columna' => 'ARTSTO',
+                'dato' => $code
             ],
+            [
+                'columna' => 'ALMSTO',
+                'dato' => 'GEN'
+            ],
+            [
+                'columna' => 'ACTSTO',
+                'dato' => $stock
+            ]
         ]);
+
+        $response = $this->factusolHttpService->actualizarRegistro([
+            'tabla' => 'F_STO',
+            'registro' => $stockFactusol->toArray()
+        ]);
+
+        return $response->respuesta == 'OK';
     }
 
-    protected function initToken()
+    /**
+     * Setea el stock de un producto de factusol
+     *
+     * @param string $code
+     * @return bool
+     */
+    public function addStockFactusol (string $code, int $stock): bool
     {
-        Cache::forget('factusol:key');
+        if (!app()->isProduction())
+            return true;
 
-        $this->apiKey = Cache::remember('factusol:key', 1010, function () {
-            return $this->getBearerToken();
+        $stockFactusol = collect($this->getStockFactusol($code))->transform(function ($item) use ($stock) {
+            if ($item->columna === 'ACTSTO') {
+                $item->dato += $stock;
+            }
+
+            return $item;
         });
-    }
 
-    protected function getBearerToken()
-    {
-        $data = '{"codigoFabricante":"'.$this->fabricanteCode.'","codigoCliente":"'.$this->clienteCode.'","baseDatosCliente":"'.$this->database.'","password":"'.$this->secret.'"}';
-
-        $response = Http::baseUrl($this->baseUrl)->withOptions([
-            'verify' => true,
-        ])->withBody(
-            $data, 'application/json'
-        )->post('/login/Autenticar');
-
-        return $response['resultado'];
-    }
-
-    public function query ($query)
-    {
-        try {
-            $data = json_encode([
-                'ejercicio' => '2025',
-                'consulta' => $query
-            ]);
-
-            $response = Http::withOptions([
-                'verify' => false,
-            ])->withToken($this->apiKey)
-            ->withBody($data, 'application/json')
-            ->post($this->baseUrl . '/admin/LanzarConsulta')
-            ->throw();
-
-            return $response['resultado'];
-
-        } catch (RequestException $e) {
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
-
-                    $this->intent = true;
-
-                    $this->initToken();
-
-                    return $this->query($query);
-                }
-            }
-
-            throw $e;
-        }
-    }
-
-    public function last_updated_date_of_products ()
-    {
-        $data = json_encode([
-            'ejercicio' => '2025',
-            'consulta' => "SELECT MAX(FUMART) FROM F_ART"
+        $response = $this->factusolHttpService->actualizarRegistro([
+            'tabla' => 'F_STO',
+            'registro' => $stockFactusol->toArray()
         ]);
 
-        try {
-
-            $response = Http::withOptions([
-                'verify' => false,
-            ])
-            ->withToken($this->apiKey)
-            ->withBody($data, 'application/json')
-            ->post($this->baseUrl . '/admin/LanzarConsulta')
-            ->throw();
-
-            return Carbon::parse($response['resultado'][0][0]['dato']);
-
-        } catch (RequestException $e) {
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
-                    $this->intent = true;
-
-                    $this->initToken();
-
-                    return $this->last_updated_date_of_products ();
-                }
-            }
-
-            throw $e;
-        }
+        return $response->respuesta == 'OK';
     }
 
-    public function products ()
+    /**
+     * Actualiza el stock de un producto de factusol
+     *
+     * @param string $code
+     * @param int $stock
+     * @param bool $addStock
+     * @return bool
+     */
+    public function updateStockFactusol (string $code, int $stock, bool $addStock = true): bool
     {
-        try {
-            return Cache::remember('factusol:products', 10, function () {
-                $response = Http::withOptions([
-                    'verify' => false,
-                ])->withToken($this->apiKey)
-                ->withBody(
-                    '{
-                        "ejercicio": "2025",
-                        "consulta": "SELECT top 4 F_ART.CODART, F_ART.DESART, F_ART.FUMART, F_ART.FALART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ORDER BY F_ART.FUMART DESC"
-                    }', 'application/json'
-                )->post($this->baseUrl . '/admin/LanzarConsulta');
-
-                return $response['resultado'];
-            });
-        } catch (RequestException $e) {
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
-
-                    $this->intent = true;
-
-                    $this->initToken();
-
-                    return $this->products();
-                }
-            }
-
-            throw $e;
-        }
+        return $addStock ? $this->addStockFactusol($code, $stock) : $this->setStockFactusol($code, $stock);
     }
 
-    public function getProducts()
+    /**
+     * Obtener los productos de factusol
+     * Mediante la query se obtiene los productos de factusol
+     *
+     * @param string $code
+     * @param Carbon $last_updated_date
+     * @return array
+     */
+    public function getProducts (?string $code = null, ?Carbon $last_updated_date = null): array
     {
-        try {
-            return Cache::remember('factusol:products', 10, function () {
-                $response = Http::withOptions([
-                    'verify' => false,
-                ])->withToken($this->apiKey)
-                ->withBody(
-                    '{
-                        "ejercicio": "2025",
-                        "tabla": "F_ART",
-                        "filtro": "CODART != \'\'"
-                    }', 'application/json'
-                )->post($this->baseUrl . '/admin/CargaTabla');
+        $whereCODART = $code ? "AND F_ART.CODART = '{$code}'" : '';
 
-                return $response['resultado'];
-            });
+        $whereUpdated = $last_updated_date ? "WHERE F_ART.FUMART > '{$last_updated_date->toDateTimeString()}'" : '';
 
-        } catch (RequestException $e) {
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
+        $query = str()->replaceArray('?', [
+            $whereUpdated,
+            $whereCODART,
+        ], "SELECT F_ART.FUMART as FUMART, F_ART.CODART as CODART, F_ART.DESART as DESART, F_ART.EANART as EANART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ? ? ORDER BY F_ART.FUMART DESC");
 
-                    $this->intent = true;
+        $response = $this->factusolHttpService->consultaQuery($query);
 
-                    $this->initToken();
-
-                    return $this->getProducts();
-
-                }
-
-                return [
-                    'error' => 'Autenticación'
-                ];
-            }
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
+        if (!is_object($response) || $response->respuesta !== 'OK') {
+            throw new \Exception('Error al obtener los productos de factusol');
         }
+
+        return $response->resultado;
     }
 
-    public function sales ()
+    /**
+     * Obtener las ventas de factusol
+     * Mediante la query se obtiene las ventas de factusol
+     *
+     * @param Carbon $last_updated_date
+     * @param string $code
+     * @return mixed
+     */
+    public function getSales (?string $code = null, ?Carbon $last_updated_date = null): mixed
     {
-        try {
-            return Cache::remember('factusol:sales:2025', 10100, function () {
-                $response = Http::withOptions([
-                    'verify' => false,
-                ])->withToken($this->apiKey)
-                ->withBody(
-                    '{
-                        "ejercicio": "2025",
-                        "consulta": "SELECT F_LFA.ARTLFA, F_LFA.CANLFA, F_FAC.ESTFAC, F_FAC.FECFAC, F_FAC.CLIFAC, F_FAC.CNOFAC, F_FAC.CODFAC, F_FAC.TOTFAC FROM F_LFA JOIN F_FAC ON F_LFA.CODLFA = F_FAC.CODFAC"
-                    }', 'application/json'
-                )->post($this->baseUrl . '/admin/LanzarConsulta');
+        $whereUpdated = $last_updated_date ? "WHERE F_FAC.FECFAC > '{$last_updated_date->toDateTimeString()}'" : '';
 
-                return $response['resultado'];
-            });
-        } catch (RequestException $e) {
-            report($e->getMessage());
+        $whereCODFAC = $code ? "AND F_FAC.CODFAC = '{$code}'" : '';
 
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
+        $query = str()->replaceArray('?', [
+            $whereUpdated,
+            $whereCODFAC,
+        ], "SELECT
+            F_LFA.CANLFA,
+            F_LFA.ARTLFA,
+            F_LFA.TOTLFA,
+            F_LFA.DESLFA,
+            F_LFA.CODLFA as CODFAC,
+            F_FAC.IREC1FAC,
+            F_FAC.TOTFAC,
+            F_FAC.CLIFAC,
+            F_FAC.CNOFAC,
+            F_FAC.FUMFAC,
+            F_FAC.CEMFAC,
+            F_FAC.ESTFAC,
+            F_FAC.FECFAC,
+            F_FAC.IIVA1FAC,
+            F_FAC.NET1FAC,
+            F_FAC.TIPFAC
+            FROM F_LFA JOIN F_FAC ON F_LFA.CODLFA = F_FAC.CODFAC ? ? ORDER BY F_FAC.FECFAC ASC");
 
-                    $this->intent = true;
+        $response = $this->factusolHttpService->consultaQuery($query);
 
-                    $this->initToken();
-
-                    return $this->sales();
-                }
-
-                return [
-                    'error' => 'Autenticación'
-                ];
-            }
-        } catch (\Exception $e) {
-            report($e);
-            return [];
+        if (!is_object($response) || $response->respuesta !== 'OK') {
+            throw new \Exception('Error al obtener las ventas de factusol');
         }
+
+        return $response->resultado;
     }
 
-    public function get_F_ART_STOCK (string $code): array
+    /**
+     * Obtener las ventas de factusol
+     * Mediante la query se obtiene las ventas de factusol
+     *
+     * @param Carbon $last_updated_date
+     * @param string $code
+     * @return mixed
+     */
+    public function getSale (?string $code = null): mixed
     {
-        try {
-
-            $data = json_encode([
-                'ejercicio' => '2025',
-                'consulta' => "SELECT CODART, STOART FROM F_ART WHERE CODART = '$code'"
-            ]);
-
-            $response = Http::withOptions([
-                'verify' => false,
-            ])
-            ->withToken($this->apiKey)
-            ->withBody($data, 'application/json')
-            ->post($this->baseUrl . '/admin/LanzarConsulta')
-            ->throw();
-
-            if ($response['respuesta'] !== 'OK') {
-                throw new GetStockExceptions($response['respuesta']);
-            }
-
-            if (isset($response['resultado'][0])) {
-                return $response['resultado'][0];
-            }
-
-            throw new GetStockExceptions('No se encontro el producto');
-
-        } catch (RequestException $e) {
-
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
-
-                    $this->intent = true;
-
-                    $this->initToken();
-
-                    return $this->get_F_ART_STOCK ($code);
-                }
-            }
-
-            report($e);
-
-            throw new GetStockExceptions($e->getMessage());
-
-        } catch (\Exception $e) {
-
-            report($e);
-
-            throw new GetStockExceptions($e->getMessage());
-        }
+        return $this->getSales(code: $code);
     }
-
-    public function update_stock (string $code, int $quantity, bool $force = false): bool
-    {
-        try {
-
-            $F_STOC = $this->get_F_ART_STOCK($code);
-
-            $F_STOC[1]['dato'] = $quantity;
-
-            $data = json_encode([
-                "ejercicio" => "2025",
-                "tabla" =>  "F_ART",
-                "registro" => $F_STOC
-            ]);
-
-            $response = Http::withOptions([
-                'verify' => false,
-            ])
-            ->withToken($this->apiKey)
-            ->withBody($data, 'application/json')
-            ->post($this->baseUrl . '/admin/ActualizarRegistro')
-            ->throw();
-
-            $dataResponse = $response->json();
-
-            return $dataResponse['respuesta'] == 'OK';
-
-        } catch (RequestException $e) {
-
-            if ($e->response->status() === 401) {
-                if (!$this->intent) {
-
-                    $this->intent = true;
-
-                    $this->initToken();
-
-                    return $this->update_stock ($code, $quantity, $force);
-                }
-            }
-
-            report($e);
-
-            return false;
-
-        } catch (\Exception $e) {
-
-            report($e);
-
-            return false;
-        }
-    }
-
 }

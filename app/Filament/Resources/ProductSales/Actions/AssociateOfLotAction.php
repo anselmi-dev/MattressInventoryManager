@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
+use App\Events\FactusolProductSalePlotUpdated;
+use Filament\Forms\Components\ToggleButtons;
 
 class AssociateOfLotAction extends Action
 {
@@ -27,6 +29,10 @@ class AssociateOfLotAction extends Action
                 $record->product_lot_id = $data['product_lot_id'];
 
                 $record->save();
+
+                if ($data['decrement_stock']) {
+                    FactusolProductSalePlotUpdated::dispatch($record);
+                }
 
                 Notification::make()
                     ->title('Asociación exitosa')
@@ -49,6 +55,12 @@ class AssociateOfLotAction extends Action
                         ->preload()
                         ->reactive()
                         ->default($record->product_lot_id)
+                        ->required(),
+                    ToggleButtons::make('decrement_stock')
+                        ->label('¿Deseas descontar la cantidad del stock del producto?')
+                        ->boolean()
+                        ->grouped()
+                        ->default(true)
                         ->required(),
                 ]);
 

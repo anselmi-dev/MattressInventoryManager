@@ -27,7 +27,7 @@ class EditCombination extends EditRecord
                     ->icon('heroicon-o-magnifying-glass')
                     ->action(function() {
                         try {
-                            $F_ART_STOCK = (new \App\Services\FactusolService())->get_F_ART_STOCK($this->record->code);
+                            $F_ART_STOCK = (new \App\Services\FactusolService())->getStockFactusol($this->record->code);
 
                             $stock = optional($F_ART_STOCK)[1]['dato'];
 

@@ -13,27 +13,25 @@ class SetStockProduct extends Command
      *
      * @var string
      */
-    protected $signature = 'app:set-stock-product {--quantity=} {--code=}';
+    protected $signature = 'app:set-stock-product {--stock= : Cantidad del stock} {--code= : Codigo del producto}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Setea el stock de un producto de factusol';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $factusolService = new FactusolService();
-
         $code = $this->option('code');
 
-        $quantity = (int) $this->option('quantity');
+        $stock = (int) $this->option('stock');
 
-        if ($factusolService->update_stock($code, $quantity, true)) {
+        if ((new FactusolService())->setStockFactusol($code, $stock)) {
 
             $this->info("ACTUALIZACIÓN DEL STOCK CORRECTO");
 

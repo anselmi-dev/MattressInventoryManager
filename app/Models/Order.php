@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -43,6 +44,21 @@ class Order extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, OrderProduct::class)->withTimestamps();
+    }
+
+    public function scopeRawProducts (Builder $query)
+    {
+        return $query
+            ->withCount([
+                'products as products_count' => function($query) {
+                    $query->selectRaw('count(*)');
+                },
+            ])
+            ->withSum([
+                'products as products_quantity' => function($query) {
+                    $query->select(DB::raw("SUM(quantity)"));
+                },
+            ], 'quantity');
     }
 
     public function getActivitylogOptions(): LogOptions
@@ -102,21 +118,6 @@ class Order extends Model
     public function getIsProcessedAttribute ():bool
     {
         return $this->status == 'processed';
-    }
-
-    public function scopeRawProducts (Builder $query)
-    {
-        return $query
-            ->withCount([
-                'products as products_count' => function($query) {
-                    $query->selectRaw('count(*)');
-                },
-            ])
-            ->withSum([
-                'products as products_quantity' => function($query) {
-                    $query->select(\DB::raw("SUM(quantity)"));
-                },
-            ], 'quantity');
     }
 
     /**

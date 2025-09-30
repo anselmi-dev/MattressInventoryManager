@@ -40,11 +40,6 @@ class OrderProduct extends Model
         ];
     }
 
-    /**
-     * Relación con el producto combinado
-     *
-     * @return BelongsTo
-     */
     public function product() : BelongsTo
     {
         return $this->belongsTo(Product::class);

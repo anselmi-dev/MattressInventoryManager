@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**
@@ -21,8 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate::define('viewPulse', function (User $user) {
-        //     return $user->hasRole('develop');
-        // });
+        if (!app()->isProduction()) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::PAGE_START,
+                fn () => view('filament.hook.env-local-banner')
+            );
+        }
     }
 }

@@ -3,26 +3,18 @@
 namespace App\Console\Commands\Factusol;
 
 use App\Models\Product;
-use App\Models\ProductType;
-use App\Services\FactusolService;
 use App\Models\FactusolProduct;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use App\Jobs\AssociateProductTypeJob;
-use App\Jobs\AssociateDimensionProductJob;
-
-class ScanProducts extends Command
+use App\Console\Services\FactusolCommandService;
+use Carbon\Carbon;
+class ScanProducts extends FactusolCommandService
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:scan-products {--force} {--code=}';
-
-    protected $last_updated_date_of_products = null;
+    protected $signature = 'app:scan-products {--force : No se tendrá en cuenta la fecha de la última sincronización } {--code= : Buscar por el código del producto}';
 
     /**
      * The console command description.
@@ -31,26 +23,48 @@ class ScanProducts extends Command
      */
     protected $description = 'Check Factusol for any new products and verify if there are any discrepancies in the stock levels.';
 
+    public function optionCode(): ?string
+    {
+        return $this->option('code');
+    }
+
+    public function optionForce(): bool
+    {
+        return $this->option('force');
+    }
+
+    public function funcionNameFactusolService(): string
+    {
+        return 'getProducts';
+    }
+
+    public function getkeyCacheLastUpdatedDateOf(): string
+    {
+        return 'last_updated_date_of_products';
+    }
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $last_updated_date_of_products = settings()->get('last_updated_date_of_products');
+        $this->infoLastUpdatedDateOf();
 
-        $this->last_updated_date_of_products = $last_updated_date_of_products ? Carbon::parse($last_updated_date_of_products) : null;
+        $records = $this->getDataFactusol();
 
-        $products = $this->getProductsFactusol();
-
-        $this->withProgressBar($products, function (array $factusol_product) {
-            $this->firstOrCreateProduct($factusol_product);
+        $this->withProgressBar($records, function (array $record) {
+            $this->firstOrCreateRecord(
+                $this->reduceFactusol($record)
+            );
         });
 
-        $this->info("Fecha de la última actualización " . settings()->get('last_updated_date_of_products'));
-
-        if ($this->option('code') && count($products) === 0) {
+        if ($this->optionCode() && count($records) === 0) {
             throw new \Exception('No se encontró el producto en Factusol');
         }
+
+        $this->setLastUpdatedDateOf();
+
+        $this->info(PHP_EOL . "PROCESO TERMINADO CORRECTAMENTE" . PHP_EOL);
 
         return Command::SUCCESS;
     }
@@ -61,76 +75,25 @@ class ScanProducts extends Command
      * @param array $factusol_product
      * @return void
      */
-    protected function firstOrCreateProduct (array $factusol_product): void
+    public function firstOrCreateRecord (array $data): void
     {
-        $factusol_product = array_reduce($factusol_product, function ($carry, $row) {
-            $carry[$row['columna']] = $row['dato'];
-            return $carry;
-        }, []);
-
-        $this->updateLastUpdatedDate($factusol_product['FUMART']);
-
         FactusolProduct::firstOrCreate([
-            'CODART' => $factusol_product['CODART']
-        ], $factusol_product);
+            'CODART' => $data['CODART']
+        ], $data);
 
         Product::withoutGlobalScopes()->withTrashed()->updateOrCreate([
-            'code' => trim($factusol_product['CODART']),
+            'code' => trim($data['CODART']),
         ], [
-            'reference' => trim($factusol_product['EANART']) ? trim($factusol_product['EANART']) : trim($factusol_product['CODART']),
-            'name' => $factusol_product['DESART'],
-            'stock' => $factusol_product['ACTSTO']
+            'reference' => trim($data['EANART']) ? trim($data['EANART']) : trim($data['CODART']),
+            'name' => $data['DESART'],
+            'stock' => $data['ACTSTO']
         ]);
     }
 
-    /**
-     * Generar query para la api de factusol
-     * Tener en cuenta que force no tomará en cuenta la last_updated_date_of_products
-     * last_updated_date_of_products es la última fecha de creación del producto de factusol que se haya creado.
-     *
-     * @return string
-     */
-    protected function getQuery () :string
+    public function getLastUpdatedDateRecords(): ?Carbon
     {
-        $where_force = (!$this->option('force') && $this->last_updated_date_of_products) ? "WHERE F_ART.FUMART > '{$this->last_updated_date_of_products->toDateTimeString()}'" : '';
+        $date_to_compare = FactusolProduct::orderBy('FUMART', 'desc')->first()?->FUMART;
 
-        return Str::replaceArray('?', [
-            $where_force,
-            $this->option('code') ? "AND F_ART.CODART = '{$this->option('code')}'" : ''
-        ], "SELECT F_ART.FUMART as FUMART, F_ART.CODART as CODART, F_ART.DESART as DESART, F_ART.EANART as EANART, F_STO.ACTSTO as ACTSTO FROM F_ART JOIN F_STO ON F_ART.CODART = F_STO.ARTSTO ? ? ORDER BY F_ART.FUMART DESC");
-    }
-
-    /**
-     * Get products factusol
-     * Mediante la query se obtiene los productos de factusol
-     *
-     * @return ?array
-     */
-    protected function getProductsFactusol (): ?array
-    {
-        return (new FactusolService())->query(
-            $this->getQuery()
-        );
-    }
-
-    /**
-     * Actualizar la última fecha en la que se creó un producto en factusol
-     *
-     * @param string $FUMART
-     * @return void
-     */
-    public function updateLastUpdatedDate (string $FUMART): void
-    {
-        $date_to_compare = Carbon::parse($FUMART);
-
-        if (
-            !is_null($this->last_updated_date_of_products)
-            && $this->last_updated_date_of_products->greaterThan($date_to_compare)
-        )
-            return;
-
-        $this->last_updated_date_of_products = $date_to_compare;
-
-        settings()->set('last_updated_date_of_products', $date_to_compare->toDateTimeString());
+        return $date_to_compare;
     }
 }

@@ -41,7 +41,7 @@ class SyncStockFactusolToProduct extends Command
 
                     try {
 
-                        $F_STOC = (new FactusolService())->get_F_ART_STOCK($product->code);
+                        $F_STOC = (new FactusolService())->getStockFactusol($product->code);
 
                         $this->output->writeln("<fg=green>The product {$product->code} has a stock of {$product->stock} => {$F_STOC[1]['dato']}</fg>");
 

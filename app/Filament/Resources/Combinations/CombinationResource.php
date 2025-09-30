@@ -23,7 +23,7 @@ class CombinationResource extends Resource
 {
     protected static ?string $model = Model::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBoxArrowDown;
 
     protected static ?string $label = "Colchones";
 

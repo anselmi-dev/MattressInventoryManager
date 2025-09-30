@@ -66,13 +66,16 @@ class ProductSalesTable
                     ->collapsible()
                     ->label(__('filament.resources.sale_CODFAC'))->getTitleFromRecordUsing(fn (Model $record): string => ucfirst($record->sale->CODFAC)),
             ])
+            ->defaultSort('created_at', 'desc')
             // ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('product'))
             ->recordActions([
                 EditAction::make()
                     ->slideOver()
+                    ->hidden(fn ($record) => !$record->product_lot_id)
                     ->modalWidth('xl'),
-                // AssociateOfLotAction::make('Lote')
-                //     ->modalWidth('xl'),
+                AssociateOfLotAction::make('Lote')
+                    ->hidden(fn ($record) => $record->product_lot_id)
+                    ->modalWidth('xl'),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([

@@ -25,6 +25,8 @@ class LatestProducts extends TableWidget
         return false;
     }
 
+    protected static bool $isLazy = false;
+
     public function table(Table $table): Table
     {
         $productsTable = ProductsTable::configure($table);
@@ -42,7 +44,7 @@ class LatestProducts extends TableWidget
         $productsTable->getColumn('minimum_order_notification_enabled')->hidden();
 
         return $productsTable
-            ->query(fn (): Builder => Product::query()->latest()->limit(5))
+            ->query(fn (): Builder => Product::query()->stockOrder()->whereNotCombinations()->averageSalesForLastDays()->latest()->limit(5))
             ->paginated(false)
             ->searchable(false)
             ->filters([])

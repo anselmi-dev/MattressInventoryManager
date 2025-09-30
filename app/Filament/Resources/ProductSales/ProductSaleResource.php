@@ -24,6 +24,16 @@ class ProductSaleResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Factusol';
 
+    protected static ?string $label = "Facturas de productos";
+
+    protected static ?string $modelLabel = 'Factura de producto';
+
+    protected static ?string $pluralLabel = "Facturas de productos";
+
+    protected static ?string $pluralModelLabel = 'Facturas de productos';
+
+    protected static ?string $recordTitleAttribute = 'ARTLFA';
+
     public static function getNavigationBadge(): ?string
     {
         return (string) ProductSale::count();
@@ -38,16 +48,6 @@ class ProductSaleResource extends Resource
     {
         return 1;
     }
-
-    protected static ?string $label = "Facturas de productos";
-
-    protected static ?string $modelLabel = 'Factura de producto';
-
-    protected static ?string $pluralLabel = "Facturas de productos";
-
-    protected static ?string $pluralModelLabel = 'Facturas de productos';
-
-    protected static ?string $recordTitleAttribute = 'ARTLFA';
 
     public static function form(Schema $schema): Schema
     {

@@ -29,6 +29,10 @@ class LotsRelationManager extends RelationManager
 {
     protected static string $relationship = 'lots';
 
+    protected static bool $isLazy = false;
+
+    protected $listeners = ['refreshRelation' => '$refresh'];
+
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return ProductLotResource::getPluralModelLabel();

@@ -16,6 +16,8 @@ class FactusolProductWarningWidget extends Widget
      */
     protected string $view = 'filament.widgets.factusol-product-warning';
 
+    protected static bool $isLazy = false;
+
     /**
      * @var int | string | array<string, int | null>
      */
@@ -81,7 +83,11 @@ class FactusolProductWarningWidget extends Widget
                 ->status($this->hasFactusolProduct ? 'success' : 'warning')
                 ->send();
 
+            $this->dispatch('refreshRelation');
+
         } catch (\Exception $e) {
+            report($e);
+
             Notification::make()
                 ->title('Error de sincronización')
                 ->body($e->getMessage())

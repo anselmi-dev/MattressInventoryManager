@@ -36,12 +36,12 @@ return [
     ],
 
     'factusol' => [
-        'url'     => env('FACTUSOL_API_URL', 'https://api.sdelsol.com'),
-        'key'     => env('FACTUSOL_API_KEY'),
-        'code'    => env('FACTUSOL_FABRICANTE_CODE', 979),
-        'secret' => env('FACTUSOL_SECRECT', 'zwJadkzeSU5s'),
-        'database'    => env('FACTUSOL_DATABASE', '3FS002'),
-        'client_code' => env('FACTUSOL_CLIENTE_CODE', '53965'),
+        'baseUrl'     => env('FACTUSOL_API_URL', 'https://api.sdelsol.com'),
+        'credentials' => [
+            "codigoFabricante" => env('FACTUSOL_FABRICANTE_CODE', '979'),
+            "codigoCliente" => env('FACTUSOL_CLIENTE_CODE', '53965'),
+            "baseDatosCliente" => env('FACTUSOL_DATABASE', '3FS002'),
+            "password" => env('FACTUSOL_PASSWORD', 'zwJadkzeSU5s'),
+        ]
     ]
-
 ];

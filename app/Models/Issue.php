@@ -57,6 +57,6 @@ class Issue extends Model
      */
     public function sale(): BelongsTo
     {
-        return $this->belongsTo(Sale::class);
+        return $this->belongsTo(FactusolSale::class);
     }
 }

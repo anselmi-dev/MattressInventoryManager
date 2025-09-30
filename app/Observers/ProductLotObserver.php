@@ -11,8 +11,11 @@ class ProductLotObserver
      */
     public function created(ProductLot $productLot): void
     {
-        $productLot->product->update([
-            'stock' => $productLot->product->stock + $productLot->quantity
+        $productLot->stock_change()->create([
+            'old' => 0,
+            'new' => $productLot->quantity,
+            'quantity' => $productLot->quantity,
+            'message' => "Stock actualizado al crear el lote #{$productLot->name} ({$productLot->id})",
         ]);
     }
 
@@ -22,40 +25,17 @@ class ProductLotObserver
     public function updated(ProductLot $productLot): void
     {
         if ($productLot->isDirty('quantity')) {
-            $oldQuantity = $productLot->getOriginal('quantity');
 
-            $newQuantity = $productLot->quantity;
+            $old_quantity = (int) $productLot->getOriginal('quantity');
 
-            $productLot->product->update([
-                'stock' => $productLot->product->stock + ($newQuantity - $oldQuantity)
+            $new_quantity = (int) $productLot->quantity;
+
+            $productLot->stock_change()->create([
+                'old' => $old_quantity,
+                'new' => $new_quantity,
+                'quantity' => $new_quantity - ($old_quantity),
+                'message' => "Stock actualizado lote #{$productLot->name} ({$productLot->id})",
             ]);
         }
-    }
-
-    /**
-     * Handle the ProductLot "deleted" event.
-     */
-    public function deleted(ProductLot $productLot): void
-    {
-        $productLot->product->update([
-            'stock' => $productLot->product->stock - $productLot->quantity
-        ]);
-    }
-
-    /**
-     * Handle the ProductLot "restored" event.
-     */
-    public function restored(ProductLot $productLot): void
-    {
-        $productLot->product->update([
-            'stock' => $productLot->product->stock + $productLot->quantity
-        ]);
-    }
-
-    /**
-     * Handle the ProductLot "force deleted" event.
-     */
-    public function forceDeleted(ProductLot $productLot): void
-    {
     }
 }

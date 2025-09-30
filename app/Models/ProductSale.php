@@ -58,7 +58,7 @@ class ProductSale extends Model
      */
     public function sale(): BelongsTo
     {
-        return $this->belongsTo(Sale::class);
+        return $this->belongsTo(FactusolSale::class, 'sale_id', 'id');
     }
 
     /**
@@ -88,13 +88,13 @@ class ProductSale extends Model
      */
     public function decrementStock() : void
     {
-        if ($this->product)
-        {
-            $this->product->decrementStock($this->CANLFA);
+        if ($this->product_lot) {
+
+            $this->product_lot->quantity -= $this->CANLFA;
 
             $this->processed_at = Carbon::now();
 
-            $this->save();
+            $this->product_lot->save();
         }
     }
 

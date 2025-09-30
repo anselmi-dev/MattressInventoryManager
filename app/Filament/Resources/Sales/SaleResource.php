@@ -6,7 +6,7 @@ use App\Filament\Resources\Sales\Pages\ListSales;
 use App\Filament\Resources\Sales\Pages\EditSale;
 use App\Filament\Resources\Sales\Schemas\SaleForm;
 use App\Filament\Resources\Sales\Tables\SalesTable;
-use App\Models\Sale as Model;
+use App\Models\FactusolSale as Model;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -63,7 +63,6 @@ class SaleResource extends Resource
     {
         return [
             ProductSalesRelationManager::class,
-            // ProductsRelationManager::class,
         ];
     }
 

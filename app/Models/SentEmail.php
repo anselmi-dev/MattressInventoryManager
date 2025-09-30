@@ -11,10 +11,13 @@ class SentEmail extends Model implements SentEmailModel {
 
     use IsSentEmailModel;
 
-    protected $table = 'sent_emails';
-
     protected static $unguarded = true;
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'meta' => 'collection',
         'opened_at' => 'datetime',

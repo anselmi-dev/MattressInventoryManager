@@ -24,7 +24,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Model::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
     // protected static string | UnitEnum | null $navigationGroup = 'Productos';
 
@@ -73,7 +73,7 @@ class ProductResource extends Resource
     {
         return [
             RelationManagers\LotsRelationManager::class,
-            // RelationManagers\MedidasRelationManager::class,
+            RelationManagers\StockChangeManager::class,
         ];
     }
 

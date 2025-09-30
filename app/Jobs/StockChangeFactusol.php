@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\FactusolProduct;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -20,7 +19,7 @@ class StockChangeFactusol implements ShouldQueue
      */
     public function __construct (StockChange $stock_change)
     {
-        $this->stock_change  = $stock_change;
+        $this->stock_change = $stock_change;
     }
 
     /**
@@ -28,19 +27,21 @@ class StockChangeFactusol implements ShouldQueue
      */
     public function handle(): void
     {
-        if ($this->stock_change->status == 'processed') {
+        if ($this->stock_change->isProcessed)
             return;
+
+        if ($this->stock_change->isSetOperation()) {
+            $stock = $this->stock_change->new;
         }
 
-        if (!app()->isProduction())
-            return;
+        if ($this->stock_change->isAddOperation()) {
+            $stock = $this->stock_change->quantity;
+        }
 
-        if ((new FactusolService())->update_stock($this->stock_change->product->code, $this->stock_change->new)) {
-            $this->stock_change->product->factusolProduct->increment('ACTSTO', $this->stock_change->quantity);
+        $response = (new FactusolService())->updateStockFactusol($this->stock_change->product_lot->product->code, $stock);
 
-            $this->stock_change->status = 'processed';
-
-            $this->stock_change->save();
+        if ($response) {
+            $this->stock_change->setStatusProcessed();
         }
     }
 }

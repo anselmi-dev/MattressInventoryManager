@@ -48,22 +48,6 @@ class Product extends Model
         'description',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-    ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-    ];
-
     protected $with = ['productType'];
 
     /**
@@ -153,16 +137,6 @@ class Product extends Model
     }
 
     /**
-     * Has Many to a StockChange
-     *
-     * @return HasMany
-     */
-    public function stock_change(): HasMany
-    {
-        return $this->hasMany(StockChange::class);
-    }
-
-    /**
      * Relación muchos a muchos para productos combinados
      *
      * @return BelongsToMany
@@ -180,6 +154,33 @@ class Product extends Model
     public function factusolProduct(): HasOne
     {
         return $this->hasOne(FactusolProduct::class, 'CODART', 'code');
+    }
+
+    /**
+     * Has One to a FactusolProductStock
+     *
+     * @return HasOne
+     */
+    public function factusolProductStock(): HasOne
+    {
+        return $this->hasOne(FactusolProductStock::class, 'ARTSTO', 'code');
+    }
+
+    /**
+     * Has Many to StockChanges through ProductLots
+     *
+     * @return HasManyThrough
+     */
+    public function stock_changes(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            StockChange::class,
+            ProductLot::class,
+            'reference',
+            'product_lot_id',
+            'reference',
+            'id'
+        )->orderBy('created_at', 'desc');
     }
 
     /**
@@ -219,7 +220,7 @@ class Product extends Model
      */
     public function sales(): BelongsToMany
     {
-        return $this->belongsToMany(Sale::class, 'product_sale', 'ARTLFA', 'sale_id', 'code', 'id');
+        return $this->belongsToMany(FactusolSale::class, 'product_sale', 'ARTLFA', 'sale_id', 'code', 'id');
     }
 
     /**
@@ -250,6 +251,12 @@ class Product extends Model
     public function productType(): HasOne
     {
         return $this->hasOne(ProductType::class, 'name', 'type');
+    }
+
+
+    public function scopeCode(Builder $query, string $code): void
+    {
+        $query->where('code', $code);
     }
 
     /**

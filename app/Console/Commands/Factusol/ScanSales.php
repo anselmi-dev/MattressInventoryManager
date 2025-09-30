@@ -2,23 +2,19 @@
 
 namespace App\Console\Commands\Factusol;
 
-use App\Models\Product;
-use App\Models\ProductSale;
-use App\Models\Sale;
-use App\Services\FactusolService;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
-
-class ScanSales extends Command
+use App\Console\Services\FactusolCommandService;
+use App\Events\FactusolProductSaleCreated;
+use App\Models\FactusolSale;
+use Carbon\Carbon;
+class ScanSales extends FactusolCommandService
 {
-    protected $last_updated_date_of_sales;
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:scan-sales {--force} {--factusol}';
+    protected $signature = 'app:scan-sales {--force : No se tendrá en cuenta la fecha de la última sincronización } {--code= : Buscar por el código de la factura} {--no-events : No ejecutar los eventos de creación o actualización de los productos} {--truncate : Truncar la tabla de ventas}';
 
     /**
      * The console command description.
@@ -27,96 +23,113 @@ class ScanSales extends Command
      */
     protected $description = 'Obtener las ventas de factusol y sincronizarlas a la base de datos';
 
+    public function optionCode(): ?string
+    {
+        return $this->option('code');
+    }
+
+    public function optionForce(): bool
+    {
+        return $this->option('force');
+    }
+
+    public function funcionNameFactusolService(): string
+    {
+        return 'getSales';
+    }
+
+    public function getkeyCacheLastUpdatedDateOf(): string
+    {
+        return 'last_updated_date_of_sales';
+    }
+
+    public function getLastUpdatedDateRecords(): ?Carbon
+    {
+        return FactusolSale::orderBy('FECFAC', 'desc')->first()?->FECFAC;
+    }
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->info("ÚLTIMO PROCE DE IMPORTACIÓN LANZADO EL " . settings()->get('last_updated_date_of_sales'));
+        $this->infoLastUpdatedDateOf();
 
-        $this->last_updated_date_of_sales = Carbon::now()->subDays(60);
+        if ($this->option('truncate')) {
+            // Desactivar temporalmente las verificaciones de claves foráneas
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $query = \Str::replaceArray('?', [
-            (!$this->option('force') && $this->last_updated_date_of_sales) ? "WHERE F_FAC.FECFAC > '{$this->last_updated_date_of_sales->toDateTimeString()}'" : ''
-        ], "SELECT F_LFA.CANLFA, F_LFA.ARTLFA, F_LFA.TOTLFA, F_LFA.DESLFA, F_LFA.CODLFA as CODFAC, F_FAC.IREC1FAC, F_FAC.TOTFAC, F_FAC.CLIFAC, F_FAC.CNOFAC, F_FAC.FUMFAC, F_FAC.CEMFAC, F_FAC.ESTFAC, F_FAC.FECFAC, F_FAC.IIVA1FAC, F_FAC.NET1FAC, F_FAC.TIPFAC FROM F_LFA JOIN F_FAC ON F_LFA.CODLFA = F_FAC.CODFAC ? ORDER BY F_FAC.FECFAC ASC");
+            // Truncar las tablas relacionadas primero
+            \DB::table('product_sale')->truncate();
+            FactusolSale::truncate();
 
-        $factusol_products = (new FactusolService())->query($query);
+            // Reactivar las verificaciones de claves foráneas
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $this->withProgressBar($factusol_products, function (array $factusol_product) {
-            $this->procesarFactusolSale(
-                $this->reduceFactusolSale($factusol_product)
+            $this->info('Tablas truncadas correctamente');
+        }
+
+        $records = $this->getDataFactusol();
+
+        $this->withProgressBar($records, function (array $record) {
+            $this->firstOrCreateRecord(
+                $this->reduceFactusol($record)
             );
         });
 
-        settings()->set('last_updated_date_of_sales', Carbon::now()->toDateTimeString());
-
-        $this->info(PHP_EOL . "PROCESO TERMINADO CORRECTAMENTE" . PHP_EOL);
-    }
-
-    /**
-     * Formatear la data que proviene de factusol.
-     * Cada linea de la factuta se formatea para mejor acceso
-     *
-     * @param array $item
-     * @return array
-     */
-    protected function reduceFactusolSale (array $item):array
-    {
-        return array_reduce($item, function ($carry, $row) {
-            $carry[$row['columna']] = $row['dato'];
-            return $carry;
-        }, []);
-    }
-
-    /**
-     * Procesar la data de factusol para crear el producto de cada linea de la factura
-     *
-     * @param array $factusol_sale
-     * @return void
-     */
-    protected function procesarFactusolSale (array $factusol_sale): void
-    {
-        $sale = Sale::withoutGlobalScopes()
-            ->updateOrCreate([
-                'CODFAC' => $factusol_sale['CODFAC'],
-            ], [
-                'TOTFAC' => $factusol_sale['TOTFAC'],
-                'FUMFAC' => $factusol_sale['FUMFAC'],
-                'CLIFAC' => $factusol_sale['CLIFAC'],
-                'ESTFAC' => $factusol_sale['ESTFAC'],
-                'CNOFAC' => $factusol_sale['CNOFAC'],
-                'CEMFAC' => $factusol_sale['CEMFAC'],
-                'NET1FAC' => $factusol_sale['NET1FAC'],
-                'IREC1FAC' => $factusol_sale['IREC1FAC'],
-                'FECFAC' => $factusol_sale['FECFAC'],
-                'TIPFAC' => $factusol_sale['TIPFAC'],
-                'IIVA1FAC' => $factusol_sale['IIVA1FAC']
-            ]);
-
-        /* Se verifica que la factura no contenga líneas de productos. */
-        if (!$factusol_sale['ARTLFA'])
-            return;
-
-        $productSale = ProductSale::withoutGlobalScopes()
-            ->updateOrCreate([
-                'sale_id' => (int) $sale->id,
-                'ARTLFA' => $factusol_sale['ARTLFA'],
-            ], [
-                'CANLFA' => (int) $factusol_sale['CANLFA'],
-                'TOTLFA' => $factusol_sale['TOTLFA'],
-                'DESLFA' => $factusol_sale['DESLFA'],
-                'created_at' => $factusol_sale['FECFAC'],
-                'updated_at' => $factusol_sale['FECFAC'],
-                // 'processed_at' => $sale->is_processed ? Carbon::now() : null,
-            ]);
-
-        if ($productSale->wasRecentlyCreated) {
-            $productSale->decrementStock();
+        if ($this->option('code') && count($records) === 0) {
+            throw new \Exception('No se encontró la venta en Factusol');
         }
 
-        /* Verifica que la venta esté en estado "procesada" y que no se haya emitido un decremento de stock previamente en el product_sale. */
-        //if ($sale->is_processed && is_null($productSale->processed_at)) {
-        //    $productSale->decrementStock();
-        //}
+        $this->setLastUpdatedDateOf();
+
+        $this->info(PHP_EOL . "PROCESO TERMINADO CORRECTAMENTE" . PHP_EOL);
+
+        return Command::SUCCESS;
+    }
+
+    public function firstOrCreateRecord (array $data): void
+    {
+        $sale = FactusolSale::withoutGlobalScopes()
+            ->updateOrCreate([
+                'CODFAC' => $data['CODFAC'],
+            ], [
+                'TOTFAC' => $data['TOTFAC'],
+                'FUMFAC' => $data['FUMFAC'],
+                'CLIFAC' => $data['CLIFAC'],
+                'ESTFAC' => $data['ESTFAC'],
+                'CNOFAC' => $data['CNOFAC'],
+                'CEMFAC' => $data['CEMFAC'],
+                'NET1FAC' => $data['NET1FAC'],
+                'IREC1FAC' => $data['IREC1FAC'],
+                'FECFAC' => $data['FECFAC'],
+                'TIPFAC' => $data['TIPFAC'],
+                'IIVA1FAC' => $data['IIVA1FAC']
+            ]);
+
+        if (!$data['ARTLFA'])
+            return;
+
+        $productSale = $sale
+            ->product_sales()
+            ->withoutGlobalScopes()
+            ->updateOrCreate([
+                'sale_id' => (int) $sale->id,
+                'ARTLFA' => $data['ARTLFA'],
+                'TOTLFA' => $data['TOTLFA'],
+            ], [
+                'CANLFA' => (int) $data['CANLFA'],
+                'DESLFA' => $data['DESLFA'],
+                'created_at' => $data['FECFAC'],
+                'updated_at' => $data['FECFAC'],
+            ]);
+
+        if ($this->option('no-events')) {
+            return;
+        }
+
+        if ($productSale->wasRecentlyCreated) {
+            FactusolProductSaleCreated::dispatch($sale);
+        }
     }
 }

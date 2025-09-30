@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Observers\ProductTypeObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+#[ObservedBy([ProductTypeObserver::class])]
 class ProductType extends Model
 {
     use HasFactory;

@@ -14,6 +14,8 @@ class MedidasRelationManager extends RelationManager
 {
     protected static string $relationship = 'dimension';
 
+    protected $listeners = ['refreshRelation' => '$refresh'];
+
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return DimensionResource::getPluralModelLabel();

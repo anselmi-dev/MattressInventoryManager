@@ -20,6 +20,8 @@ class LotsRelationManager extends RelationManager
 {
     protected static string $relationship = 'lots';
 
+    protected static bool $isLazy = false;
+
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return ProductLotResource::getPluralModelLabel();
@@ -40,6 +42,8 @@ class LotsRelationManager extends RelationManager
             )
             ->label(__('Referencia del Colchón'))
             ->default($this->getOwnerRecord()->reference);
+
+        $schema->getComponent('quantity')->hidden();
 
         return $schema;
     }

@@ -23,10 +23,16 @@ use jdavidbakr\MailTracker\Events\{
 };
 
 use App\Events\ProductCreated;
-use App\Listeners\Product\InitializeProductStock;
+use App\Events\ProductUpdated;
 use App\Listeners\Product\AssociateProductType;
 use App\Listeners\Product\AssociateDimensionProduct;
-
+use App\Events\FactusolSaleCreated;
+use App\Events\FactusolProductSaleCreated;
+use App\Listeners\FactusolSale\DecrementStockProductSale;
+use App\Events\FactusolProductSalePlotUpdated;
+use App\Events\ProductLotCreatedEvent;
+use App\Events\ProductLotUpdatedEvent;
+use App\Listeners\ProductLot\HanlderStockLotListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -55,19 +61,27 @@ class EventServiceProvider extends ServiceProvider
             BouncedEmail::class,
         ],
         ProductCreated::class => [
-            InitializeProductStock::class,
             AssociateProductType::class,
             AssociateDimensionProduct::class,
         ],
+        ProductUpdated::class => [
+        ],
+        FactusolSaleCreated::class => [
+            // DecrementStockProducts::class,
+        ],
+        FactusolProductSaleCreated::class => [
+            // DecrementStockProductSale::class,
+        ],
+        FactusolProductSalePlotUpdated::class => [
+            DecrementStockProductSale::class,
+        ],
+        ProductLotCreatedEvent::class => [
+            HanlderStockLotListener::class,
+        ],
+        ProductLotUpdatedEvent::class => [
+            HanlderStockLotListener::class,
+        ],
     ];
-
-    /**
-     * Register any events for your application.
-     */
-    public function boot(): void
-    {
-        //
-    }
 
     /**
      * Determine if events and listeners should be automatically discovered.

@@ -8,9 +8,9 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('app:scan-sales')->everyTenMinutes();
+Schedule::command('app:scan-sales')->everyFiveMinutes();
 
-Schedule::command('app:scan-products')->hourly();
+Schedule::command('app:scan-factusol-products')->everyFiveMinutes();
 
 Schedule::command('backup:clean')->daily()->at('01:00');
 

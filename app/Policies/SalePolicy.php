@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Sale;
+use App\Models\FactusolSale;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

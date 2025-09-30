@@ -4,7 +4,7 @@ namespace App\Console\Commands\Factusol;
 
 use App\Services\FactusolService;
 use Illuminate\Console\Command;
-use App\Exceptions\GetStockExceptions;
+use App\Models\Product;
 class GetStockProduct extends Command
 {
     /**
@@ -12,7 +12,7 @@ class GetStockProduct extends Command
      *
      * @var string
      */
-    protected $signature = 'app:get-stock-product {--code=} {--all-data}';
+    protected $signature = 'app:get-stock-product {--code=}';
 
     /**
      * The console command description.
@@ -29,7 +29,28 @@ class GetStockProduct extends Command
         $code = $this->option('code');
 
         try {
-            $F_STOC = (new FactusolService())->get_F_ART_STOCK($code);
+
+            $this->info("Obteniendo el stock del producto {$code}");
+
+            $F_STOC = (new FactusolService())->getValueStockFactusol($code);
+
+            $this->info("Stock factusol: {$F_STOC}");
+
+            $product = Product::code($code)->firstOrFail();
+
+            $this->info("Stock local: {$product->stock}");
+
+            if ($product->stock != $F_STOC) {
+
+                $this->error("Stock están desincronizados");
+
+                return Command::FAILURE;
+
+            }
+
+            $this->info("Stock están sincronizados");
+
+            return Command::SUCCESS;
 
         } catch (\Throwable $th) {
 
@@ -37,13 +58,5 @@ class GetStockProduct extends Command
 
             return Command::FAILURE;
         }
-
-        if ($this->option('all-data')) {
-            $this->info(json_encode($F_STOC));
-        } else {
-            $this->info("El product {$code} posee un stock de {$F_STOC[1]['dato']}");
-        }
-
-        return Command::SUCCESS;
     }
 }

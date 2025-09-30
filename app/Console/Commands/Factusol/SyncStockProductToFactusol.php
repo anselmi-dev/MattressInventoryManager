@@ -40,7 +40,19 @@ class SyncStockProductToFactusol extends Command
                 if (app()->isProduction()) {
 
                     try {
-                        (new FactusolService())->update_stock($product->code, $product->stock);
+
+                        if ($product->stock < 0) {
+
+                            $product->stock = 0;
+
+                            $product->save();
+
+                        }
+
+                        (new FactusolService())->setStockFactusol(
+                            code: $product->code,
+                            stock: $product->stock
+                        );
 
                         $this->output->writeln("<fg=green>OK</fg> The product {$product->code} has a stock of {$product->stock}");
 

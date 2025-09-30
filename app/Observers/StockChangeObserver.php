@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\StockChange;
+use App\Jobs\StockChangeFactusol;
 
 class StockChangeObserver
 {
@@ -11,7 +12,7 @@ class StockChangeObserver
      */
     public function created(StockChange $stockChange): void
     {
-        //
+        StockChangeFactusol::dispatch($stockChange);
     }
 
     /**
@@ -19,30 +20,16 @@ class StockChangeObserver
      */
     public function updated(StockChange $stockChange): void
     {
-        //
-    }
+        if ($stockChange->isDirty('status')) {
 
-    /**
-     * Handle the StockChange "deleted" event.
-     */
-    public function deleted(StockChange $stockChange): void
-    {
-        //
-    }
+            if ($stockChange->status == 'processed') {
 
-    /**
-     * Handle the StockChange "restored" event.
-     */
-    public function restored(StockChange $stockChange): void
-    {
-        //
-    }
+                $new_stock = $stockChange->isAddOperation() ? ($stockChange->quantity + $stockChange->product_lot->product->stock) : $stockChange->quantity;
 
-    /**
-     * Handle the StockChange "force deleted" event.
-     */
-    public function forceDeleted(StockChange $stockChange): void
-    {
-        //
+                $stockChange->product_lot->product->update([
+                    'stock' => $new_stock
+                ]);
+            }
+        }
     }
 }

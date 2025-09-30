@@ -8,6 +8,7 @@
         "php": "^8.2",
         "appstract/laravel-opcache": "^4.0",
         "filament/filament": "4.0",
+        "gboquizosanchez/filament-log-viewer": "^2.1",
         "grkamil/laravel-telegram-logging": "^1.13",
         "jdavidbakr/mail-tracker": "^7.16",
         "laravel/framework": "^11.9",

@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use App\Models\Code;
 use App\Models\Product;
-use App\Models\Sale;
+use App\Models\FactusolSale;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -24,11 +24,11 @@ class SalesImport implements ToCollection, WithHeadingRow, WithEvents, WithChunk
     {
         foreach ($rows as $key => $row) {
             $product = str_replace('ArtÍculo: ', '', $row['producto']);
-        
+
             list($code, $description) = explode(" - ", $product);
-    
+
             $product = Product::where('code', $code)->first();
-            
+
             $sale = new Sale([
                 'description' => $description,
                 'quantity' => $row['unidades'],
@@ -69,12 +69,12 @@ class SalesImport implements ToCollection, WithHeadingRow, WithEvents, WithChunk
             },
         ];
     }
-    
+
     public function batchSize(): int
     {
         return 1000;
     }
-    
+
     public function chunkSize(): int
     {
         return 1000;

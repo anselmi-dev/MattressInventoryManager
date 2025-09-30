@@ -34,11 +34,11 @@ class ProductLot extends Model
         'quantity' => 'integer',
     ];
 
-    /**
-     * Belongs to a product
-     *
-     * @return BelongsTo
-     */
+    public function stock_change(): HasMany
+    {
+        return $this->hasMany(StockChange::class);
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'reference', 'reference');
@@ -49,9 +49,6 @@ class ProductLot extends Model
         return $this->hasMany(ProductPart::class);
     }
 
-    /**
-     * The related product lots that belong to this product lot.
-     */
     public function relatedLots(): HasMany
     {
         return $this->hasMany(ProductLotPivot::class);

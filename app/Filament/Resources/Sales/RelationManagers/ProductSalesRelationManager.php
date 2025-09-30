@@ -17,6 +17,10 @@ class ProductSalesRelationManager extends RelationManager
 {
     protected static string $relationship = 'product_sales';
 
+    protected $listeners = ['refreshRelation' => '$refresh'];
+
+    protected static bool $isLazy = false;
+
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return ProductSaleResource::getPluralModelLabel();

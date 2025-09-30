@@ -45,6 +45,11 @@ class SaleForm
                 DateTimePicker::make('FECFAC')
                     ->label(__('filament.resources.FECFAC'))
                     ->required(),
+            ])
+            ->columns([
+                'sm' => 2,
+                'lg' => 3,
+                'xl' => 4,
             ]);
     }
 }

@@ -83,6 +83,7 @@ class SalesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('FECFAC', 'desc')
             ->filters([
                 Filter::make('FECFAC')
                     ->schema([
