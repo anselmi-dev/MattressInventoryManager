@@ -43,12 +43,15 @@ class ScanFactusolProducts extends Command
 
         $this->info(PHP_EOL . PHP_EOL . "<fg=white>🗑️ Eliminando los productos que no existen en la base de datos de Factusol");
 
-        $deleted = FactusolProduct::whereNotIn('CODART', $codarts->pluck('CODART'))->delete();
+        if (!$this->option('code')) {
 
-        if ($deleted)
-            $this->info("<fg=white>✅ Eliminación de productos completada");
-        else
-            $this->info("<fg=white>❌ No se encontraron productos para eliminar");
+            $deleted = FactusolProduct::whereNotIn('CODART', $codarts->pluck('CODART'))->delete();
+
+            if ($deleted)
+                $this->info("<fg=white>✅ Eliminación de productos completada");
+            else
+                $this->info("<fg=white>❌ No se encontraron productos para eliminar");
+        }
 
         return Command::SUCCESS;
     }

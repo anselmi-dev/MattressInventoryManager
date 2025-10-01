@@ -42,11 +42,7 @@ class SyncStockProductToFactusol extends Command
                     try {
 
                         if ($product->stock < 0) {
-
-                            $product->stock = 0;
-
-                            $product->save();
-
+                            throw new \Exception('El stock del producto es menor a 0');
                         }
 
                         (new FactusolService())->setStockFactusol(
