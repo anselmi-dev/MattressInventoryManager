@@ -27,11 +27,11 @@ class CombinationForm
                             ->label(__('filament.resources.name'))
                             ->maxLength(255)
                             ->required(),
-                        TextInput::make('stock')
-                            ->label(__('filament.resources.stock'))
-                            ->belowContent('El stock de la combinación no afecta el stock de las partes ni se sincroniza con Factusol.')
-                            ->numeric()
-                            ->required(),
+                        // TextInput::make('stock')
+                        //     ->label(__('filament.resources.stock'))
+                        //     ->belowContent('El stock de la combinación no afecta el stock de las partes ni se sincroniza con Factusol.')
+                        //     ->numeric()
+                        //     ->required(),
                         TextInput::make('type')
                             ->label(__('filament.resources.type'))
                             ->readOnly()

@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Observers\ProductLotObserver;
-
 #[ObservedBy([ProductLotObserver::class])]
 class ProductLot extends Model
 {
@@ -58,6 +58,32 @@ class ProductLot extends Model
     {
         return $query->whereHas('product', function (Builder $query) {
             $query->whereNotCombinations();
+        });
+    }
+
+    public function decrementProductLotStock(int $quantity): void
+    {
+        $this->decrement('quantity', $quantity);
+
+        // $this->decrementRelatedProductLot($quantity);
+    }
+
+    public function manufactureLot(int $quantity, bool $decrementStock = true): void
+    {
+        $this->increment('quantity', $quantity);
+
+        if ($decrementStock) {
+            $this->decrementRelatedProductLot($quantity);
+        }
+    }
+
+    protected function decrementRelatedProductLot(int $quantity): void
+    {
+        // Descrementar el stock de los lotes relacionados
+        // Esto se hace para que cuando se descremente el stock de un lote, se descremente el stock de los lotes relacionados
+        // Esto aplica solo para cuando es una combinación (Colchon)
+        $this->relatedLots->map(function(ProductLotPivot $relatedLotPivot) use ($quantity) {
+            $relatedLotPivot->relatedLot->decrementProductLotStock($quantity);
         });
     }
 }

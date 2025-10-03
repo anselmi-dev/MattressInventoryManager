@@ -32,7 +32,7 @@ class FactusolHttpService
     {
         $this->ejercicio = date('Y');
 
-        $this->setToken(Cache::get(self::CACHE_KEY_TOKEN));
+        $this->setToken(Cache::get(self::CACHE_KEY_TOKEN) ?? null);
 
         $this->client = Http::withOptions([
             'verify' => true,
@@ -59,6 +59,9 @@ class FactusolHttpService
     {
         $this->token = $token;
 
+        if (!$this->token)
+            return $this;
+
         Cache::forget(self::CACHE_KEY_TOKEN);
 
         Cache::put(self::CACHE_KEY_TOKEN, $token);
@@ -73,6 +76,7 @@ class FactusolHttpService
 
         } catch (\Exception $e) {
 
+            report('Error al setear el token de factusol "' . $this->token . '"');
             report($e);
 
             Cache::forget(self::CACHE_KEY_TOKEN);

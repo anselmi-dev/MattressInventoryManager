@@ -22,6 +22,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+use App\Filament\Pages\Backups;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -50,6 +52,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
             ])
             ->plugins([
+                FilamentSpatieLaravelBackupPlugin::make()
+                    ->usingPage(Backups::class),
                 \Boquizo\FilamentLogViewer\FilamentLogViewerPlugin::make()
                     ->navigationGroup('System')
                     ->navigationSort(2)

@@ -1,4 +1,4 @@
-<x-alerts.warning>
+<x-alerts.warning class="mt-2">
     <x-slot name="title">
         El sistema está no está en producción
     </x-slot>

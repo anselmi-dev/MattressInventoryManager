@@ -328,9 +328,9 @@ class Product extends Model
      */
     public function decrementStock (int $quantity) : void
     {
-        $this->update([
-            'stock' => $this->stock - $quantity
-        ]);
+        $function = $quantity < 0 ? 'decrement' : 'increment';
+
+        $this->$function('stock', $quantity);
     }
 
     /**
@@ -357,29 +357,7 @@ class Product extends Model
     {
         $this->decrementStockProducts($quantity);
 
-        $this->update([
-            'stock' => $this->stock + $quantity
-        ]);
-    }
-
-    /**
-     * Manufacture combination
-     *
-     * @param ProductLot $productLot
-     * @param integer $quantity
-     * @return void
-     */
-    public function manufactureLot (ProductLot $productLot, int $quantity, bool $decrementStock = true):void
-    {
-        $productLot->update([
-            'quantity' => $productLot->quantity + $quantity
-        ]);
-
-        if ($decrementStock)
-            $productLot->relatedLots()->get()->map(function($item) use ($quantity) {
-                $item->relatedLot->quantity -= $quantity;
-                $item->relatedLot->save();
-            });
+        $this->decrementStock($quantity);
     }
 
     public function validateStockManufacture (int $quantity) : int|null

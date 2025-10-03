@@ -70,7 +70,7 @@ class EventServiceProvider extends ServiceProvider
             // DecrementStockProducts::class,
         ],
         FactusolProductSaleCreated::class => [
-            // DecrementStockProductSale::class,
+            DecrementStockProductSale::class,
         ],
         FactusolProductSalePlotUpdated::class => [
             DecrementStockProductSale::class,

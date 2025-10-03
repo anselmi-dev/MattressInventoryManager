@@ -24,7 +24,7 @@ class ConfigurationFormPage extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Parámetros';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string | UnitEnum | null $navigationGroup = 'Configuraciones';
 
     protected static ?string $title = 'Parámetros';
 

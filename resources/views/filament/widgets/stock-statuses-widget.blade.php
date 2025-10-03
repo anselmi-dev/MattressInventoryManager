@@ -13,10 +13,10 @@
                 </div>
             </div>
         </div>
-        <ul role="list" class="divide-y divide-gray-100 overflow-auto max-h-[300px]">
+        <ul role="list" class="divide-y divide-gray-100 dark:divide-gray-800 overflow-auto max-h-[300px]">
             @forelse ($stockStatuses as $item)
                 <li>
-                    <div class="relative grid grid-cols-2 md:grid-cols-3 | px-4 py-3 hover:bg-gray-50">
+                    <div class="relative grid grid-cols-2 md:grid-cols-3 | px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                         <div class="flex items-center min-w-0 gap-x-2">
                             <div
                                 class="p-1 rounded-full w-10 h-10 min-w-10 min-h-10 bg-gray-300 flex items-center justify-center text-gray-800">
@@ -40,7 +40,7 @@
                                         {{ $item->code }}
                                     </span>
                                 </div>
-                                <p class="text-sm font-semibold text-gray-900">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">
                                     <span class="line-clamp-2">
                                         {{ $item->name }}
                                     </span>
@@ -59,11 +59,11 @@
 
                         <div class="relative flex justify-between gap-x-2">
                             <div class="flex shrink-0 items-center gap-x-2 flex-1 justify-end">
-                                <div class="flex flex-col sm:items-end text-gray-900">
+                                <div class="flex flex-col sm:items-end text-gray-900 dark:text-white">
                                     <span class="hidden md:block uppercase">
                                         {{ $item->type }}
                                     </span>
-                                    <div class="flex items-center gap-1 w-fit relative bg-red-100 rounded-full px-2"
+                                    <div class="flex items-center gap-1 w-fit relative bg-red-100 rounded-full px-2 dark:bg-red-900"
                                         x-data="{ tooltip: 'El stock está considerablemente por debajo del nivel promedio requerido.' }" x-tooltip="tooltip">
                                         <span class="relative flex h-3 w-3">
                                             <span
@@ -86,7 +86,7 @@
                 <li class="px-4 py-3">
                     <div class="flex items-center min-w-0 gap-x-2">
                         <div class="min-w-0 flex-auto">
-                            <p class="text-sm font-semibold text-gray-900">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">
                                 <span class="line-clamp-2">
                                     No se encontraron productos con stock bajo
                                 </span>

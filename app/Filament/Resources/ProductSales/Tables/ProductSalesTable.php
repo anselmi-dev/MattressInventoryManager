@@ -21,13 +21,19 @@ class ProductSalesTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->sortable()
+                    ->label(__('filament.resources.id'))
+                    ->hidden(fn ($record) => app()->isProduction()),
                 TextColumn::make('sale.CODFAC')
+                    ->sortable()
                     ->label(__('filament.resources.sale_CODFAC')),
                 TextColumn::make('ARTLFA')
+                    ->sortable()
                     ->label(__('filament.resources.ARTLFA'))
-                    ->icon(fn ($record) => empty($record->product) ? Heroicon::XCircle : Heroicon::CheckCircle)
-                    ->iconColor(fn ($record) => empty($record->product) ? 'danger' : 'success')
-                    ->tooltip(fn ($record) => empty($record->product) ? __('filament.resources.product_not_found') : __('filament.resources.product_found'))
+                    ->icon(fn ($record) => empty($record->product) || $record->product->trashed() ? Heroicon::XCircle : Heroicon::CheckCircle)
+                    ->iconColor(fn ($record) => empty($record->product) ? 'danger' : ($record->product->trashed() ? 'warning' : 'success'))
+                    ->tooltip(fn ($record) => empty($record->product) ? __('filament.resources.product_not_found') : ($record->product->trashed() ? __('filament.resources.product_trashed') : __('filament.resources.product_found')))
                     ->searchable(),
                 TextColumn::make('CANLFA')
                     ->label(__('filament.resources.CANLFA'))
@@ -43,6 +49,9 @@ class ProductSalesTable
                     ->searchable(),
                 TextColumn::make('product_lot.name')
                     ->label(__('filament.resources.product_lot_name'))
+                    ->icon(fn ($record) => empty($record->product_lot_id) ? Heroicon::XCircle : Heroicon::CheckCircle)
+                    ->iconColor(fn ($record) => empty($record->product_lot_id) ? 'danger' : 'success')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('processed_at')
                     ->label(__('filament.resources.processed_at'))
@@ -60,14 +69,17 @@ class ProductSalesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultGroup('sale_id')
+            ->defaultGroup('sale')
+            ->groupingDirectionSettingHidden()
             ->groups([
-                Group::make('sale_id')
+                Group::make('sale')
+                    ->label('Factura')
                     ->collapsible()
-                    ->label(__('filament.resources.sale_CODFAC'))->getTitleFromRecordUsing(fn (Model $record): string => ucfirst($record->sale->CODFAC)),
+                    ->orderQueryUsing(fn (Builder $query) => $query->orderBy('sale_id', 'desc'))
+                    ->getTitleFromRecordUsing(fn (Model $record): string => "#" . ucfirst($record->sale->CODFAC) . " | Cliente: " . ucfirst($record->sale->CNOFAC))
+                    ->getDescriptionFromRecordUsing(fn (Model $record): string => "€" . ucfirst($record->sale->TOTFAC)),
             ])
             ->defaultSort('created_at', 'desc')
-            // ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('product'))
             ->recordActions([
                 EditAction::make()
                     ->slideOver()

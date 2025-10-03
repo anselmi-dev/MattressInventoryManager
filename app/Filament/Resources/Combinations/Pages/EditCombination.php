@@ -27,9 +27,7 @@ class EditCombination extends EditRecord
                     ->icon('heroicon-o-magnifying-glass')
                     ->action(function() {
                         try {
-                            $F_ART_STOCK = (new \App\Services\FactusolService())->getStockFactusol($this->record->code);
-
-                            $stock = optional($F_ART_STOCK)[1]['dato'];
+                            $stock = (new \App\Services\FactusolService())->getValueStockFactusol($this->record->code);
 
                             $message = "El product {$this->record->code} tiene un stock de {$stock} en Factusol";
 

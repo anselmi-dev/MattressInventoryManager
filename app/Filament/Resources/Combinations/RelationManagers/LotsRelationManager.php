@@ -22,6 +22,8 @@ class LotsRelationManager extends RelationManager
 
     protected static bool $isLazy = false;
 
+    protected $listeners = ['refreshRelation' => '$refresh'];
+
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return ProductLotResource::getPluralModelLabel();
@@ -43,7 +45,9 @@ class LotsRelationManager extends RelationManager
             ->label(__('Referencia del Colchón'))
             ->default($this->getOwnerRecord()->reference);
 
-        $schema->getComponent('quantity')->hidden();
+        $schema->getComponent('quantity')->label('Stock del Lote del Colchón')->helperText('El stock de la combinación no afecta al stock de las partes y se sincroniza con Factusol.');
+
+        $schema->getComponent('product_lot_info')->hidden();
 
         return $schema;
     }

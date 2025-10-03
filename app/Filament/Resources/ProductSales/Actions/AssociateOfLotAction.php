@@ -40,15 +40,17 @@ class AssociateOfLotAction extends Action
                     ->send();
             })
             ->schema(function ($schema, $record) {
-
                 $schema->components([
                     Select::make('product_lot_id')
                         ->label('Lote')
-                        ->relationship(name: 'product_lot', titleAttribute: 'name', modifyQueryUsing: fn (Builder $query) => $query->whereIsPart()->when($record->product, function (Builder $query) use ($record) {
-                            $query->where('reference', $record->product->reference);
+                        ->relationship(
+                            name: 'product_lot',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn (Builder $query) => $query->when($record->product, function (Builder $query) use ($record) {
+                                $query->where('reference', $record->product->reference);
                         })->orderBy('name', 'asc'))
                         ->getOptionLabelFromRecordUsing(function (Model $record) {
-                            return new HtmlString("<b>{$record->name}</b> <br> {$record->product->name}");
+                            return new HtmlString("<b>{$record->name}</b> <br> {$record->product->name} <br> {$record->reference}");
                         })
                         ->allowHtml()
                         ->searchable()

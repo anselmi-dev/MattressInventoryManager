@@ -2,17 +2,21 @@
 
 namespace App\Listeners\FactusolSale;
 
-use App\Events\FactusolProductSalePlotUpdated;
-
+use App\Models\FactusolSale;
 class DecrementStockProductSale
 {
     /**
      * Handle the event.
      */
-    public function handle(FactusolProductSalePlotUpdated $event): void
+    public function handle($event): void
     {
-        if ($event->productSale->product_lot_id && is_null($event->productSale->processed_at)) {
-            $event->productSale->decrementStock();
+        if ($event->productSale->is_pending) {
+            $this->handleFactusolSaleCreated($event->productSale->sale);
         }
+    }
+
+    public function handleFactusolSaleCreated(FactusolSale $factusolSale): void
+    {
+        $factusolSale->decrementStockSale();
     }
 }

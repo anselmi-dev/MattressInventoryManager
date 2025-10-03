@@ -49,14 +49,27 @@ class ManufactureAction extends Action
                     $action->halt();
                 }
             })
-            ->action(function (array $data, Product $record) {
+            ->action(function (array $data, \Livewire\Component $livewire) {
 
-                $record->manufactureLot(ProductLot::find($data['lots']), $data['quantity'], $data['decrementStock'] ?? true);
+                $productLot = ProductLot::find($data['lots']);
+
+                if (!$productLot) {
+                    Notification::make()
+                        ->title('El lote no existe')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                $productLot->manufactureLot($data['quantity'], $data['decrementStock'] ?? true);
 
                 Notification::make()
                     ->title('Fabricación exitosa')
                     ->success()
                     ->send();
+
+                $livewire->dispatch('refreshRelation');
             })
             ->schema(function ($schema, $record) {
                 return $schema
@@ -75,8 +88,9 @@ class ManufactureAction extends Action
                             ->allowHtml()
                             ->searchable()
                             ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                // $set('quantity', $state->quantity);
+                            ->afterStateUpdated(function ($state, callable $set, Schema $schema) {
+                                if ($state) {
+                                }
                             })
                             ->preload()
                             ->required(),
@@ -87,7 +101,6 @@ class ManufactureAction extends Action
                             ->hidden(fn ($get) => $get('lots') == null),
 
                         TextInput::make('quantity')
-                            // ->maxValue($quantity)
                             ->numeric()
                             ->label('Cantidad a fabricar')
                             ->hidden(fn ($get) => $get('lots') == null)
@@ -96,7 +109,6 @@ class ManufactureAction extends Action
                                 'required',
                                 'numeric',
                                 'min:1',
-                                // 'max:' . $quantity,
                             ]),
 
                         ToggleButtons::make('decrementStock')

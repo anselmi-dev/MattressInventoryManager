@@ -45,7 +45,8 @@ class ScanSales extends FactusolCommandService
 
     public function getLastUpdatedDateRecords(): ?Carbon
     {
-        return FactusolSale::orderBy('FECFAC', 'desc')->first()?->FECFAC;
+        // return FactusolSale::orderBy('FECFAC', 'desc')->first()?->FECFAC;
+        return Carbon::now()->subDays(2)->startOfDay();
     }
 
     /**
@@ -128,8 +129,8 @@ class ScanSales extends FactusolCommandService
             return;
         }
 
-        if ($productSale->wasRecentlyCreated) {
-            FactusolProductSaleCreated::dispatch($sale);
-        }
+        // if ($productSale->wasRecentlyCreated) {
+            // FactusolProductSaleCreated::dispatch($sale);
+        // }
     }
 }

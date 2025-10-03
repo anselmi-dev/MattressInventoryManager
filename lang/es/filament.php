@@ -71,6 +71,7 @@ return [
         'product_lot_name' => 'Lote',
         'product_not_found' => 'Producto no encontrado',
         'product_found' => 'Producto encontrado',
+        'product_trashed' => 'Producto eliminado',
         'status' => 'Estado',
         'email' => 'Email',
         'sent_email_id' => 'Email enviado',

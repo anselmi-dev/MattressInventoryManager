@@ -20,6 +20,6 @@ class HanlderStockLotListener
      */
     public function handle(object $event): void
     {
-        $event->productLot->product->product_lots()->sum('quantity');
+        // $event->productLot->product->product_lots()->sum('quantity');
     }
 }

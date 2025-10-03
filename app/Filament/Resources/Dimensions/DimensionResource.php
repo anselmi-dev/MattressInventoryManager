@@ -27,7 +27,7 @@ class DimensionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Swatch;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string | UnitEnum | null $navigationGroup = 'Configuraciones';
 
     protected static ?string $label = "Medidas";
 

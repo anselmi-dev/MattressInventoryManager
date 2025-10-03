@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-
+use Carbon\Carbon;
 class FactusolSale extends Model
 {
     use HasFactory, LogsActivity;
@@ -107,16 +107,26 @@ class FactusolSale extends Model
         return $this->belongsToMany(Product::class, 'product_sale', 'sale_id', 'ARTLFA', 'id', 'code')->withTimestamps();
     }
 
-    public function decrementStock(): void
+    public function setProcessed(): void
     {
-        if ($this->getIsProcessedAttribute()) {
+        $this->update([
+            'processed_at' => Carbon::now(),
+        ]);
+    }
 
-            $product_sales = $this->products()->whereHas('product')->with('product')->get();
+    public function decrementStockSale (): void
+    {
+        // if ($this->getIsProcessedAttribute()) {
+            $this->product_sales()
+                ->whereHas('product')
+                ->with('product')
+                ->get()
+                ->map(function(ProductSale $productSale) {
+                    $productSale->decrementStockProductSale();
+                });
 
-            foreach ($this->product_sales as $product_sales) {
-                $product_sales->decrementStock();
-            }
-        }
+            $this->setProcessed();
+        // }
     }
 
     public function getIsProcessedAttribute(): bool

@@ -21,7 +21,7 @@ class ProductTypeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string | UnitEnum | null $navigationGroup = 'Configuraciones';
 
     public static function getNavigationBadge(): ?string
     {
