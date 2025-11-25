@@ -18,6 +18,7 @@ class ProductLotExporter extends Exporter
             ExportColumn::make('id')
                 ->label(__('filament.resources.id')),
             ExportColumn::make('name')->label(__('filament.resources.name')),
+            ExportColumn::make('product.name')->label(__('filament.resources.product')),
             ExportColumn::make('quantity')->label(__('filament.resources.quantity')),
             ExportColumn::make('reference')->label(__('filament.resources.reference')),
             ExportColumn::make('created_at')->label(__('filament.resources.created_at')),

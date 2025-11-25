@@ -25,8 +25,7 @@ class SalesTable
                     ->searchable(),
                 TextColumn::make('ESTFAC')
                     ->label(__('filament.resources.ESTFAC'))
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 TextColumn::make('CLIFAC')
                     ->label(__('filament.resources.CLIFAC'))
                     ->sortable()
@@ -41,37 +40,31 @@ class SalesTable
                     ->searchable(),
                 TextColumn::make('TIPFAC')
                     ->label(__('filament.resources.TIPFAC'))
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 TextColumn::make('TOTFAC')
                     ->label(__('filament.resources.TOTFAC'))
                     ->sortable()
                     ->prefix('€')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 TextColumn::make('IREC1FAC')
                     ->label(__('filament.resources.IREC1FAC'))
                     ->sortable()
                     ->prefix('€')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 TextColumn::make('NET1FAC')
                     ->label(__('filament.resources.NET1FAC'))
                     ->sortable()
                     ->prefix('€')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 TextColumn::make('IIVA1FAC')
                     ->label(__('filament.resources.IIVA1FAC'))
                     ->sortable()
                     ->prefix('€')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 TextColumn::make('FECFAC')
                     ->label(__('filament.resources.FECFAC'))
                     ->sortable()
-                    ->dateTime()
-                    ->sortable(),
+                    ->dateTime(),
                 TextColumn::make('created_at')
                     ->label(__('filament.resources.created_at'))
                     ->dateTime()
@@ -83,44 +76,22 @@ class SalesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('FECFAC', 'desc')
+            ->defaultSort('CODFAC', 'desc')
             ->filters([
-                Filter::make('FECFAC')
-                    ->schema([
-                        Section::make()
-                            ->label(__('filament.resources.FECFAC'))
-                            ->compact()
-                            ->columns(2)
-                            ->schema([
-                                DatePicker::make('FECFAC_from')->hiddenLabel(),
-                                DatePicker::make('FECFAC_until')->hiddenLabel(),
-                            ]),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['FECFAC_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('FECFAC', '>=', $date),
-                            )
-                            ->when(
-                                $data['FECFAC_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('FECFAC', '<=', $date),
-                            );
-                    }),
-                Filter::make('CNOFAC')
-                    ->label(__('filament.resources.CNOFAC'))
-                    ->schema([
-                        TextInput::make('CNOFAC')
-                            ->label(__('filament.resources.CNOFAC'))
-                            ->placeholder(__('filament.resources.CNOFAC')),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['CNOFAC'],
-                                fn (Builder $query, $value): Builder => $query->where('CNOFAC', 'like', "%{$value}%")->orWhere('CLIFAC', 'like', "%{$value}%")->orWhere('CEMFAC', 'like', "%{$value}%"),
-                            );
-                    }),
+                // Filter::make('CNOFAC')
+                //     ->label(__('filament.resources.CNOFAC'))
+                //     ->schema([
+                //         TextInput::make('CNOFAC')
+                //             ->label(__('filament.resources.CNOFAC'))
+                //             ->placeholder(__('filament.resources.CNOFAC')),
+                //     ])
+                //     ->query(function (Builder $query, array $data): Builder {
+                //         return $query
+                //             ->when(
+                //                 $data['CNOFAC'],
+                //                 fn (Builder $query, $value): Builder => $query->where('CNOFAC', 'like', "%{$value}%")->orWhere('CLIFAC', 'like', "%{$value}%")->orWhere('CEMFAC', 'like', "%{$value}%"),
+                //             );
+                //     }),
             ], layout: FiltersLayout::Dropdown)
             ->recordActions([
                 // EditAction::make(),

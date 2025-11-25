@@ -56,6 +56,8 @@ class ScanSales extends FactusolCommandService
     {
         $this->infoLastUpdatedDateOf();
 
+        \Log::error('ScanSales');
+
         if ($this->option('truncate')) {
             // Desactivar temporalmente las verificaciones de claves foráneas
             \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -115,7 +117,6 @@ class ScanSales extends FactusolCommandService
             ->product_sales()
             ->withoutGlobalScopes()
             ->updateOrCreate([
-                'sale_id' => (int) $sale->id,
                 'ARTLFA' => $data['ARTLFA'],
                 'TOTLFA' => $data['TOTLFA'],
             ], [

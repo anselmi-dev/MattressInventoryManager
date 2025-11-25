@@ -22,9 +22,9 @@ class ProductSalesTable
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->hidden(fn ($record) => app()->isProduction())
                     ->sortable()
-                    ->label(__('filament.resources.id'))
-                    ->hidden(fn ($record) => app()->isProduction()),
+                    ->label(__('filament.resources.id')),
                 TextColumn::make('sale.CODFAC')
                     ->sortable()
                     ->label(__('filament.resources.sale_CODFAC')),

@@ -84,7 +84,7 @@ class FactusolSale extends Model
      */
     public function product_sales(): HasMany
     {
-        return $this->hasMany(ProductSale::class, 'sale_id', 'id');
+        return $this->hasMany(ProductSale::class, 'sale_id');
     }
 
     /**
