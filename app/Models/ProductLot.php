@@ -54,6 +54,11 @@ class ProductLot extends Model
         return $this->hasMany(ProductLotPivot::class);
     }
 
+    public function scopeWhereName(Builder $query, string $name): Builder
+    {
+        return $query->where('name', $name);
+    }
+
     public function scopeWhereIsPart(Builder $query): Builder
     {
         return $query->whereHas('product', function (Builder $query) {

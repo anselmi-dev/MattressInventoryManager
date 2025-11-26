@@ -12,7 +12,7 @@ class StockChangeObserver
      */
     public function created(StockChange $stockChange): void
     {
-        StockChangeFactusol::dispatch($stockChange);
+        // StockChangeFactusol::dispatch($stockChange);
     }
 
     /**

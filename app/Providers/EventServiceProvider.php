@@ -33,6 +33,8 @@ use App\Events\FactusolProductSalePlotUpdated;
 use App\Events\ProductLotCreatedEvent;
 use App\Events\ProductLotUpdatedEvent;
 use App\Listeners\ProductLot\HanlderStockLotListener;
+use App\Events\ProductSaleImportCompletedEvent;
+use App\Listeners\ProductSaleImport\ProcessPendingImportsListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -80,6 +82,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProductLotUpdatedEvent::class => [
             HanlderStockLotListener::class,
+        ],
+        ProductSaleImportCompletedEvent::class => [
+            // ProcessPendingImportsListener::class,
         ],
     ];
 
