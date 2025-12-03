@@ -42,7 +42,6 @@ class ProductSaleImportsTable
                     ->sortable(),
                 TextColumn::make('fecha')
                     ->label('Fecha')
-                    ->date()
                     ->sortable(),
                 TextColumn::make('prov_cli')
                     ->label('Prov/Cli')
@@ -94,15 +93,14 @@ class ProductSaleImportsTable
                     ->label('Procesar')
                     ->icon('heroicon-o-arrow-path')
                     ->color('primary')
-                    ->visible(fn (ProductSaleImport $record): bool => $record->status === ProductSaleImport::STATUS_PENDING)
+                    // ->visible(fn (ProductSaleImport $record): bool => $record->status === ProductSaleImport::STATUS_PENDING)
                     ->requiresConfirmation()
                     ->modalHeading('Procesar Importación')
                     ->modalDescription('¿Estás seguro de que deseas procesar esta importación?')
                     ->modalSubmitActionLabel('Procesar')
                     ->action(function (ProductSaleImport $record) {
                         try {
-
-                            $record->runProcess();
+                            $record->runProcess(force: $record->isError());
 
                             Notification::make()
                                 ->title('Importación procesada correctamente')

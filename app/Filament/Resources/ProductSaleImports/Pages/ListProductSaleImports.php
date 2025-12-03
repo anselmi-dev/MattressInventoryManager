@@ -28,7 +28,17 @@ class ListProductSaleImports extends ListRecords
                             ->danger()
                             ->send();
                     } else {
+                        $productSaleImportsCountBefore = ProductSaleImport::whereStatusPending()->count();
+
                         Artisan::call('app:process-pending-product-sale-imports');
+
+                        $productSaleImportsCountAfter = ProductSaleImport::whereStatusPending()->count();
+
+                        Notification::make()
+                            ->title('Procesando importaciones pendientes')
+                            ->body("Se han procesado {$productSaleImportsCountAfter} de {$productSaleImportsCountBefore} importaciones pendientes")
+                            ->success(fn () => $productSaleImportsCountAfter == $productSaleImportsCountBefore)
+                            ->send();
                     }
                 }),
             ImportAction::make()

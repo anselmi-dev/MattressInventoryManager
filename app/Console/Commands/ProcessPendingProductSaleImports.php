@@ -33,7 +33,13 @@ class ProcessPendingProductSaleImports extends Command
         ->whereStatusPending()
         ->get();
 
-        $this->withProgressBar($productSaleImports, fn (ProductSaleImport $productSaleImport) => $productSaleImport->runProcess());
+        $this->withProgressBar($productSaleImports, function (ProductSaleImport $productSaleImport) {
+            try {
+                $productSaleImport->runProcess();
+            } catch (\Throwable $th) {
+                $this->error($th->getMessage());
+            }
+        });
 
         return Command::SUCCESS;
     }

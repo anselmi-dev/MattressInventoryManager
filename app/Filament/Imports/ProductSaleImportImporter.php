@@ -48,9 +48,9 @@ class ProductSaleImportImporter extends Importer
 
     public function resolveRecord(): ProductSaleImport
     {
-        if (!ProductLot::whereName($this->data['serie_lote'])->exists()) {
-            throw new RowImportFailedException("No se encontró un lote con la referencia [{$this->data['serie_lote']}].");
-        }
+        // if (!ProductLot::whereName($this->data['serie_lote'])->exists()) {
+        //     throw new RowImportFailedException("No se encontró un lote con la referencia [{$this->data['serie_lote']}].");
+        // }
 
         if (strtoupper(trim($this->data['documento'])) !== 'FACTURA') {
             throw new RowImportFailedException("La linea [{$this->data['articulo']}] no es una factura. El DOCUMENTO debe ser 'FACTURA'.");
@@ -67,7 +67,12 @@ class ProductSaleImportImporter extends Importer
             ])->first();
 
             if ($productSaleImport) {
-                throw new RowImportFailedException("La linea [{$this->data['articulo']}] ya se importó anteriormente.");
+                if ($productSaleImport->isError()) {
+                    $productSaleImport->setStatusPending();
+                    throw new RowImportFailedException("La linea [{$this->data['articulo']}] ya se importó anteriormente pero se encuentra en estado 'Error'. Se ha reiniciado el proceso.");
+                } else {
+                    throw new RowImportFailedException("La linea [{$this->data['articulo']}] ya se importó anteriormente.");
+                }
             }
         }
 

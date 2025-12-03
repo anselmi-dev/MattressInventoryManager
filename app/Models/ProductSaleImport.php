@@ -70,6 +70,11 @@ class ProductSaleImport extends Model
         return $query->where('status', static::STATUS_ERROR);
     }
 
+    public function isError(): bool
+    {
+        return $this->status === static::STATUS_ERROR;
+    }
+
     public function setStatusPending(): void
     {
         $this->update([
@@ -98,9 +103,9 @@ class ProductSaleImport extends Model
         ]);
     }
 
-    public function runProcess (): bool
+    public function runProcess (?bool $force = false): bool
     {
-        if ($this->status !== static::STATUS_PENDING) {
+        if ($this->status !== static::STATUS_PENDING && !$force) {
             throw new \Exception('La importación de ventas ' . $this->id . ' ya ha sido procesada o no está pendiente de procesar.');
         }
 
@@ -111,10 +116,6 @@ class ProductSaleImport extends Model
         if ($productLot) {
 
             ProductLot::withoutEvents(fn () => $productLot->decrementProductLotStock($this->unidades));
-
-            // $record->product_lot_id = $data['product_lot_id'];
-
-            // $record->save();
 
             $this->setStatusProcessed();
 
