@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ProductSaleImports\Pages;
 
 use App\Filament\Resources\ProductSaleImports\ProductSaleImportResource;
-use App\Filament\Imports\ProductSaleImportImporter;
-use Filament\Actions\ImportAction;
+use App\Filament\Imports\ProductSaleExcelImport;
+use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Artisan;
@@ -41,13 +41,17 @@ class ListProductSaleImports extends ListRecords
                             ->send();
                     }
                 }),
-            ImportAction::make()
-                ->importer(ProductSaleImportImporter::class)
+            ExcelImportAction::make()
+                ->use(ProductSaleExcelImport::class)
                 ->label('Importar')
                 ->icon('heroicon-o-arrow-up-tray')
-                ->options([
-                    'updateExisting' => TRUE,
-                ])
+                ->color('primary')
+                ->beforeImport(function (array $data, $livewire, $excelImportAction) {
+                    // Configurar el importador con la opción updateExisting
+                    $excelImportAction->customImportData([
+                        'updateExisting' => true,
+                    ]);
+                })
         ];
     }
 }

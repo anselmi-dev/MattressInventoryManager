@@ -34,9 +34,9 @@ class ProductObserver
      */
     public function deleted(Product $product): void
     {
-        $product->code = $product->code . '_DELETED';
+        $product->code = $product->code . '_DELETED' . $product->id;
 
-        $product->reference = $product->reference . '_DELETED';
+        $product->reference = $product->reference . '_DELETED' . $product->id;
 
         $product->save();
 
@@ -48,9 +48,9 @@ class ProductObserver
      */
     public function restored(Product $product): void
     {
-        $product->code = str_replace('_DELETED', '', $product->code);
+        $product->code = str_replace('_DELETED' . $product->id, '', $product->code);
 
-        $product->reference = str_replace('_DELETED', '', $product->reference);
+        $product->reference = str_replace('_DELETED' . $product->id, '', $product->reference);
 
         $product->save();
 

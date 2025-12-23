@@ -55,8 +55,12 @@ class ProductType extends Model
      */
     public function getProductTypeByContains (string $string)
     {
-        return array_filter($this->contains, function ($word) use ($string) {
-            return Str::contains($string, $word);
-        });
+        try {
+            return array_filter($this->contains, function ($word) use ($string) {
+                return Str::contains($string, $word);
+            });
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 }

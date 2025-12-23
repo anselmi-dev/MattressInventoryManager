@@ -20,9 +20,11 @@ class ProductForm
             ->components([
                 TextInput::make('code')
                     ->label(__('filament.resources.code'))
+                    ->unique()
                     ->required(),
                 TextInput::make('reference')
                     ->label(__('filament.resources.reference'))
+                    ->unique()
                     ->required(),
                 TextInput::make('name')
                     ->label(__('filament.resources.name'))
