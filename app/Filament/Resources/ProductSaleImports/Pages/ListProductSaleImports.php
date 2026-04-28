@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProductSaleImports\Pages;
 
 use App\Filament\Resources\ProductSaleImports\ProductSaleImportResource;
 use App\Filament\Imports\ProductSaleExcelImport;
+use App\Filament\Imports\TrazabilidadExcelImport;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\Action;
@@ -41,17 +42,27 @@ class ListProductSaleImports extends ListRecords
                             ->send();
                     }
                 }),
-            ExcelImportAction::make()
-                ->use(ProductSaleExcelImport::class)
-                ->label('Importar')
+            // ExcelImportAction::make()
+            //     ->use(ProductSaleExcelImport::class)
+            //     ->label('Importar')
+            //     ->icon('heroicon-o-arrow-up-tray')
+            //     ->color('primary')
+            //     ->beforeImport(function (array $data, $livewire, $excelImportAction) {
+            //         $excelImportAction->customImportData([
+            //             'updateExisting' => true,
+            //         ]);
+            //     }),
+
+            ExcelImportAction::make('importar-trazabilidad')
+                ->use(TrazabilidadExcelImport::class)
+                ->label('Importar Trazabilidad')
                 ->icon('heroicon-o-arrow-up-tray')
                 ->color('primary')
                 ->beforeImport(function (array $data, $livewire, $excelImportAction) {
-                    // Configurar el importador con la opción updateExisting
                     $excelImportAction->customImportData([
                         'updateExisting' => true,
                     ]);
-                })
+                }),
         ];
     }
 }
