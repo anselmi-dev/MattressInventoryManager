@@ -21,13 +21,13 @@ class ProductSaleImportResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Factusol';
 
-    protected static ?string $label = 'Importación de ventas';
+    protected static ?string $label = 'Importar Trazabilidad';
 
-    protected static ?string $pluralLabel = 'Importaciones de ventas';
+    protected static ?string $pluralLabel = 'Importar Trazabilidad';
 
-    protected static ?string $modelLabel = 'Importación de ventas';
+    protected static ?string $modelLabel = 'Importar Trazabilidad';
 
-    protected static ?string $pluralModelLabel = 'Importaciones de ventas';
+    protected static ?string $pluralModelLabel = 'Importar Trazabilidad';
 
     protected static ?string $recordTitleAttribute = 'ID';
 
